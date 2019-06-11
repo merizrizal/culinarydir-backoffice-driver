@@ -89,19 +89,21 @@ class UserAsDriverController extends \backoffice\controllers\BaseController
                 $transaction = \Yii::$app->db->beginTransaction();
                 $flag = false;
 
-                if ($modelPerson->load($post) && $model->load($post)) {
+                $userLevel = UserLevel::find()
+                    ->andWhere(['nama_level' => 'Driver'])
+                    ->asArray()->one();
 
-                    if (($flag = $modelPerson->save())) {
+                $modelUser->user_level_id = $userLevel['id'];
+                $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
+                $modelUser->setPassword($post['User']['password']);
 
-                        $userLevel = UserLevel::find()
-                            ->andWhere(['nama_level' => 'Driver'])
-                            ->asArray()->one();
+                if (($flag = $modelUser->save())) {
 
-                        $modelUser->user_level_id = $userLevel['id'];
-                        $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
-                        $modelUser->setPassword($post['User']['password']);
+                    if ($modelPerson->load($post) && $model->load($post)) {
 
-                        if (($flag = $modelUser->save())) {
+                        $modelPerson->email = $post['User']['email'];
+
+                        if (($flag = $modelPerson->save())) {
 
                             $modelUserPerson = new UserPerson();
                             $modelUserPerson->user_id = $modelUser->id;
@@ -170,6 +172,8 @@ class UserAsDriverController extends \backoffice\controllers\BaseController
 
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = false;
+
+                    $modelPerson->email = $post['User']['email'];
 
                     if (($flag = $modelPerson->save())) {
 
