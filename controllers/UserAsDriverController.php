@@ -2,7 +2,6 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use Yii;
 use sycomponent\Tools;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
@@ -78,65 +77,65 @@ class UserAsDriverController extends \backoffice\controllers\BaseController
         $modelUser = new User();
         $modelPerson = new Person();
 
-        if ($modelUser->load(($post = \Yii::$app->request->post()))) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
-            if (empty($save)) {
+            if ($modelUser->load($post) && $modelPerson->load($post) && $model->load($post)) {
 
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($modelUser);
-            } else {
+                if (empty($save)) {
 
-                $transaction = \Yii::$app->db->beginTransaction();
-                $flag = false;
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($modelUser);
+                } else {
 
-                $userLevel = UserLevel::find()
-                    ->andWhere(['nama_level' => 'Driver'])
-                    ->asArray()->one();
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    $flag = false;
 
-                $modelUser->user_level_id = $userLevel['id'];
-                $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
-                $modelUser->setPassword($post['User']['password']);
+                    $userLevel = UserLevel::find()
+                        ->andWhere(['nama_level' => 'Driver'])
+                        ->asArray()->one();
 
-                if (($flag = $modelUser->save())) {
+                    $modelUser->user_level_id = $userLevel['id'];
+                    $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
+                    $modelUser->setPassword($post['User']['password']);
 
-                    if ($modelPerson->load($post) && $model->load($post)) {
+                    if (($flag = $modelUser->save())) {
 
                         $modelPerson->email = $post['User']['email'];
 
                         if (($flag = $modelPerson->save())) {
 
-                            $modelUserPerson = new UserPerson();
-                            $modelUserPerson->user_id = $modelUser->id;
-                            $modelUserPerson->person_id = $modelPerson->id;
+                            $model->user_id = $modelUser->id;
 
-                            if (($flag = $modelUserPerson->save())) {
+                            if (($flag = $model->save())) {
 
-                                $model->user_id = $modelUser->id;
+                                $modelUserPerson = new UserPerson();
+                                $modelUserPerson->user_id = $modelUser->id;
+                                $modelUserPerson->person_id = $modelPerson->id;
 
-                                $flag = $model->save();
+                                $flag = $modelUserPerson->save();
                             }
                         }
                     }
-                }
 
-                if ($flag) {
+                    if ($flag) {
 
-                    \Yii::$app->session->setFlash('status', 'success');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
+                        \Yii::$app->session->setFlash('status', 'success');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
 
-                    $transaction->commit();
+                        $transaction->commit();
 
-                    $render = 'view';
-                } else {
+                        $render = 'view';
+                    } else {
 
-                    $model->setIsNewRecord(true);
+                        $model->setIsNewRecord(true);
 
-                    \Yii::$app->session->setFlash('status', 'danger');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
+                        \Yii::$app->session->setFlash('status', 'danger');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
 
-                    $transaction->rollback();
+                        $transaction->rollback();
+                    }
                 }
             }
         }
@@ -160,31 +159,31 @@ class UserAsDriverController extends \backoffice\controllers\BaseController
         $modelUser = $model->user;
         $modelPerson = $model->user->userPerson->person;
 
-        if ($modelUser->load(($post = \Yii::$app->request->post()))) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
-            if (empty($save)) {
+            if ($modelUser->load($post) && $modelPerson->load($post) && $model->load($post)) {
 
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($modelUser);
-            } else {
+                if (empty($save)) {
 
-                if ($modelPerson->load($post) && $model->load($post)) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($modelUser);
+                } else {
 
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = false;
 
-                    $modelPerson->email = $post['User']['email'];
+                    if (!($modelUser->image = Tools::uploadFile('/img/user/', $modelUser, 'image', 'username', $modelUser->username))) {
 
-                    if (($flag = $modelPerson->save())) {
+                        $modelUser->image = $modelUser->oldAttributes['image'];
+                    }
 
-                        if (!($modelUser->image = Tools::uploadFile('/img/user/', $modelUser, 'image', 'username', $modelUser->username))) {
+                    $modelUser->full_name = $modelPerson->first_name . ' ' . $modelPerson->last_name;
 
-                            $modelUser->image = $modelUser->oldAttributes['image'];
-                        }
+                    if (($flag = $modelUser->save())) {
 
-                        $modelUser->full_name = $modelPerson->first_name . ' ' . $modelPerson->last_name;
+                        $modelPerson->email = $post['User']['email'];
 
-                        if (($flag = $modelUser->save())) {
+                        if (($flag = $modelPerson->save())) {
 
                             $flag = $model->save();
                         }
