@@ -109,13 +109,13 @@ echo $ajaxRequest->component(true); ?>
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
-                                {view}{update}{delete}
+                            <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                                {view}{update}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}{delete}
+                            <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                                {view}{update}
                             </div>
                         </div>
                     </div>',
@@ -136,18 +136,6 @@ echo $ajaxRequest->component(true); ?>
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => 'Edit',
-                        ]);
-                    },
-                    'delete' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-trash-alt"></i>', $url, [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'data-not-ajax' => 1,
-                            'title' => 'Delete',
-                            'model-id' => $model->user_id,
-                            'model-name' => $model->user->full_name,
                         ]);
                     },
                 ]

@@ -49,14 +49,6 @@ echo $ajaxRequest->component(); ?>
 
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->user_id], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->user_id], [
-                        'id' => 'delete',
-                        'class' => 'btn btn-danger',
-                        'data-not-ajax' => 1,
-                        'model-id' => $model->user_id,
-                        'model-name' => $model->user->username,
-                    ]) ?>
-
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
