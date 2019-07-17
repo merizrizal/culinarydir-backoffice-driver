@@ -2,12 +2,13 @@
 return [
     'params' => [
         'navigation' => [
-            'driver' => [
-                'label' => 'Driver',
+            'addDriver' => [
+                'label' => 'Tambah Data',
                 'iconClass' => 'fa fa-user',
-                'url' => ['driver/user-as-driver/index'],
+                'url' => ['driver/person/create'],
                 'isDirect' => false,
-            ]
+            ],
+            
         ]
     ]
 ];
