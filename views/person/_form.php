@@ -1,14 +1,13 @@
 <?php
 
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use core\models\District;
+use core\models\Settings;
 use kartik\datetime\DateTimePicker;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use core\models\District;
-use core\models\Settings;
-use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\Person */
@@ -48,29 +47,29 @@ if ($status !== null) {
         <div class="x_panel">
             <div class="person-form">
 
-                <?php 
-                        $form = ActiveForm::begin([
-                        'id' => 'person-form',
-                        'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->id],
-                        'options' => [
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'person-form',
+                    'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->id],
+                    'options' => [
 
+                    ],
+                    'fieldConfig' => [
+                        'parts' => [
+                            '{inputClass}' => 'col-lg-6'
                         ],
-                        'fieldConfig' => [
-                            'parts' => [
-                                '{inputClass}' => 'col-lg-6'
-                            ],
-                            'template' => '
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        {label}
-                                    </div>
-                                    <div class="{inputClass}">
-                                        {input}
-                                    </div>
-                                    <div class="col-lg-3">
-                                        {error}
-                                    </div>
-                                </div>',
+                        'template' => '
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {label}
+                                </div>
+                                <div class="{inputClass}">
+                                    {input}
+                                </div>
+                                <div class="col-lg-3">
+                                    {error}
+                                </div>
+                            </div>',
                         ]
                 ]); ?>
 
@@ -92,16 +91,16 @@ if ($status !== null) {
 
                     <div class="x_content">
 
-                       	<?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?> 
-                    
+                       	<?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
+
                         <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
-                        
+
                         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-                        
+
                         <?= $form->field($modelPersonAsDriver, 'no_ktp')->textInput(['maxlength' => true]) ?>
-                    
+
                     	<?= $form->field($modelPersonAsDriver, 'no_sim')->textInput(['maxlength' => true]) ?>
-                    	
+
                     	<?= $form->field($modelPersonAsDriver, 'date_birth', [
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
@@ -109,28 +108,46 @@ if ($status !== null) {
                         ])->widget(DateTimePicker::className(), [
                             'pluginOptions' => Yii::$app->params['datepickerOptions'],
                         ]) ?>
-                    	
+
                     	<?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
-                    	
+
                     	<?= $form->field($modelPersonAsDriver, 'district_id')->dropDownList(
-                                                ArrayHelper::map(
-                                                    District::find()->orderBy('name')->asArray()->all(),
-                                                    'id',
-                                                    function($data) {
-                                                        
-                                                        return $data['name'];
-                                                    }
-                                                ),
-                                                [
-                                                    'prompt' => '',
-                                                    'style' => 'width: 100%'
-                                                ]) ?>
-                    	                    	     	
-<!--                     	motor brand and type -->
-						
-                    
+                                ArrayHelper::map(
+                                    District::find()->orderBy('name')->asArray()->all(),
+                                    'id',
+                                    function($data) {
+                                        return $data['name'];
+                                    }
+                                ),
+                                [
+                                    'prompt' => '',
+                                    'style' => 'width: 100%'
+                                ]) ?>
+                    	<?php
+
+                        $motorBrandJson = Settings::find()->where(['setting_name' => 'get_motor_brand'])->one()->setting_value;
+                        $motorTypeJson = Settings::find()->where(['setting_name' => 'get_motor_type'])->one()->setting_value;
+                        $motorBrandArr = json_decode($motorBrandJson, true);
+                        $motorTypeArr = json_decode($motorTypeJson, true);
+
+                        ?>
+
+                    	<?= $form->field($modelPersonAsDriver, 'motor_brand')->dropDownList(
+                                $motorBrandArr,
+                                [
+                                    'prompt' => '',
+                                    'style' => 'width: 100%'
+                                ]) ?>
+
+                        <?= $form->field($modelPersonAsDriver, 'motor_type')->dropDownList(
+                                $motorTypeArr,
+                                [
+                                    'prompt' => '',
+                                    'style' => 'width: 100%'
+                                ]) ?>
+
                         <?= $form->field($modelPersonAsDriver, 'number_plate')->textInput(['maxlength' => true]) ?>
-                                                
+
                         <?= $form->field($modelPersonAsDriver, 'stnk_expired', [
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
@@ -138,16 +155,13 @@ if ($status !== null) {
                         ])->widget(DateTimePicker::className(), [
                             'pluginOptions' => Yii::$app->params['datepickerOptions'],
                         ]) ?>
-                         
+
                         <?= $form->field($modelPersonAsDriver, 'emergency_contact_name')->textInput(['maxlength' => true]) ?>
-                        
+
                         <?= $form->field($modelPersonAsDriver, 'emergency_contact_phone')->textInput(['maxlength' => true]) ?>
-                        
+
                         <?= $form->field($modelPersonAsDriver, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
-                    
-                    	
-                    	
-                   
+
 
                         <div class="form-group">
                             <div class="row">
@@ -163,7 +177,7 @@ if ($status !== null) {
                         </div>
                     </div>
 
-                <?php                 
+                <?php
                 ActiveForm::end(); ?>
 
             </div>
@@ -171,11 +185,7 @@ if ($status !== null) {
     </div>
 </div>
 
-
 <?php
-$motorBrand = Settings::find()->where(['setting_name' => 'get_motor_brand'])->one();
-$motorBrandJson = $motorBrand->setting_value;
-echo $motorBrandJson;
 
 
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
@@ -186,6 +196,14 @@ $jscript = '
     $("#personasdriver-district_id").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'District') . '"
+    });
+    $("#personasdriver-motor_brand").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Merek Motor') . '"
+    });
+    $("#personasdriver-motor_type").select2({
+        theme: "krajee",
+        placeholder: "' . Yii::t('app', 'Tipe Motor') . '"
     });
 ';
 

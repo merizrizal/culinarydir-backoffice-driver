@@ -4,7 +4,7 @@
 /* @var $model core\models\Person */
 /* @var $modelPersonAsDriver core\models\PersonAsDriver */
 
-$this->title = 'Create ' . \Yii::t('app', 'Person');
+$this->title = 'Create ' . \Yii::t('app', 'Data Driver');
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

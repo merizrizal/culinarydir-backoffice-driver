@@ -2,14 +2,14 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use Yii;
 use core\models\Person;
+use core\models\PersonAsDriver;
 use core\models\search\PersonSearch;
-use yii\web\NotFoundHttpException;
+use yii;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use core\models\PersonAsDriver;
 
 /**
  * PersonController implements the CRUD actions for Person model.
@@ -71,44 +71,40 @@ class PersonController extends \backoffice\controllers\BaseController
         $render = 'create';
 
         $model = new Person();
-        
+
         $modelPersonAsDriver = new PersonAsDriver();
-        
+
         if ($model->load(\Yii::$app->request->post()) && $modelPersonAsDriver->load(\Yii::$app->request->post())) {
 
-            if (empty($save)) {
+            if (!empty($save)) {
 
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-                
-            } else {
-                
-                $transaction = Yii::$app->db->beginTransaction();
                 $flag = false;
-                
-                if ($flag = $model->save()) {
-                    
+                $transaction = \Yii::$app->db->beginTransaction();
+
+                if (($flag = $model->save())) {
+
                     $modelPersonAsDriver->person_id = $model->id;
-    
-                    $flag = $modelPersonAsDriver->save();
+
+                    $modelPersonAsDriver->save();
                 }
-                
+
                 if ($flag) {
-                    Yii::$app->session->setFlash('status', 'success');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Success'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is success. Data has been saved'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
+
                     $transaction->commit();
-                    
                 } else {
-                    
+
                     $model->setIsNewRecord(true);
-                    
-                    Yii::$app->session->setFlash('status', 'danger');
-                    Yii::$app->session->setFlash('message1', Yii::t('app', 'Create Data Is Fail'));
-                    Yii::$app->session->setFlash('message2', Yii::t('app', 'Create data process is fail. Data fail to save'));
-                    
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
+
                     $transaction->rollBack();
+
                 }
 
             }
@@ -117,7 +113,6 @@ class PersonController extends \backoffice\controllers\BaseController
         return $this->render($render, [
             'model' => $model,
             'modelPersonAsDriver' => $modelPersonAsDriver,
-            
         ]);
     }
 
