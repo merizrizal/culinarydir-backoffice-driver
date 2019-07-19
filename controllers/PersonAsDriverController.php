@@ -4,7 +4,7 @@ namespace backoffice\modules\driver\controllers;
 
 use core\models\Person;
 use core\models\PersonAsDriver;
-use core\models\search\PersonSearch;
+use core\models\search\PersonAsDriverSearch;
 use yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -12,9 +12,9 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 
 /**
- * PersonController implements the CRUD actions for Person model.
+ * PersonAsDriverController implements the CRUD actions for PersonAsDriver model.
  */
-class PersonController extends \backoffice\controllers\BaseController
+class PersonAsDriverController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
@@ -34,12 +34,12 @@ class PersonController extends \backoffice\controllers\BaseController
     }
 
     /**
-     * Lists all Person models.
+     * Lists all PersonAsDriver models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new PersonSearch();
+        $searchModel = new PersonAsDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -49,7 +49,7 @@ class PersonController extends \backoffice\controllers\BaseController
     }
 
     /**
-     * Displays a single Person model.
+     * Displays a single PersonAsDriver model.
      * @param string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -62,7 +62,7 @@ class PersonController extends \backoffice\controllers\BaseController
     }
 
     /**
-     * Creates a new Person model.
+     * Creates a new PersonAsDriver model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
@@ -70,22 +70,22 @@ class PersonController extends \backoffice\controllers\BaseController
     {
         $render = 'create';
 
-        $model = new Person();
+        $model = new PersonAsDriver();
 
-        $modelPersonAsDriver = new PersonAsDriver();
+        $modelPerson = new Person();
 
-        if ($model->load(\Yii::$app->request->post()) && $modelPersonAsDriver->load(\Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
 
             if (!empty($save)) {
 
                 $flag = false;
                 $transaction = \Yii::$app->db->beginTransaction();
 
-                if (($flag = $model->save())) {
+                if (($flag = $modelPerson->save())) {
 
-                    $modelPersonAsDriver->person_id = $model->id;
+                    $model->person_id = $modelPerson->id;
 
-                    $modelPersonAsDriver->save();
+                    $model->save();
                 }
 
                 if ($flag) {
@@ -104,20 +104,18 @@ class PersonController extends \backoffice\controllers\BaseController
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
-
                 }
-
             }
         }
 
         return $this->render($render, [
             'model' => $model,
-            'modelPersonAsDriver' => $modelPersonAsDriver,
+            'modelPerson' => $modelPerson,
         ]);
     }
 
     /**
-     * Updates an existing Person model.
+     * Updates an existing PersonAsDriver model.
      * If update is successful, the browser will be redirected to the 'update' page.
      * @param string $id
      * @return mixed
@@ -154,7 +152,7 @@ class PersonController extends \backoffice\controllers\BaseController
     }
 
     /**
-     * Deletes an existing Person model.
+     * Deletes an existing PersonAsDriver model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -188,22 +186,22 @@ class PersonController extends \backoffice\controllers\BaseController
 
         $return = [];
 
-        $return['url'] = \Yii::$app->urlManager->createUrl(['person/index']);
+        $return['url'] = \Yii::$app->urlManager->createUrl(['person-as-driver/index']);
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
     }
 
     /**
-     * Finds the Person model based on its primary key value.
+     * Finds the PersonAsDriver model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Person the loaded model
+     * @return PersonAsDriver the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Person::findOne($id)) !== null) {
+        if (($model = PersonAsDriver::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

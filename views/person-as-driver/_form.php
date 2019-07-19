@@ -10,16 +10,16 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\Person */
-/* @var $modelPersonAsDriver core\models\PersonAsDriver */
+/* @var $model core\models\PersonAsDriver */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $modelPerson core\models\Person */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'Person',
+    'modelClass' => 'PersonAsDriver',
 ]);
 
 $ajaxRequest->form();
@@ -45,11 +45,11 @@ if ($status !== null) {
 <div class="row">
     <div class="col-sm-12">
         <div class="x_panel">
-            <div class="person-form">
+            <div class="person-as-driver-form">
 
                 <?php
                 $form = ActiveForm::begin([
-                    'id' => 'person-form',
+                    'id' => 'person-as-driver-form',
                     'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->id],
                     'options' => [
 
@@ -70,7 +70,7 @@ if ($status !== null) {
                                     {error}
                                 </div>
                             </div>',
-                        ]
+                    ]
                 ]); ?>
 
                     <div class="x_title">
@@ -91,17 +91,17 @@ if ($status !== null) {
 
                     <div class="x_content">
 
-                       	<?= $form->field($model, 'first_name')->textInput(['maxlength' => true]) ?>
+                    	<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($model, 'last_name')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'no_ktp')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true]) ?>
 
-                    	<?= $form->field($modelPersonAsDriver, 'no_sim')->textInput(['maxlength' => true]) ?>
+                    	<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true]) ?>
 
-                    	<?= $form->field($modelPersonAsDriver, 'date_birth', [
+                    	<?= $form->field($model, 'date_birth', [
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ],
@@ -109,9 +109,9 @@ if ($status !== null) {
                             'pluginOptions' => Yii::$app->params['datepickerOptions'],
                         ]) ?>
 
-                    	<?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+                    	<?= $form->field($modelPerson, 'phone')->textInput(['maxlength' => true]) ?>
 
-                    	<?= $form->field($modelPersonAsDriver, 'district_id')->dropDownList(
+                    	<?= $form->field($model, 'district_id')->dropDownList(
                                 ArrayHelper::map(
                                     District::find()->orderBy('name')->asArray()->all(),
                                     'id',
@@ -132,23 +132,23 @@ if ($status !== null) {
 
                         ?>
 
-                    	<?= $form->field($modelPersonAsDriver, 'motor_brand')->dropDownList(
+                    	<?= $form->field($model, 'motor_brand')->dropDownList(
                                 $motorBrandArr,
                                 [
                                     'prompt' => '',
                                     'style' => 'width: 100%'
                                 ]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'motor_type')->dropDownList(
+                        <?= $form->field($model, 'motor_type')->dropDownList(
                                 $motorTypeArr,
                                 [
                                     'prompt' => '',
                                     'style' => 'width: 100%'
                                 ]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'number_plate')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'number_plate')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'stnk_expired', [
+                        <?= $form->field($model, 'stnk_expired', [
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ],
@@ -156,12 +156,11 @@ if ($status !== null) {
                             'pluginOptions' => Yii::$app->params['datepickerOptions'],
                         ]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'emergency_contact_name')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'emergency_contact_phone')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'emergency_contact_phone')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($modelPersonAsDriver, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
-
+                        <?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
 
                         <div class="form-group">
                             <div class="row">
@@ -186,7 +185,6 @@ if ($status !== null) {
 </div>
 
 <?php
-
 
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 

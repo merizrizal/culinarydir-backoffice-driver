@@ -1,17 +1,18 @@
 <?php
 
-use yii\helpers\Html;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $searchModel core\models\search\PersonSearch */
+/* @var $searchModel core\models\search\PersonAsDriverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $modelPerson core\models\Person */
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'Person',
+    'modelClass' => 'PersonAsDriver',
 ]);
 
 $ajaxRequest->index();
@@ -32,12 +33,12 @@ if ($status !== null) {
 
 }
 
-$this->title = \Yii::t('app', 'Person');
+$this->title = \Yii::t('app', 'Person As Driver');
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component(true) ?>
 
-<div class="person-index">
+<div class="person-as-driver-index">
 
     <?php
     $modalDialog = new ModalDialog([
@@ -47,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
     ]); ?>
 
     <?= GridView::widget([
-        'id' => 'grid-view-person',
+        'id' => 'grid-view-person-as-driver',
         'dataProvider' => $dataProvider,
         'pjax' => false,
         'bordered' => false,
@@ -82,18 +83,23 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'first_name',
-            'last_name',
-            'email:email',
-            'phone',
-            //'city_id',
-            //'address:ntext',
-            //'about_me:ntext',
+
+            'district_id',
+            'no_ktp',
+            'no_sim',
+            'date_birth',
+            //'motor_brand',
+            //'motor_type',
+            //'emergency_contact_name',
+            //'emergency_contact_phone',
+            //'emergency_contact_address:ntext',
+            //'number_plate',
+            //'stnk_expired',
             //'created_at',
             //'user_created',
             //'updated_at',
             //'user_updated',
+            //'other_driver',
 
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -137,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'data-placement' => 'top',
                             'data-not-ajax' => 1,
                             'title' => 'Delete',
-                            'model-id' => $model->id,
+                            'model-id' => $model->person_id,
                         ]);
                     },
                 ]
@@ -147,7 +153,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
-            return ['id' => $model['id'], 'class' => 'row-grid-view-person', 'style' => 'cursor: pointer;'];
+            return ['id' => $model['person_id'], 'class' => 'row-grid-view-person-as-driver', 'style' => 'cursor: pointer;'];
         },
         'pager' => [
             'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
@@ -168,7 +174,7 @@ $jscript = ''
     $("div.container.body").off("click");
     $("div.container.body").on("click", function(event) {
 
-        if ($(event.target).parent(".row-grid-view-person").length > 0) {
+        if ($(event.target).parent(".row-grid-view-person-as-driver").length > 0) {
 
             $("td").not(event.target).popover("destroy");
         } else {
@@ -176,10 +182,10 @@ $jscript = ''
         }
     });
 
-    $(".row-grid-view-person").popover({
+    $(".row-grid-view-person-as-driver").popover({
         trigger: "click",
         placement: "top",
-        container: ".row-grid-view-person",
+        container: ".row-grid-view-person-as-driver",
         html: true,
         selector: "td",
         content: function () {
@@ -189,7 +195,7 @@ $jscript = ''
         }
     });
 
-    $(".row-grid-view-person").on("shown.bs.popover", function(event) {
+    $(".row-grid-view-person-as-driver").on("shown.bs.popover", function(event) {
 
         $(\'[data-toggle="tooltip"]\').tooltip();
 
