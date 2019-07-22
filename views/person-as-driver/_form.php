@@ -8,6 +8,7 @@ use sycomponent\NotificationDialog;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
@@ -109,42 +110,46 @@ if ($status !== null) {
                             'pluginOptions' => Yii::$app->params['datepickerOptions'],
                         ]) ?>
 
-                    	<?= $form->field($modelPerson, 'phone')->textInput(['maxlength' => true]) ?>
+                       	<?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
+                            'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                            'options' => [
+                                'placeholder' => Yii::t('app', 'Phone'),
+                                'class' => 'form-control'
+                            ]
+                        ]) ?>
 
                     	<?= $form->field($model, 'district_id')->dropDownList(
-                                ArrayHelper::map(
-                                    District::find()->orderBy('name')->asArray()->all(),
-                                    'id',
-                                    function($data) {
-                                        return $data['name'];
-                                    }
-                                ),
-                                [
-                                    'prompt' => '',
-                                    'style' => 'width: 100%'
-                                ]) ?>
-                    	<?php
+                            ArrayHelper::map(
+                                District::find()->orderBy('name')->asArray()->all(),
+                                'id',
+                                function($data) {
+                                    return $data['name'];
+                                }
+                            ),
+                            [
+                                'prompt' => '',
+                                'style' => 'width: 100%'
+                            ]) ?>
 
+                    	<?php
                         $motorBrandJson = Settings::find()->where(['setting_name' => 'get_motor_brand'])->one()->setting_value;
                         $motorTypeJson = Settings::find()->where(['setting_name' => 'get_motor_type'])->one()->setting_value;
                         $motorBrandArr = json_decode($motorBrandJson, true);
-                        $motorTypeArr = json_decode($motorTypeJson, true);
-
-                        ?>
+                        $motorTypeArr = json_decode($motorTypeJson, true); ?>
 
                     	<?= $form->field($model, 'motor_brand')->dropDownList(
-                                $motorBrandArr,
-                                [
-                                    'prompt' => '',
-                                    'style' => 'width: 100%'
-                                ]) ?>
+                            $motorBrandArr,
+                            [
+                                'prompt' => '',
+                                'style' => 'width: 100%'
+                            ]) ?>
 
                         <?= $form->field($model, 'motor_type')->dropDownList(
-                                $motorTypeArr,
-                                [
-                                    'prompt' => '',
-                                    'style' => 'width: 100%'
-                                ]) ?>
+                            $motorTypeArr,
+                            [
+                                'prompt' => '',
+                                'style' => 'width: 100%'
+                            ]) ?>
 
                         <?= $form->field($model, 'number_plate')->textInput(['maxlength' => true]) ?>
 
@@ -158,7 +163,13 @@ if ($status !== null) {
 
                         <?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($model, 'emergency_contact_phone')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
+                            'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                            'options' => [
+                                'placeholder' => Yii::t('app', 'Emergency Contact Phone'),
+                                'class' => 'form-control'
+                            ]
+                        ]) ?>
 
                         <?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
 
@@ -195,10 +206,12 @@ $jscript = '
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'District') . '"
     });
+
     $("#personasdriver-motor_brand").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Merek Motor') . '"
     });
+
     $("#personasdriver-motor_type").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Tipe Motor') . '"

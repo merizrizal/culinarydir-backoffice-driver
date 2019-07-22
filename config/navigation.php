@@ -2,13 +2,13 @@
 return [
     'params' => [
         'navigation' => [
-            'CreateDriver' => [
+            'createDriver' => [
                 'label' => 'Create Data',
                 'iconClass' => 'fa fa-edit',
-                'url' => ['driver/person-as-driver/index'],
+                'url' => ['driver/person-as-driver/create'],
                 'isDirect' => false,
             ],
-            'PndgDriver' => [
+            'pndgDriver' => [
                 'label' => 'Pending Data',
                 'iconClass' => 'fa fa-hourglass-half',
                 'url' => [''],
@@ -29,7 +29,7 @@ return [
             'driver'=> [
                 'label' => 'Driver',
                 'iconClass' => 'fa fa-users',
-                'url' => [''],
+                'url' => ['driver/person-as-driver/index'],
                 'isDirect' => false,
             ],
         ]
