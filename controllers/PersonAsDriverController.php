@@ -9,7 +9,6 @@ use yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * PersonAsDriverController implements the CRUD actions for PersonAsDriver model.
@@ -39,6 +38,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      */
     public function actionIndex()
     {
+
         $searchModel = new PersonAsDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
@@ -46,6 +46,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+
     }
 
     /**
@@ -56,9 +57,20 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      */
     public function actionView($id)
     {
+
+        $model = PersonAsDriver::find()
+            ->joinWith([
+                'person',
+                'district'
+            ])
+            ->andWhere(['person_as_driver.person_id' => $id])
+            ->asArray()->one();
+
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
+
     }
 
     /**
@@ -95,6 +107,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
 
                     $transaction->commit();
+
+                    $render = 'view';
                 } else {
 
                     $model->setIsNewRecord(true);
@@ -124,13 +138,11 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
     {
         $model = $this->findModel($id);
 
-        if ($model->load(\Yii::$app->request->post())) {
+        $modelPerson = $this->findModel($id);
 
-            if (empty($save)) {
+        if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
 
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+            if (!empty($save)) {
 
                 if ($model->save()) {
 
@@ -148,6 +160,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         return $this->render('update', [
             'model' => $model,
+            'modelPerson' => $modelPerson,
         ]);
     }
 
@@ -203,8 +216,11 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
     {
         if (($model = PersonAsDriver::findOne($id)) !== null) {
             return $model;
+        } if (($modelPerson = Person::findOne($id)) !== null) {
+            return $modelPerson;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+
     }
 }

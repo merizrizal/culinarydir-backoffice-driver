@@ -4,7 +4,6 @@ use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
@@ -31,7 +30,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model->person_id;
+$this->title = $model['person']['first_name'];
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
@@ -47,44 +46,112 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <?= Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']) ?>
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->person_id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->person_id], [
+                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['person_id']], [
                             'id' => 'delete',
                             'class' => 'btn btn-danger',
                             'data-not-ajax' => 1,
-                            'model-id' => $model->person_id,
+                            'model-id' => $model['person_id'],
                         ]) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
-                    <?= DetailView::widget([
-                        'model' => $model,
-                        'options' => [
-                            'class' => 'table'
-                        ],
-                        'attributes' => [
-                                        'person_id',
-                        'district_id',
-                        'no_ktp',
-                        'no_sim',
-                        'date_birth',
-                        'motor_brand',
-                        'motor_type',
-                        'emergency_contact_name',
-                        'emergency_contact_phone',
-                        'emergency_contact_address:ntext',
-                        'number_plate',
-                        'stnk_expired',
-                        'created_at',
-                        'user_created',
-                        'updated_at',
-                        'user_updated',
-                        'other_driver',
-                        ],
-                    ]) ?>
+					<div class="row">
+                        <div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'Driver Name') ?></strong> : <?= $model['person']['first_name']; ?></h4>
+                        </div>
+                    </div>
+
+					<hr>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'Driver Information') ?></strong></h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'First Name')) ?><br>
+                            <?= $model['person']['first_name'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Last Name')) ?><br>
+                            <?= $model['person']['last_name'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Phone')) ?><br>
+                            <?= $model['person']['phone'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Email')) ?><br>
+                            <?= $model['person']['email'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Nomor KTP')) ?><br>
+                            <?= $model['no_ktp'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Nomor SIM')) ?><br>
+                            <?= $model['no_sim'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Date Birth')) ?><br>
+                            <?= $model['date_birth'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'District')) ?><br>
+                            <?= $model['district']['name'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Motor Brand')) ?><br>
+                            <?= $model['motor_brand'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Motor Type')) ?><br>
+                            <?= $model['motor_type'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Number Plate')) ?><br>
+                            <?= $model['number_plate'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Stnk Expired')) ?><br>
+                            <?= $model['stnk_expired'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Emergency Contact Name')) ?><br>
+                            <?= $model['emergency_contact_name'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Emergency Contact Phone')) ?><br>
+                            <?= $model['emergency_contact_phone'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Emergency Contact Address')) ?><br>
+                            <?= $model['emergency_contact_address'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(Yii::t('app', 'Other Driver')) ?><br>
+                            <?= $model['other_driver'] ?>
+                        </div>
+                    </div>
+
+                    <hr>
 
                 </div>
 
@@ -95,6 +162,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 </div>
 
 <?php
+
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',

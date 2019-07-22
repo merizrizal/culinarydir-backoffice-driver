@@ -51,7 +51,7 @@ if ($status !== null) {
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'person-as-driver-form',
-                    'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->id],
+                    'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->person_id],
                     'options' => [
 
                     ],
@@ -173,6 +173,17 @@ if ($status !== null) {
 
                         <?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
 
+						<div class="col-lg-offset-3 col-lg-6 mb-20">
+
+    						<?= Html::checkbox('other_driver', false, [
+                                'label' => Yii::t('app', 'Other Driver ?'),
+                                'class' => 'checkbox-other-driver'
+                            ]); ?>
+
+                            <?= $form->field($model, 'other_driver', ['template' => '{input}' ])->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+
+						</div>
+
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-offset-3 col-lg-6">
@@ -215,6 +226,14 @@ $jscript = '
     $("#personasdriver-motor_type").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Tipe Motor') . '"
+    });
+
+    $(".checkbox-other-driver").on("ifChecked", function(e) {
+        $("#personasdriver-other_driver").removeAttr("disabled");
+    });
+
+    $(".checkbox-other-driver").on("ifUnchecked", function(e) {
+        $("#personasdriver-other_driver").attr("disabled", "disabled");
     });
 ';
 

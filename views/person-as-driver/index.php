@@ -83,13 +83,12 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-
-            'district_id',
+            'person.first_name',
             'no_ktp',
             'no_sim',
             'date_birth',
-            'motor_brand',
-            'motor_type',
+            //'motor_brand',
+            //'motor_type',
             //'emergency_contact_name',
             //'emergency_contact_phone',
             //'emergency_contact_address:ntext',

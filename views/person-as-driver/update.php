@@ -2,6 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
+/* @var $modelPerson core\models\Person */
 
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->person_id;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
@@ -12,6 +13,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modelPerson' => $modelPerson,
     ]) ?>
 
 </div>
