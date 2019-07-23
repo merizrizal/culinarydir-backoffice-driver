@@ -30,7 +30,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model['person']['first_name'];
+$this->title = $model['person']['first_name'] . " ". $model['person']['last_name'];
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
@@ -43,8 +43,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             <div class="x_panel">
 
                 <div class="x_content">
-
-                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']) ?>
 
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
 
@@ -61,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 					<div class="row">
                         <div class="col-xs-12">
-                            <h4><strong><?= Yii::t('app', 'Driver Name') ?></strong> : <?= $model['person']['first_name']; ?></h4>
+                            <h4><strong><?= Yii::t('app', 'Driver Name') ?></strong> : <?= $model['person']['first_name'] . " ". $model['person']['last_name']; ?></h4>
                         </div>
                     </div>
 

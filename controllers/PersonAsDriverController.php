@@ -2,6 +2,7 @@
 
 namespace backoffice\modules\driver\controllers;
 
+use core\models\DriverCriteria;
 use core\models\Person;
 use core\models\PersonAsDriver;
 use core\models\search\PersonAsDriverSearch;
@@ -86,6 +87,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         $modelPerson = new Person();
 
+        $modelDriverCriteria = new DriverCriteria();
+
         if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
 
             if (!empty($save)) {
@@ -125,6 +128,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         return $this->render($render, [
             'model' => $model,
             'modelPerson' => $modelPerson,
+            'modelDriverCriteria' => $modelDriverCriteria,
         ]);
     }
 
@@ -136,11 +140,13 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      */
     public function actionUpdate($id, $save = null)
     {
+        $render = 'update';
+
         $model = $this->findModel($id);
 
-        $modelPerson = $this->findModel($id);
+        $modelPerson = $this->findModelPerson($id);
 
-        if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post())) {
 
             if (!empty($save)) {
 
@@ -149,6 +155,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                     \Yii::$app->session->setFlash('status', 'success');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                    $render = 'view';
                 } else {
 
                     \Yii::$app->session->setFlash('status', 'danger');
@@ -158,7 +166,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             }
         }
 
-        return $this->render('update', [
+        return $this->render($render, [
             'model' => $model,
             'modelPerson' => $modelPerson,
         ]);
@@ -174,6 +182,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
     public function actionDelete($id)
     {
         if (($model = $this->findModel($id)) !== false) {
+
 
             $flag = false;
             $error = '';
@@ -199,7 +208,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         $return = [];
 
-        $return['url'] = \Yii::$app->urlManager->createUrl(['person-as-driver/index']);
+        $return['url'] = \Yii::$app->urlManager->createUrl([$this->module->id . '/person-as-driver/index']);
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         return $return;
@@ -216,11 +225,17 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
     {
         if (($model = PersonAsDriver::findOne($id)) !== null) {
             return $model;
-        } if (($modelPerson = Person::findOne($id)) !== null) {
-            return $modelPerson;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
+    }
+
+    protected function findModelPerson($id) {
+        if (($modelPerson = Person::findOne($id)) !== null) {
+            return $modelPerson;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
 }
