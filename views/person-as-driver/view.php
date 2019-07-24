@@ -46,13 +46,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['person_id']], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model['person_id'],
-                        ]) ?>
-
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>

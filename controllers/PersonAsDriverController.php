@@ -2,14 +2,13 @@
 
 namespace backoffice\modules\driver\controllers;
 
+use core\models\DriverAttachment;
 use core\models\DriverCriteria;
 use core\models\Person;
 use core\models\PersonAsDriver;
+use core\models\Settings;
 use core\models\search\PersonAsDriverSearch;
-use yii;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 /**
  * PersonAsDriverController implements the CRUD actions for PersonAsDriver model.
@@ -39,7 +38,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      */
     public function actionIndex()
     {
-
         $searchModel = new PersonAsDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
@@ -47,18 +45,11 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-
     }
 
-    /**
-     * Displays a single PersonAsDriver model.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionView($id)
     {
-
         $model = PersonAsDriver::find()
             ->joinWith([
                 'person',
@@ -67,11 +58,9 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             ->andWhere(['person_as_driver.person_id' => $id])
             ->asArray()->one();
 
-
         return $this->render('view', [
             'model' => $model,
         ]);
-
     }
 
     /**
@@ -84,10 +73,10 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $render = 'create';
 
         $model = new PersonAsDriver();
-
         $modelPerson = new Person();
-
         $modelDriverCriteria = new DriverCriteria();
+        $modelDriverAttachment = new DriverAttachment();
+
 
         if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
 
@@ -99,7 +88,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                 if (($flag = $modelPerson->save())) {
 
                     $model->person_id = $modelPerson->id;
-
                     $model->save();
                 }
 
@@ -125,10 +113,27 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             }
         }
 
+        $dataJson = Settings::find()
+        ->andWhere(['setting_name' => ['motor_brand', 'motor_type']])
+        ->asArray()->all();
+
+        $dataArray =[];
+
+        foreach ($dataJson as $a) {
+
+            $dataArray[$a['setting_name']] = $a['setting_value'];
+        }
+
+        $motorBrand = json_decode($dataArray['motor_brand'], true);
+        $motorType = json_decode($dataArray['motor_type'], true);
+
         return $this->render($render, [
             'model' => $model,
             'modelPerson' => $modelPerson,
             'modelDriverCriteria' => $modelDriverCriteria,
+            'modelDriverAttachment' => $modelDriverAttachment,
+            'motorBrand' => $motorBrand,
+            'motorType' => $motorType,
         ]);
     }
 
@@ -142,19 +147,34 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
     {
         $render = 'update';
 
-        $model = $this->findModel($id);
+        $model = PersonAsDriver::find()
+            ->joinWith([
+                'person',
+            ])
+            ->andWhere(['person_as_driver.person_id' => $id])
+            ->one();
 
-        $modelPerson = $this->findModelPerson($id);
+        $modelPerson = $model->person;
 
-        if ($model->load(\Yii::$app->request->post())) {
+        if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
+
+            $flag = false;
+            $transaction = \Yii::$app->db->beginTransaction();
 
             if (!empty($save)) {
 
-                if ($model->save()) {
+                if (($flag = $model->save())) {
+
+                    $modelPerson->save();
+                }
+
+                if ($flag) {
 
                     \Yii::$app->session->setFlash('status', 'success');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                    $transaction->commit();
 
                     $render = 'view';
                 } else {
@@ -162,80 +182,31 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                     \Yii::$app->session->setFlash('status', 'danger');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                    $transaction->rollBack();
                 }
             }
         }
 
+        $dataJson = Settings::find()
+        ->andWhere(['setting_name' => ['motor_brand', 'motor_type']])
+        ->asArray()->all();
+
+        $dataArray =[];
+
+        foreach ($dataJson as $a) {
+
+            $dataArray[$a['setting_name']] = $a['setting_value'];
+        }
+
+        $motorBrand = json_decode($dataArray['motor_brand'], true);
+        $motorType = json_decode($dataArray['motor_type'], true);
+
         return $this->render($render, [
             'model' => $model,
             'modelPerson' => $modelPerson,
+            'motorBrand' => $motorBrand,
+            'motorType' => $motorType,
         ]);
-    }
-
-    /**
-     * Deletes an existing PersonAsDriver model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        if (($model = $this->findModel($id)) !== false) {
-
-
-            $flag = false;
-            $error = '';
-
-            try {
-                $flag = $model->delete();
-            } catch (yii\db\Exception $exc) {
-                $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
-            }
-        }
-
-        if ($flag) {
-
-            \Yii::$app->session->setFlash('status', 'success');
-            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Success'));
-            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is success. Data has been deleted'));
-        } else {
-
-            \Yii::$app->session->setFlash('status', 'danger');
-            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Fail'));
-            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
-        }
-
-        $return = [];
-
-        $return['url'] = \Yii::$app->urlManager->createUrl([$this->module->id . '/person-as-driver/index']);
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        return $return;
-    }
-
-    /**
-     * Finds the PersonAsDriver model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return PersonAsDriver the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = PersonAsDriver::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-
-    }
-
-    protected function findModelPerson($id) {
-        if (($modelPerson = Person::findOne($id)) !== null) {
-            return $modelPerson;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }
 }

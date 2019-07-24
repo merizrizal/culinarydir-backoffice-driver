@@ -3,6 +3,9 @@
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
 /* @var $modelPerson core\models\Person */
+/* @var $motorBrand array */
+/* @var $motorType array */
+
 
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $modelPerson->first_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
@@ -14,6 +17,8 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $this->render('_form', [
         'model' => $model,
         'modelPerson' => $modelPerson,
+        'motorBrand' => $motorBrand,
+        'motorType' => $motorType,
     ]) ?>
 
 </div>

@@ -1,9 +1,7 @@
 <?php
 
 use core\models\District;
-use core\models\Settings;
 use kartik\datetime\DateTimePicker;
-use kartik\file\FileInput;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use yii\helpers\ArrayHelper;
@@ -16,6 +14,9 @@ use yii\widgets\MaskedInput;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $modelPerson core\models\Person */
 /* @var $modelDriverCriteria core\models\DriverCriteria */
+/* @var $modelDriverAttachment core\models\DriverAttachment */
+/* @var $motorBrand array */
+/* @var $motorType array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -105,9 +106,7 @@ $this->registerJs($jscript); ?>
         <div class="col-sm-12">
             <div class="x_panel">
                 <div class="person-as-driver-form">
-                	<div class="x_title">
-
-                	</div>
+                	<div class="x_title"></div>
                 	<div class="x_content">
 
                 	<?php
@@ -137,9 +136,12 @@ $this->registerJs($jscript); ?>
                     ]); ?>
 
                         <div id="wizard-create-application">
-
 	                    	<h1><?= Yii::t('app', 'Identitas Driver') ?></h1>
 							<div>
+
+								<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true]) ?>
+
+		                        <?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true]) ?>
 
 								<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true]) ?>
 
@@ -167,7 +169,8 @@ $this->registerJs($jscript); ?>
                                     ArrayHelper::map(
                                         District::find()->orderBy('name')->asArray()->all(),
                                         'id',
-                                        function($data) {
+                                        function($data)
+                                        {
                                             return $data['name'];
                                         }
                                     ),
@@ -176,21 +179,15 @@ $this->registerJs($jscript); ?>
                                         'style' => 'width: 100%'
                                     ]) ?>
 
-                            	<?php
-                                $motorBrandJson = Settings::find()->where(['setting_name' => 'get_motor_brand'])->one()->setting_value;
-                                $motorTypeJson = Settings::find()->where(['setting_name' => 'get_motor_type'])->one()->setting_value;
-                                $motorBrandArr = json_decode($motorBrandJson, true);
-                                $motorTypeArr = json_decode($motorTypeJson, true); ?>
-
                             	<?= $form->field($model, 'motor_brand')->dropDownList(
-                                    $motorBrandArr,
+                                    $motorBrand,
                                     [
                                         'prompt' => '',
                                         'style' => 'width: 100%'
                                     ]) ?>
 
                                 <?= $form->field($model, 'motor_type')->dropDownList(
-                                    $motorTypeArr,
+                                    $motorType,
                                     [
                                         'prompt' => '',
                                         'style' => 'width: 100%'
@@ -229,108 +226,6 @@ $this->registerJs($jscript); ?>
 
         						</div>
 							</div>
-
-							<h1><?= Yii::t('app', 'Driver Criteria') ?></h1>
-							<div>
-
-    							<div class="row">
-                                    <div class="col-xs-12">
-                                        <h4><strong><?= Yii::t('app', 'Driver Criteria') ?></strong></h4>
-                                    </div>
-                                </div>
-
-                    			<hr>
-
-    								<?php
-
-    								$driverCriteriaJson = Settings::find()->where(['setting_name' => 'get_driver_criteria'])->one()->setting_value;
-    								$motorCriteriaJson = Settings::find()->where(['setting_name' => 'get_motor_criteria'])->one()->setting_value;
-    								$driverCriteriaArr = json_decode($driverCriteriaJson, true);
-    								$motorCriteriaArr = json_decode($motorCriteriaJson, true);
-
-    								?>
-    								<?= $form->field($modelDriverCriteria, 'person_as_driver_id', [
-                                            'template' => '
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        {input}
-                                                        {error}
-                                                    </div>
-                                                </div>
-                                            ',
-                                        ])->checkboxList(
-                                                $driverCriteriaArr,
-                                            [
-
-                                            'item' => function ($index, $label, $name, $checked, $value) {
-
-                                                return '
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        <label>'.
-                                                        Html::checkbox($name, $checked, ['value' => $value, 'id' => 'driver-criteria-'. $value]) . ' ' . $label . '
-                                                        </label>
-                                                    </div>';
-                                            }
-                                    ]) ?>
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h4><strong><?= Yii::t('app', 'Motor Criteria') ?></strong></h4>
-                                    </div>
-                                </div>
-
-                    			<hr>
-
-									<?= $form->field($modelDriverCriteria, 'person_as_driver_id', [
-                                            'template' => '
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        {input}
-                                                        {error}
-                                                    </div>
-                                                </div>
-                                            ',
-                                        ])->checkboxList(
-                                                $motorCriteriaArr,
-                                            [
-
-                                            'item' => function ($index, $label, $name, $checked, $value) {
-
-                                                return '
-                                                    <div class="col-xs-12 col-sm-4">
-                                                        <label>'.
-                                                        Html::checkbox($name, $checked, ['value' => $value, 'id' => 'motor-criteria-'. $value]) . ' ' . $label . '
-                                                        </label>
-                                                    </div>';
-                                            }
-                                    ]) ?>
-
-    						</div>
-
-        					<h1><?= Yii::t('app', 'Driver Attachment') ?></h1>
-        					<div>
-
-        						<div class="form-group">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <?= Html::label(Yii::t('app', 'Foto')) ?>
-                                        </div>
-                                        <div class="col-sm-10">
-
-                                            <?php
-
-                                            echo '<label class="control-label">Upload Document</label>';
-                                            echo FileInput::widget([
-                                                'name' => 'attachment_3',
-                                            ]);
-                                            ?>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-        					</div>
         				</div>
 					</div>
 
@@ -376,14 +271,17 @@ $jscript = '
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {
+
         $("#personasdriver-other_driver").removeAttr("disabled");
     });
 
     $(".checkbox-other-driver").on("ifUnchecked", function(e) {
+
         $("#personasdriver-other_driver").attr("disabled", "disabled");
     });
 
-    $("#driver-kriteria-4").on("ifChecked", function(e) {
+    $("#driver-criteria-4").on("ifChecked", function(e) {
+
         alert("nomor 1 terceklis")
     });
 ';

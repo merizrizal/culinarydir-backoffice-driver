@@ -4,6 +4,8 @@
 /* @var $model core\models\PersonAsDriver */
 /* @var $modelPerson core\models\Person */
 /* @var $modelDriverCriteria core\models\DriverCriteria */
+/* @var $modelDriverAttachment core\models\DriverAttachment */
+
 
 $this->title = 'Create ' . \Yii::t('app', 'Person As Driver');
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
@@ -15,6 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'modelPerson' => $modelPerson,
         'modelDriverCriteria' => $modelDriverCriteria,
+        'modelDriverAttachment' => $modelDriverAttachment,
+        'motorBrand' => $motorBrand,
+        'motorType' => $motorType,
     ]) ?>
 
 </div>

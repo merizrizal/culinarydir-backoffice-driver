@@ -86,32 +86,19 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'person.first_name',
             'no_ktp',
             'no_sim',
-            'date_birth',
-            //'motor_brand',
-            //'motor_type',
-            //'emergency_contact_name',
-            //'emergency_contact_phone',
-            //'emergency_contact_address:ntext',
-            //'number_plate',
-            //'stnk_expired',
-            //'created_at',
-            //'user_created',
-            //'updated_at',
-            //'user_updated',
-            //'other_driver',
-
+            'person.phone',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
-                                {view}{update}{delete}
+                            <div class="btn-group btn-group-md" role="group" style="width: 83px">
+                                {view}{update}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
                             <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}{delete}
+                                {view}{update}
                             </div>
                         </div>
                     </div>',
@@ -132,17 +119,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => 'Edit',
-                        ]);
-                    },
-                    'delete' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-trash-alt"></i>', $url, [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'data-not-ajax' => 1,
-                            'title' => 'Delete',
-                            'model-id' => $model->person_id,
                         ]);
                     },
                 ]
