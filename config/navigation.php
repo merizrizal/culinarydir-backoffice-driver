@@ -5,7 +5,7 @@ return [
             'createDriver' => [
                 'label' => 'Create Data',
                 'iconClass' => 'fa fa-edit',
-                'url' => ['driver/person-as-driver/create'],
+                'url' => ['driver/driver-criteria/create'],
                 'isDirect' => false,
             ],
             'pndgDriver' => [
