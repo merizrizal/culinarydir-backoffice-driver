@@ -3,7 +3,6 @@
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
 /* @var $modelPerson core\models\Person */
-/* @var $modelDriverCriteria core\models\DriverCriteria */
 /* @var $modelDriverAttachment core\models\DriverAttachment */
 
 
@@ -16,7 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form', [
         'model' => $model,
         'modelPerson' => $modelPerson,
-        'modelDriverCriteria' => $modelDriverCriteria,
         'modelDriverAttachment' => $modelDriverAttachment,
         'motorBrand' => $motorBrand,
         'motorType' => $motorType,

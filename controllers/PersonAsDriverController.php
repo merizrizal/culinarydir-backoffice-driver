@@ -3,7 +3,6 @@
 namespace backoffice\modules\driver\controllers;
 
 use core\models\DriverAttachment;
-use core\models\DriverCriteria;
 use core\models\Person;
 use core\models\PersonAsDriver;
 use core\models\Settings;
@@ -58,13 +57,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             ->andWhere(['person_as_driver.person_id' => $id])
             ->asArray()->one();
 
-        $modelDriverCriteria = DriverCriteria::find()
-            ->andWhere(['person_as_driver_id' => $id])
-            ->asArray()->all();
-
         return $this->render('view', [
             'model' => $model,
-            'modelDriverCriteria' => $modelDriverCriteria,
         ]);
     }
 
@@ -79,7 +73,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         $model = new PersonAsDriver();
         $modelPerson = new Person();
-        $modelDriverCriteria = new DriverCriteria();
         $modelDriverAttachment = new DriverAttachment();
 
         if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
@@ -137,7 +130,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         return $this->render($render, [
             'model' => $model,
             'modelPerson' => $modelPerson,
-            'modelDriverCriteria' => $modelDriverCriteria,
             'modelDriverAttachment' => $modelDriverAttachment,
             'motorBrand' => $motorBrand,
             'motorType' => $motorType,

@@ -7,7 +7,6 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
-/* @var $modelDriverCriteria core\models\DriverCriteria */
 
 
 $ajaxRequest = new AjaxRequest([
@@ -47,8 +46,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                 <div class="x_content">
 
                     <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
-
-					<?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Kriteria Driver', ['driver-criteria/index',], ['class' => 'btn btn-primary']) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
@@ -143,50 +140,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         <div class="col-xs-6 col-sm-3">
                             <?= Html::label(Yii::t('app', 'Other Driver')) ?><br>
                             <?= $model['other_driver'] ?>
-                        </div>
-                    </div>
-
-                    <hr>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <h4><strong><?= Yii::t('app', 'Driver Kriteria') ?></strong></h4>
-                        </div>
-                    </div>
-                    <hr>
-
-					<div class="row mb-20">
-                        <div class="col-xs-6 col-sm-4">
-                            <?= Html::label(Yii::t('app', 'Driver Criteria')) ?><br>
-
-                            <?php
-
-                            foreach ($modelDriverCriteria as $md) {
-
-                                if ($md['type'] == 'Driver') {
-
-                                    echo $md['criteria_name'] . ", ";
-                                }
-                            }
-
-                            ?>
-
-                        </div>
-                        <div class="col-xs-6 col-sm-3"></div>
-                        <div class="col-xs-6 col-sm-4">
-                            <?= Html::label(Yii::t('app', 'Motor Criteria')) ?><br>
-
-                            <?php
-
-                            foreach ($modelDriverCriteria as $md) {
-
-                                if ($md['type'] == 'Motor') {
-
-                                    echo $md['criteria_name'] . ", ";
-                                }
-                            }
-
-                            ?>
-
                         </div>
                     </div>
                 </div>
