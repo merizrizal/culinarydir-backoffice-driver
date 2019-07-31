@@ -7,7 +7,9 @@ use core\models\Person;
 use core\models\PersonAsDriver;
 use core\models\Settings;
 use core\models\search\PersonAsDriverSearch;
+use sycomponent\Tools;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PersonAsDriverController implements the CRUD actions for PersonAsDriver model.
@@ -52,7 +54,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $model = PersonAsDriver::find()
             ->joinWith([
                 'person',
-                'district'
+                'district',
+                'driverAttachments'
             ])
             ->andWhere(['person_as_driver.person_id' => $id])
             ->asArray()->one();
@@ -75,7 +78,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $modelPerson = new Person();
         $modelDriverAttachment = new DriverAttachment();
 
-        if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
+        if ($model->load(($post = \Yii::$app->request->post())) && $modelPerson->load($post) && $modelDriverAttachment->load($post)) {
 
             if (!empty($save)) {
 
@@ -90,6 +93,25 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
                 if ($flag) {
 
+                    $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+
+                    foreach ($images as $i => $image) {
+
+                        $i++;
+
+                        $newModelDriverAttachment = new DriverAttachment();
+                        $newModelDriverAttachment->person_as_driver_id = $modelPerson->id;
+                        $newModelDriverAttachment->file_name = $image;
+
+                        if (!($flag = $newModelDriverAttachment->save())) {
+
+                            break;
+                        }
+                    }
+                }
+
+                if ($flag) {
+
                     \Yii::$app->session->setFlash('status', 'success');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
                     \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
@@ -98,8 +120,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
                     $render = 'view';
                 } else {
-
-                    $model->setIsNewRecord(true);
 
                     \Yii::$app->session->setFlash('status', 'danger');
                     \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
@@ -113,7 +133,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $dataJson = Settings::find()
             ->andWhere(['setting_name' => [
                 'motor_brand',
-            'motor_type'
+                'motor_type'
             ]])
             ->asArray()->all();
 
@@ -142,9 +162,9 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      * @param string $id
      * @return mixed
      */
-    public function actionUpdate($id, $save = null)
+    public function actionUpdateDriverInfo($id, $save = null)
     {
-        $render = 'update';
+        $render = 'update_driver_info';
 
         $model = PersonAsDriver::find()
             ->joinWith([
@@ -209,6 +229,135 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             'modelPerson' => $modelPerson,
             'motorBrand' => $motorBrand,
             'motorType' => $motorType,
+        ]);
+    }
+
+    public function actionUpdateDriverAttachment($id, $save = null)
+    {
+        $model = PersonAsDriver::find()
+            ->joinWith([
+                'driverAttachments',
+            ])
+            ->andWhere(['person_as_driver.person_id' => $id])
+            ->one();
+
+        $modelDriverAttachment = new DriverAttachment();
+        $dataDriverAttachment = [];
+        $newDataDriverAttachment = [];
+        $deletedDriverAttachmentId = [];
+
+        if (!empty(($post = \Yii::$app->request->post()))) {
+
+            if (!empty($save)) {
+
+                $flag = true;
+                $transaction = \Yii::$app->db->beginTransaction();
+
+                $newModelDriverAttachment = new DriverAttachment();
+
+                if (($flag = !empty($post['DriverAttachmentDelete']))) {
+
+                    if(($flag = DriverAttachment::deleteAll(['id' => $post['DriverAttachmentDelete']]))) {
+
+                        $deletedDriverAttachmentId = $post['DriverAttachmentDelete'];
+                    }
+                }
+
+                if (($flag = $newModelDriverAttachment->load($post))) {
+
+                    $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+
+                    foreach ($images as $image) {
+
+                        $newModelDriverAttachment = new DriverAttachment();
+                        $newModelDriverAttachment->person_as_driver_id = $model->person_id;
+                        $newModelDriverAttachment->file_name = $image;
+
+                        if (!($flag = $newModelDriverAttachment->save())) {
+
+                            break;
+                        } else {
+
+                            array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                        }
+                    }
+                }
+
+                if ($flag) {
+
+                    foreach ($model['driverAttachments'] as $existModelDriverAttachment) {
+
+                        $existModelDriverAttachment->type = $post['type'][$existModelDriverAttachment->id];
+
+                        if (!($flag = $existModelDriverAttachment->save())) {
+
+                            break;
+                        }
+                    }
+                }
+
+                if ($flag) {
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
+
+                    $transaction->commit();
+                } else {
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
+
+                    $transaction->rollBack();
+                }
+            }
+        }
+
+        foreach ($model['driverAttachments'] as $valueDriverAttachment) {
+
+            $deleted = false;
+
+            foreach ($deletedDriverAttachmentId as $DriverAttachmentId) {
+
+                if ($DriverAttachmentId == $valueDriverAttachment['id']) {
+
+                    $deleted = true;
+                    break;
+                }
+            }
+
+            if (!$deleted) {
+
+                array_push($dataDriverAttachment, $valueDriverAttachment);
+            }
+        }
+
+        if (!empty($newDataDriverAttachment)) {
+
+            $dataDriverAttachment = ArrayHelper::merge($dataDriverAttachment, $newDataDriverAttachment);
+        }
+
+        $dataJson = Settings::find()
+            ->andWhere(['setting_name' => [
+                'attachment_type'
+            ]])
+            ->asArray()->all();
+
+        $dataArray =[];
+
+        foreach ($dataJson as $a) {
+
+            $dataArray[$a['setting_name']] = $a['setting_value'];
+        }
+
+        $attachmentType = json_decode($dataArray['attachment_type'], true);
+
+        return $this->render('update_attachment', [
+            'model' => $model,
+            'dataDriverAttachment' => $dataDriverAttachment,
+            'modelDriverAttachment' => $modelDriverAttachment,
+            'attachmentType' => $attachmentType,
         ]);
     }
 }

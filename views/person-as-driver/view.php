@@ -3,6 +3,7 @@
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use sycomponent\Tools;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -38,14 +39,14 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 <?= $ajaxRequest->component() ?>
 
 <div class="person-as-driver-view">
-
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
+
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
 
                     <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
@@ -138,15 +139,82 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             <?= $model['emergency_contact_address'] ?>
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(Yii::t('app', 'Other Driver')) ?><br>
-                            <?= $model['other_driver'] ?>
+
+                            <?= Html::label(Yii::t('app', 'Other Driver ?')) ?><br>
+
+                            <?php
+                            if (!empty($model['other_driver'])) {
+
+                                echo $model['other_driver'];
+                            } else {
+
+                                echo 'Tidak Ada';
+                            }
+                            ?>
+
                         </div>
+                    </div>
+
+                    <div class="row mb-20">
+                    	<div class="col-xs-6 col-sm-3">
+
+                            <?= Html::label(Yii::t('app', 'Is Criteria Passed')) ?><br>
+
+                            <?php
+                            if ($model['is_criteria_passed'] == true) {
+
+                                echo 'Lulus Pengecekan';
+                            } else {
+
+                                echo 'Belum lulus Pengecekan';
+                            }
+                            ?>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <?= Html::label(Yii::t('app', 'Driver Attachment')); ?>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <?php
+                        if (!empty($model['driverAttachments'])):
+
+                            foreach ($model['driverAttachments'] as $dataDriverAttachments): ?>
+
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="thumbnail">
+                                        <div class="image view view-first">
+
+                                            <?= Html::img(Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+
+                                            <div class="mask">
+                                                <p>&nbsp;</p>
+                                                <div class="tools tools-bottom">
+                                                    <a class="show-image direct" href="<?= Yii::getAlias('@uploadsUrl') . '/img/driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+                            endforeach;
+                        endif; ?>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <?php
@@ -159,4 +227,25 @@ $modalDialog = new ModalDialog([
 
 $modalDialog->theScript(false);
 
-echo $modalDialog->renderDialog(); ?>
+echo $modalDialog->renderDialog();
+
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/magnific-popup.css', ['depends' => 'yii\web\YiiAsset']);
+
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/jquery.magnific-popup.js', ['depends' => 'yii\web\YiiAsset']);
+
+$jscript = '
+    $(".thumbnail").magnificPopup({
+        delegate: "a.show-image",
+        type: "image",
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0,1]
+        },
+        image: {
+            tError: "The image could not be loaded."
+        }
+    });
+';
+
+$this->registerJs($jscript);?>

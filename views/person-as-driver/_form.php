@@ -2,6 +2,7 @@
 
 use core\models\District;
 use kartik\datetime\DateTimePicker;
+use kartik\file\FileInput;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
 use yii\helpers\ArrayHelper;
@@ -13,7 +14,6 @@ use yii\widgets\MaskedInput;
 /* @var $model core\models\PersonAsDriver */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $modelPerson core\models\Person */
-/* @var $modelDriverCriteria core\models\DriverCriteria */
 /* @var $modelDriverAttachment core\models\DriverAttachment */
 /* @var $motorBrand array */
 /* @var $motorType array */
@@ -47,7 +47,7 @@ if ($status !== null) {
 <?= $ajaxRequest->component();
 
 $jscript = '
-    $("#wizard-create-application").steps({
+    $("#wizard-create-data-driver").steps({
         titleTemplate:
             "<span class=\"number\">" +
                 "#index#" +
@@ -57,34 +57,34 @@ $jscript = '
             "</span>",
         onInit: function(event, currentIndex) {
 
-            $("#wizard-create-application.wizard > .actions ul li a").addClass("btn btn-primary");
-            $("#wizard-create-application.wizard > .actions").removeClass("actions").addClass("actionBar");
-            $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
+            $("#wizard-create-data-driver.wizard > .actions ul li a").addClass("btn btn-primary");
+            $("#wizard-create-data-driver.wizard > .actions").removeClass("actions").addClass("actionBar");
+            $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
         },
         onStepChanged: function(event, currentIndex, priorIndex) {
 
             if (priorIndex == 0) {
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").removeClass("buttonDisabled");
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#previous\"]").removeClass("buttonDisabled");
             } else if (currentIndex == 0) {
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#previous\"]").addClass("buttonDisabled");
             }
 
-            var lastCount = $("#wizard-create-application.wizard > .steps").find("li").length - 1;
+            var lastCount = $("#wizard-create-data-driver.wizard > .steps").find("li").length - 1;
 
             if (currentIndex == lastCount) {
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#next\"]").addClass("buttonDisabled");
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#next\"]").parent().hide();
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#next\"]").addClass("buttonDisabled");
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#next\"]").parent().hide();
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#finish\"]").parent().show();
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#finish\"]").parent().show();
             } else if (priorIndex == lastCount) {
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#next\"]").removeClass("buttonDisabled");
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#next\"]").parent().show();
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#next\"]").removeClass("buttonDisabled");
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#next\"]").parent().show();
 
-                $("#wizard-create-application.wizard > .actionBar").find("a[href=\"#finish\"]").parent().hide();
+                $("#wizard-create-data-driver.wizard > .actionBar").find("a[href=\"#finish\"]").parent().hide();
             }
         },
         onFinished: function(event, currentIndex) {
@@ -112,120 +112,198 @@ $this->registerJs($jscript); ?>
                 	<?php
                     $form = ActiveForm::begin([
                         'id' => 'person-as-driver-form',
-                        'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->person_id],
+                        'action' => ['create'],
                         'options' => [
 
                         ],
                         'fieldConfig' => [
-                            'parts' => [
-                                '{inputClass}' => 'col-lg-6'
-                            ],
-                            'template' => '
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        {label}
-                                    </div>
-                                    <div class="{inputClass}">
-                                        {input}
-                                    </div>
-                                    <div class="col-lg-3">
-                                        {error}
-                                    </div>
-                                </div>',
+                            'template' => '{input}{error}',
                         ]
                     ]); ?>
 
-                        <div id="wizard-create-application">
+                        <div id="wizard-create-data-driver">
 	                    	<h1><?= Yii::t('app', 'Identitas Driver') ?></h1>
 							<div>
+    							<div class="row">
+    								<div class="col-xs-12 col-sm-6">
+    									<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+    								</div>
+    								<div class="col-xs-12 col-sm-6">
+    									<?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+    								</div>
+    							</div>
 
-								<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true]) ?>
+								<div class="row">
+									<div class="col-xs-12 col-sm-4">
+										<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-4">
 
-		                        <?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true]) ?>
+										<?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
+                                            'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Phone'),
+                                                'class' => 'form-control'
+                                            ]
+                                        ]) ?>
 
-								<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-4">
 
-                                <?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true]) ?>
+										<?= $form->field($model, 'date_birth', [
+                                            'parts' => [
+                                                '{inputClass}' => 'col-lg-4'
+                                            ],
+                                        ])->widget(DateTimePicker::className(), [
+                                            'pluginOptions' => Yii::$app->params['datepickerOptions'],
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Tanggal Lahir')
+                                            ],
+                                        ]) ?>
 
-                            	<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true]) ?>
+									</div>
+								</div>
 
-                            	<?= $form->field($model, 'date_birth', [
-                                    'parts' => [
-                                        '{inputClass}' => 'col-lg-4'
-                                    ],
-                                ])->widget(DateTimePicker::className(), [
-                                    'pluginOptions' => Yii::$app->params['datepickerOptions'],
-                                ]) ?>
+								<div class="row">
+									<div class="col-xs-12 col-sm-4">
+										<?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Nomor KTP')]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-4">
+										<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Nomor SIM')]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-4">
 
-                               	<?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
-                                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                                    'options' => [
-                                        'placeholder' => Yii::t('app', 'Phone'),
-                                        'class' => 'form-control'
-                                    ]
-                                ]) ?>
+										<?= $form->field($model, 'district_id')->dropDownList(
+                                            ArrayHelper::map(
+                                                District::find()->orderBy('name')->asArray()->all(),
+                                                'id',
+                                                function($data) {
 
-                            	<?= $form->field($model, 'district_id')->dropDownList(
-                                    ArrayHelper::map(
-                                        District::find()->orderBy('name')->asArray()->all(),
-                                        'id',
-                                        function($data)
-                                        {
-                                            return $data['name'];
-                                        }
-                                    ),
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
+                                                    return $data['name'];
+                                                }
+                                            ),
+                                            [
+                                                'prompt' => '',
+                                                'style' => 'width: 100%'
+                                            ]) ?>
 
-                            	<?= $form->field($model, 'motor_brand')->dropDownList(
-                                    $motorBrand,
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
+									</div>
+								</div>
 
-                                <?= $form->field($model, 'motor_type')->dropDownList(
-                                    $motorType,
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
 
-                                <?= $form->field($model, 'number_plate')->textInput(['maxlength' => true]) ?>
+										<?= $form->field($model, 'motor_brand')->dropDownList(
+                                            $motorBrand,
+                                            [
+                                                'prompt' => '',
+                                                'style' => 'width: 100%'
+                                            ]) ?>
 
-                                <?= $form->field($model, 'stnk_expired', [
-                                    'parts' => [
-                                        '{inputClass}' => 'col-lg-4'
-                                    ],
-                                ])->widget(DateTimePicker::className(), [
-                                    'pluginOptions' => Yii::$app->params['datepickerOptions'],
-                                ]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-3">
 
-                                <?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true]) ?>
+										<?= $form->field($model, 'motor_type')->dropDownList(
+                                            $motorType,
+                                            [
+                                                'prompt' => '',
+                                                'style' => 'width: 100%'
+                                            ]) ?>
 
-                                <?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
-                                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                                    'options' => [
-                                        'placeholder' => Yii::t('app', 'Emergency Contact Phone'),
-                                        'class' => 'form-control'
-                                    ]
-                                ]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-3">
+										<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Number Plate')]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-3">
 
-                                <?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Address')]) ?>
+										<?= $form->field($model, 'stnk_expired', [
+                                            'parts' => [
+                                                '{inputClass}' => 'col-lg-4'
+                                            ],
+                                        ])->widget(DateTimePicker::className(), [
+                                            'pluginOptions' => Yii::$app->params['datepickerOptions'],
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Stnk Expired')
+                                            ],
+                                        ]) ?>
 
-        						<div class="col-lg-offset-3 col-lg-6 mb-20">
+									</div>
+								</div>
 
-            						<?= Html::checkbox('other_driver', false, [
-                                        'label' => Yii::t('app', 'Other Driver ?'),
-                                        'class' => 'checkbox-other-driver'
-                                    ]); ?>
+								<div class="row">
+									<div class="col-xs-12 col-sm-4">
+										<?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Emergency Contact Name')]) ?>
+									</div>
+									<div class="col-xs-12 col-sm-4">
 
-                                    <?= $form->field($model, 'other_driver', ['template' => '{input}' ])->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+										<?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
+                                            'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                            'options' => [
+                                                'placeholder' => Yii::t('app', 'Emergency Contact Phone'),
+                                                'class' => 'form-control'
+                                            ]
+                                        ]) ?>
 
+									</div>
+									<div class="col-xs-12 col-sm-4">
+										<?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Emergency Contact Address')]) ?>
+									</div>
+								</div>
+
+        						<div class="row">
+            						<div class="col-xs-12 col-sm-3">
+
+        								<?= Html::checkbox('other_driver', false, [
+                                            'label' => Yii::t('app', 'Other Driver ?'),
+                                            'class' => 'checkbox-other-driver'
+                                        ]);
+
+                                    	echo $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+
+            						</div>
+            						<div class="col-sm-offset-1 col-xs-12 col-sm-3">
+
+            							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
+            							    'label' => Yii::t('app', 'Is Criteria Passed')
+            							]); ?>
+
+            						</div>
         						</div>
 							</div>
+
+        					<h1><?= Yii::t('app', 'Driver Attachment') ?></h1>
+        					<div>
+								<div class="col-md-12">
+
+									<?= $form->field($modelDriverAttachment, 'file_name[]',[
+									    'template' => '
+                                            <div class="row">
+                                                <div class="col-lg-3">
+                                                    {label}
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="{inputClass}">
+                                                        {input}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    {error}
+                                                </div>
+                                            </div>
+                                        ',
+									])->widget(FileInput::classname(), [
+                                        'options' => [
+                                            'accept' => 'image/*',
+                                            'multiple' => true,
+                                        ],
+                                        'pluginOptions' => [
+                                            'showRemove' => true,
+                                            'showUpload' => false,
+                                        ]
+                                    ]); ?>
+
+								</div>
+        					</div>
         				</div>
 					</div>
 
@@ -278,11 +356,6 @@ $jscript = '
     $(".checkbox-other-driver").on("ifUnchecked", function(e) {
 
         $("#personasdriver-other_driver").attr("disabled", "disabled");
-    });
-
-    $("#driver-criteria-4").on("ifChecked", function(e) {
-
-        alert("nomor 1 terceklis")
     });
 ';
 

@@ -92,13 +92,13 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                 'template' => '
                     <div class="btn-container hide">
                         <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 83px">
-                                {view}{update}
+                            <div class="btn-group btn-group-md" role="group" style="width: 43px">
+                                {view}
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
                             <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}
+                                {view}
                             </div>
                         </div>
                     </div>',
@@ -110,15 +110,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'data-toggle' => 'tooltip',
                             'data-placement' => 'top',
                             'title' => 'View',
-                        ]);
-                    },
-                    'update' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-pencil-alt"></i>', $url, [
-                            'id' => 'update',
-                            'class' => 'btn btn-success',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Edit',
                         ]);
                     },
                 ]
