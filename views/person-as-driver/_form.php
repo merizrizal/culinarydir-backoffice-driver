@@ -191,7 +191,7 @@ $this->registerJs($jscript); ?>
 								</div>
 
 								<div class="row">
-									<div class="col-xs-12 col-sm-3">
+									<div class="col-xs-12 col-sm-2">
 
 										<?= $form->field($model, 'motor_brand')->dropDownList(
                                             $motorBrand,
@@ -201,7 +201,7 @@ $this->registerJs($jscript); ?>
                                             ]) ?>
 
 									</div>
-									<div class="col-xs-12 col-sm-3">
+									<div class="col-xs-12 col-sm-2">
 
 										<?= $form->field($model, 'motor_type')->dropDownList(
                                             $motorType,
@@ -211,10 +211,10 @@ $this->registerJs($jscript); ?>
                                             ]) ?>
 
 									</div>
-									<div class="col-xs-12 col-sm-3">
+									<div class="col-xs-12 col-sm-4">
 										<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Number Plate')]) ?>
 									</div>
-									<div class="col-xs-12 col-sm-3">
+									<div class="col-xs-12 col-sm-4">
 
 										<?= $form->field($model, 'stnk_expired', [
                                             'parts' => [
@@ -251,7 +251,7 @@ $this->registerJs($jscript); ?>
 								</div>
 
         						<div class="row">
-            						<div class="col-xs-12 col-sm-3">
+            						<div class="col-xs-12 col-sm-4">
 
         								<?= Html::checkbox('other_driver', false, [
                                             'label' => Yii::t('app', 'Other Driver ?'),
@@ -261,7 +261,7 @@ $this->registerJs($jscript); ?>
                                     	echo $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
 
             						</div>
-            						<div class="col-sm-offset-1 col-xs-12 col-sm-3">
+            						<div class="col-sm-offset-1 col-xs-12 col-sm-4">
 
             							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
             							    'label' => Yii::t('app', 'Is Criteria Passed')
@@ -273,36 +273,40 @@ $this->registerJs($jscript); ?>
 
         					<h1><?= Yii::t('app', 'Driver Attachment') ?></h1>
         					<div>
-								<div class="col-md-12">
+            					<div class="row mb-20">
+            						<div class="col-lg-2">
+            							<label><?= Yii::t('app', 'Attachment Type') ?></label>
+            						</div>
+            						<div class="col-lg-8">
 
-									<?= $form->field($modelDriverAttachment, 'file_name[]',[
-									    'template' => '
-                                            <div class="row">
-                                                <div class="col-lg-3">
-                                                    {label}
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="{inputClass}">
-                                                        {input}
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    {error}
-                                                </div>
-                                            </div>
-                                        ',
-									])->widget(FileInput::classname(), [
-                                        'options' => [
-                                            'accept' => 'image/*',
-                                            'multiple' => true,
-                                        ],
-                                        'pluginOptions' => [
-                                            'showRemove' => true,
-                                            'showUpload' => false,
-                                        ]
-                                    ]); ?>
+										<?= $form->field($modelDriverAttachment, 'type')
+                                            ->dropDownList($attachmentType, [
+                                                'multiple' => 'multiple',
+                                                'prompt' => '',
+                                                'style' => 'width: 100%',
+                                            ]) ?>
 
-								</div>
+            						</div>
+            					</div>
+            					<div class="row">
+            						<div class="col-lg-2">
+            							<?= Html::label(Yii::t('app', 'Photo')) ?>
+            						</div>
+            						<div class="col-lg-8">
+
+										<?= $form->field($modelDriverAttachment, 'file_name[]')->widget(FileInput::classname(), [
+                                            'options' => [
+                                                'accept' => 'image/*',
+                                                'multiple' => true,
+                                            ],
+                                            'pluginOptions' => [
+                                                'showRemove' => true,
+                                                'showUpload' => false,
+                                            ]
+                                        ]); ?>
+
+            						</div>
+            					</div>
         					</div>
         				</div>
 					</div>
@@ -346,6 +350,12 @@ $jscript = '
     $("#personasdriver-motor_type").select2({
         theme: "krajee",
         placeholder: "' . Yii::t('app', 'Tipe Motor') . '"
+    });
+
+    $("#driverattachment-type").select2({
+        theme: "krajee",
+        dropdownCssClass: "select2-grid-system",
+        placeholder: "' . Yii::t('app', 'Berkas') . '"
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {

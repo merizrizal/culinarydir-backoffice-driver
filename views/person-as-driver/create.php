@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'modelDriverAttachment' => $modelDriverAttachment,
         'motorBrand' => $motorBrand,
         'motorType' => $motorType,
+        'attachmentType' => $attachmentType,
     ]) ?>
 
 </div>

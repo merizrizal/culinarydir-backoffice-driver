@@ -97,11 +97,10 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
                     foreach ($images as $i => $image) {
 
-                        $i++;
-
                         $newModelDriverAttachment = new DriverAttachment();
                         $newModelDriverAttachment->person_as_driver_id = $modelPerson->id;
                         $newModelDriverAttachment->file_name = $image;
+                        $newModelDriverAttachment->type = $modelDriverAttachment['type'][$i];
 
                         if (!($flag = $newModelDriverAttachment->save())) {
 
@@ -133,7 +132,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $dataJson = Settings::find()
             ->andWhere(['setting_name' => [
                 'motor_brand',
-                'motor_type'
+                'motor_type',
+                'attachment_type'
             ]])
             ->asArray()->all();
 
@@ -146,6 +146,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         $motorBrand = json_decode($dataArray['motor_brand'], true);
         $motorType = json_decode($dataArray['motor_type'], true);
+        $attachmentType = json_decode($dataArray['attachment_type'], true);
 
         return $this->render($render, [
             'model' => $model,
@@ -153,6 +154,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             'modelDriverAttachment' => $modelDriverAttachment,
             'motorBrand' => $motorBrand,
             'motorType' => $motorType,
+            'attachmentType' => $attachmentType,
         ]);
     }
 
