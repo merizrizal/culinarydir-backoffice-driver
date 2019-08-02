@@ -8,8 +8,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model core\models\DriverAttachment */
+/* @var $model core\models\PersonAsDriver */
+/* @var $modelDriverAttachment core\models\DriverAttachment */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $dataDriverAttachment array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -36,9 +38,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment'). ' : ' . $model['person']['first_name'];
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Driver Attachment'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'], 'url' => ['view', 'id' => $model['person']['id']]];
+$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment'). ' : ' . $model['person']['first_name'] . ' ' . $model['person']['last_name'];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'] . ' ' . $model['person']['last_name'], 'url' => ['view', 'id' => $model['person']['id']]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component();
@@ -196,4 +198,4 @@ $jscript = '
 
 ';
 
-$this->registerJs($jscript); ?>
+$this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>

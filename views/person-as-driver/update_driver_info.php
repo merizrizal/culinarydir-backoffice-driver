@@ -11,6 +11,7 @@ use yii\widgets\MaskedInput;
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
 /* @var $form yii\widgets\ActiveForm */
+
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
@@ -36,14 +37,14 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model['person']['first_name'];
+$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model['person']['first_name'] . ' ' . $model['person']['last_name'];
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'], 'url' => ['view', 'id' => $model['person']['id']]];
+$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'] . ' ' . $model['person']['last_name'], 'url' => ['view', 'id' => $model['person']['id']]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component() ?>
 
-<div class="update-person-info-update">
+<div class="update-driver-info-update">
    <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">

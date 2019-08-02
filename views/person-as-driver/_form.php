@@ -17,6 +17,7 @@ use yii\widgets\MaskedInput;
 /* @var $modelDriverAttachment core\models\DriverAttachment */
 /* @var $motorBrand array */
 /* @var $motorType array */
+/* @var $attachmentType array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -355,7 +356,8 @@ $jscript = '
     $("#driverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Berkas') . '"
+        placeholder: "' . Yii::t('app', 'Berkas Saya') . '",
+        width: "resolve"
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {
