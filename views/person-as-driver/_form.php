@@ -356,8 +356,7 @@ $jscript = '
     $("#driverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Berkas Saya') . '",
-        width: "resolve"
+        placeholder: "' . Yii::t('app', 'Berkas') . '"
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {
