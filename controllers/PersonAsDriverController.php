@@ -77,34 +77,41 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $model = new PersonAsDriver();
         $modelPerson = new Person();
         $modelDriverAttachment = new DriverAttachment();
+        $modelDriverAttachment->setScenario(DriverAttachment::SCENARIO_CREATE);
 
-        if ($model->load(($post = \Yii::$app->request->post())) && $modelPerson->load($post) && $modelDriverAttachment->load($post)) {
+        if ($model->load(($post = \Yii::$app->request->post())) && $modelPerson->load($post)) {
 
             if (!empty($save)) {
 
-                $flag = false;
                 $transaction = \Yii::$app->db->beginTransaction();
+                $flag = false;
 
                 if (($flag = $modelPerson->save())) {
 
                     $model->person_id = $modelPerson->id;
-                    $model->save();
+
+                    $flag = $model->save();
                 }
 
                 if ($flag) {
 
-                    $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+                    $newModelDriverAttachment = new DriverAttachment();
 
-                    foreach ($images as $i => $image) {
+                    if ($newModelDriverAttachment->load($post)) {
 
-                        $newModelDriverAttachment = new DriverAttachment();
-                        $newModelDriverAttachment->person_as_driver_id = $modelPerson->id;
-                        $newModelDriverAttachment->file_name = $image;
-                        $newModelDriverAttachment->type = $modelDriverAttachment['type'][$i];
+                        $images = Tools::uploadFiles('/img/driver_attachment/', $newModelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
 
-                        if (!($flag = $newModelDriverAttachment->save())) {
+                        foreach ($images as $i => $image) {
 
-                            break;
+                            $newModelDriverAttachment = new DriverAttachment();
+                            $newModelDriverAttachment->person_as_driver_id = $modelPerson->id;
+                            $newModelDriverAttachment->file_name = $image;
+                            $newModelDriverAttachment->type = $post['DriverAttachment']['type'][$i];
+
+                            if (!($flag = $newModelDriverAttachment->save())) {
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -130,14 +137,10 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         }
 
         $dataJson = Settings::find()
-            ->andWhere(['setting_name' => [
-                'motor_brand',
-                'motor_type',
-                'attachment_type'
-            ]])
+            ->andWhere(['setting_name' => ['motor_brand', 'motor_type', 'attachment_type']])
             ->asArray()->all();
 
-        $dataArray =[];
+        $dataArray = [];
 
         foreach ($dataJson as $a) {
 
@@ -179,14 +182,14 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         if ($model->load(\Yii::$app->request->post()) && $modelPerson->load(\Yii::$app->request->post())) {
 
-            $flag = false;
             $transaction = \Yii::$app->db->beginTransaction();
+            $flag = false;
 
             if (!empty($save)) {
 
                 if (($flag = $model->save())) {
 
-                    $modelPerson->save();
+                    $flag = $modelPerson->save();
                 }
 
                 if ($flag) {
@@ -210,13 +213,10 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         }
 
         $dataJson = Settings::find()
-            ->andWhere(['setting_name' => [
-                'motor_brand',
-                'motor_type'
-            ]])
+            ->andWhere(['setting_name' => ['motor_brand', 'motor_type']])
             ->asArray()->all();
 
-        $dataArray =[];
+        $dataArray = [];
 
         foreach ($dataJson as $a) {
 
@@ -252,12 +252,10 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
             if (!empty($save)) {
 
-                $flag = true;
                 $transaction = \Yii::$app->db->beginTransaction();
+                $flag = true;
 
-                $newModelDriverAttachment = new DriverAttachment();
-
-                if (($flag = !empty($post['DriverAttachmentDelete']))) {
+                if (!empty($post['DriverAttachmentDelete'])) {
 
                     if(($flag = DriverAttachment::deleteAll(['id' => $post['DriverAttachmentDelete']]))) {
 
@@ -265,29 +263,35 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                     }
                 }
 
-                if (($flag = $newModelDriverAttachment->load($post))) {
+                if ($flag) {
 
-                    $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+                    $newModelDriverAttachment = new DriverAttachment();
 
-                    foreach ($images as $image) {
+                    if ($newModelDriverAttachment->load($post)) {
 
-                        $newModelDriverAttachment = new DriverAttachment();
-                        $newModelDriverAttachment->person_as_driver_id = $model->person_id;
-                        $newModelDriverAttachment->file_name = $image;
+                        $images = Tools::uploadFiles('/img/driver_attachment/', $newModelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
 
-                        if (!($flag = $newModelDriverAttachment->save())) {
+                        foreach ($images as $i => $image) {
 
-                            break;
-                        } else {
+                            $newModelDriverAttachment = new DriverAttachment();
+                            $newModelDriverAttachment->person_as_driver_id = $model->person_id;
+                            $newModelDriverAttachment->file_name = $image;
+                            $newModelDriverAttachment->type = !empty($post['DriverAttachment']['type'][$i]) ? $post['DriverAttachment']['type'][$i] : null;
 
-                            array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                            if (!($flag = $newModelDriverAttachment->save())) {
+
+                                break;
+                            } else {
+
+                                array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                            }
                         }
                     }
                 }
 
                 if ($flag) {
 
-                    foreach ($model['driverAttachments'] as $existModelDriverAttachment) {
+                    foreach ($model->driverAttachments as $existModelDriverAttachment) {
 
                         $existModelDriverAttachment->type = $post['type'][$existModelDriverAttachment->id];
 
@@ -341,12 +345,9 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         }
 
         $dataJson = Settings::find()
-            ->andWhere(['setting_name' => [
-                'attachment_type'
-            ]])
-            ->asArray()->all();
+            ->andWhere(['setting_name' => ['attachment_type']])->asArray()->all();
 
-        $dataArray =[];
+        $dataArray = [];
 
         foreach ($dataJson as $a) {
 
@@ -357,8 +358,8 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         return $this->render('update_attachment', [
             'model' => $model,
-            'dataDriverAttachment' => $dataDriverAttachment,
             'modelDriverAttachment' => $modelDriverAttachment,
+            'dataDriverAttachment' => $dataDriverAttachment,
             'attachmentType' => $attachmentType,
         ]);
     }
