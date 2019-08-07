@@ -2,7 +2,6 @@
 
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
-use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use yii\helpers\Html;
 
@@ -34,18 +33,11 @@ if ($status !== null) {
 }
 
 $this->title = \Yii::t('app', 'Person As Driver');
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(true) ?>
+echo $ajaxRequest->component(true) ?>
 
 <div class="person-as-driver-index">
-
-    <?php
-    $modalDialog = new ModalDialog([
-        'clickedComponent' => 'a#delete',
-        'modelAttributeId' => 'model-id',
-        'modelAttributeName' => 'model-name',
-    ]); ?>
 
     <?= GridView::widget([
         'id' => 'grid-view-person-as-driver',
@@ -97,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             </div>
                         </div>
                         <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
+                            <div class="btn-group btn-group-lg" role="group" style="width: 50px">
                                 {view}
                             </div>
                         </div>
@@ -131,12 +123,8 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
-
 <?php
-$jscript = ''
-    . $modalDialog->getScript() . '
-
+$jscript = '
     $("div.container.body").off("click");
     $("div.container.body").on("click", function(event) {
 

@@ -12,6 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $modelDriverAttachment core\models\DriverAttachment */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $dataDriverAttachment array */
+/* @var $attachmentType array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -91,7 +92,7 @@ echo $ajaxRequest->component(); ?>
                                                         </div>
                                                         <div class="mt-10">
                                                     		<div class="row">
-                                                				<div class="col-xs-7">
+                                                				<div class="col-xs-12">
 
                                                         			<?= Html::dropDownList('type['. $driverAttachment['id'] .']', !empty($driverAttachment['type']) ? $driverAttachment['type'] : null, $attachmentType, [
                                                         			    'prompt' => '',
@@ -123,10 +124,10 @@ echo $ajaxRequest->component(); ?>
 
 							<div class="form-group">
 								<div class="row mb-20">
-            						<div class="col-lg-2">
+            						<div class="col-xs-12 col-sm-2">
             							<label><?= Yii::t('app', 'Attachment Type') ?></label>
             						</div>
-            						<div class="col-lg-8">
+            						<div class="col-xs-12 col-sm-10">
 
 										<?= $form->field($modelDriverAttachment, 'type')
                                             ->dropDownList($attachmentType, [
@@ -137,6 +138,7 @@ echo $ajaxRequest->component(); ?>
 
             						</div>
             					</div>
+
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-2">
                                         <?= Html::label(\Yii::t('app', 'Driver Attachment')) ?>

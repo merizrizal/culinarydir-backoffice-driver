@@ -32,9 +32,9 @@ if ($status !== null) {
 
 $this->title = $model['person']['first_name'] . " " . $model['person']['last_name'];
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component() ?>
 
 <div class="person-as-driver-view">
     <div class="row">
@@ -153,7 +153,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     </div>
 
                     <div class="row mb-20">
-                    	<div class="col-xs-6 col-sm-3">
+                    	<div class="col-xs-8 col-sm-3">
 
                             <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
 
@@ -171,9 +171,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
                     <hr>
 
-                    <div class="row">
+					<div class="row">
                         <div class="col-xs-12">
-                            <?= Html::label(\Yii::t('app', 'Driver Attachment')); ?>
+                            <h4><strong><?= \Yii::t('app', 'Driver Attachment') ?></strong></h4>
                         </div>
                     </div>
 

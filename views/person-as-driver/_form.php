@@ -252,7 +252,7 @@ $this->registerJs($jscript); ?>
 								</div>
 
         						<div class="row">
-            						<div class="col-xs-12 col-sm-4">
+            						<div class="col-xs-12 col-sm-5">
 
         								<?= Html::checkbox('other_driver', false, [
                                             'label' => Yii::t('app', 'Other Driver ?'),
@@ -262,7 +262,7 @@ $this->registerJs($jscript); ?>
                                     	echo $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
 
             						</div>
-            						<div class="col-sm-offset-1 col-xs-12 col-sm-4">
+            						<div class="col-sm-offset-1 col-xs-12 col-sm-5">
 
             							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
             							    'label' => Yii::t('app', 'Is Criteria Passed')

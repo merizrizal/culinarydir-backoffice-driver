@@ -130,7 +130,7 @@ echo $ajaxRequest->component() ?>
 						</div>
 
 						<div class="row">
-							<div class="col-xs-12 col-sm-3">
+							<div class="col-xs-12 col-sm-2">
 
 								<?= $form->field($model, 'motor_brand')->dropDownList(
                                     $motorBrand,
@@ -140,7 +140,7 @@ echo $ajaxRequest->component() ?>
                                     ]) ?>
 
 							</div>
-							<div class="col-xs-12 col-sm-3">
+							<div class="col-xs-12 col-sm-2">
 
 								<?= $form->field($model, 'motor_type')->dropDownList(
                                     $motorType,
@@ -150,10 +150,10 @@ echo $ajaxRequest->component() ?>
                                     ]) ?>
 
 							</div>
-							<div class="col-xs-12 col-sm-3">
+							<div class="col-xs-12 col-sm-4">
 								<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Number Plate')]) ?>
 							</div>
-							<div class="col-xs-12 col-sm-3">
+							<div class="col-xs-12 col-sm-4">
 
 								<?= $form->field($model, 'stnk_expired', [
                                     'parts' => [
@@ -190,7 +190,7 @@ echo $ajaxRequest->component() ?>
 						</div>
 
 						<div class="row">
-    						<div class="col-xs-12 col-sm-3">
+    						<div class="col-xs-12 col-sm-5">
 
 								<?= Html::checkbox('other_driver', false, [
                                     'label' => \Yii::t('app', 'Other Driver ?'),
@@ -200,7 +200,7 @@ echo $ajaxRequest->component() ?>
                             	<?= $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
 
     						</div>
-    						<div class="col-sm-offset-1 col-xs-12 col-sm-3">
+    						<div class="col-sm-offset-1 col-xs-12 col-sm-5">
 
     							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
     							    'label' => \Yii::t('app', 'Is Criteria Passed')
