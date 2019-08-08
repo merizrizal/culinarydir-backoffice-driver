@@ -316,15 +316,15 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                 if ($flag) {
 
                     \Yii::$app->session->setFlash('status', 'success');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Success'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                     $transaction->commit();
                 } else {
 
                     \Yii::$app->session->setFlash('status', 'danger');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Create Data Is Fail'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is fail. Data fail to save'));
+                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
 
                     $transaction->rollBack();
                 }
