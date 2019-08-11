@@ -22,7 +22,6 @@ use yii\widgets\MaskedInput;
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
-
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'PersonAsDriver',
 ]);
@@ -43,9 +42,9 @@ if ($status !== null) {
 
     $notif->theScript();
     echo $notif->renderDialog();
-} ?>
+} 
 
-<?= $ajaxRequest->component();
+echo $ajaxRequest->component();
 
 $jscript = '
     $("#wizard-create-data-driver").steps({
@@ -195,21 +194,21 @@ $this->registerJs($jscript); ?>
 									<div class="col-xs-12 col-sm-2">
 
 										<?= $form->field($model, 'motor_brand')->dropDownList(
-                                            $motorBrand,
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                                $motorBrand,
+                                                [
+                                                    'prompt' => '',
+                                                    'style' => 'width: 100%'
+                                                ]) ?>
 
 									</div>
 									<div class="col-xs-12 col-sm-2">
 
 										<?= $form->field($model, 'motor_type')->dropDownList(
-                                            $motorType,
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                                $motorType,
+                                                [
+                                                    'prompt' => '',
+                                                    'style' => 'width: 100%'
+                                                ]) ?>
 
 									</div>
 									<div class="col-xs-12 col-sm-4">

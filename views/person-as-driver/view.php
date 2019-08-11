@@ -139,15 +139,7 @@ echo $ajaxRequest->component() ?>
                         <div class="col-xs-6 col-sm-3">
 
                             <?= Html::label(\Yii::t('app', 'Other Driver ?')) ?><br>
-
-                            <?php
-                            if (!empty($model['other_driver'])) {
-
-                                echo $model['other_driver'];
-                            } else {
-
-                                echo 'Tidak Ada';
-                            } ?>
+                            <?= !empty($model['other_driver']) ? $model['other_driver'] : 'Tidak Ada'; ?>
 
                         </div>
                     </div>
@@ -156,15 +148,7 @@ echo $ajaxRequest->component() ?>
                     	<div class="col-xs-8 col-sm-3">
 
                             <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
-
-                            <?php
-                            if ($model['is_criteria_passed'] == true) {
-
-                                echo 'Lulus Pengecekan';
-                            } else {
-
-                                echo 'Belum lulus Pengecekan';
-                            } ?>
+                            <?= $model['is_criteria_passed'] ? 'Lulus Pengecekan' : 'Belum lulus Pengecekan'; ?>
 
                         </div>
                     </div>
@@ -214,7 +198,6 @@ echo $ajaxRequest->component() ?>
 </div>
 
 <?php
-
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/magnific-popup.css', ['depends' => 'yii\web\YiiAsset']);
 
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/jquery.magnific-popup.js', ['depends' => 'yii\web\YiiAsset']);
@@ -234,4 +217,4 @@ $jscript = '
     });
 ';
 
-$this->registerJs($jscript);?>
+$this->registerJs($jscript); ?>

@@ -11,6 +11,8 @@ use yii\widgets\MaskedInput;
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $motorBrand array */
+/* @var $motorType array */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -62,165 +64,165 @@ echo $ajaxRequest->component() ?>
                         ]
                     ]); ?>
 
-                    <div class="x_content">
-                    	<div class="row">
-							<div class="col-xs-12 col-sm-6">
-								<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'First Name')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-6">
-								<?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Last Name')]) ?>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Email')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-
-								<?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
-                                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                                    'options' => [
-                                        'placeholder' => \Yii::t('app', 'Phone'),
-                                        'class' => 'form-control'
-                                    ]
-                                ]) ?>
-
-							</div>
-							<div class="col-xs-12 col-sm-4">
-
-								<?= $form->field($model, 'date_birth', [
-                                    'parts' => [
-                                        '{inputClass}' => 'col-lg-4'
-                                    ],
-                                ])->widget(DateTimePicker::className(), [
-                                    'pluginOptions' => \Yii::$app->params['datepickerOptions'],
-                                    'options' => [
-                                        'placeholder' => \Yii::t('app', 'Tanggal Lahir')
-                                    ],
-                                ]) ?>
-
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor KTP')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor SIM')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-
-								<?= $form->field($model, 'district_id')->dropDownList(
-                                    ArrayHelper::map(
-                                        District::find()->orderBy('name')->asArray()->all(),
-                                        'id',
-                                        function($data) {
-
-                                            return $data['name'];
-                                        }
-                                    ),
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
-
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-2">
-
-								<?= $form->field($model, 'motor_brand')->dropDownList(
-                                    $motorBrand,
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
-
-							</div>
-							<div class="col-xs-12 col-sm-2">
-
-								<?= $form->field($model, 'motor_type')->dropDownList(
-                                    $motorType,
-                                    [
-                                        'prompt' => '',
-                                        'style' => 'width: 100%'
-                                    ]) ?>
-
-							</div>
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Number Plate')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-
-								<?= $form->field($model, 'stnk_expired', [
-                                    'parts' => [
-                                        '{inputClass}' => 'col-lg-4'
-                                    ],
-                                ])->widget(DateTimePicker::className(), [
-                                    'pluginOptions' => \Yii::$app->params['datepickerOptions'],
-                                    'options' => [
-                                        'placeholder' => \Yii::t('app', 'Stnk Expired')
-                                    ],
-                                ]) ?>
-
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Emergency Contact Name')]) ?>
-							</div>
-							<div class="col-xs-12 col-sm-4">
-
-								<?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
-                                    'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
-                                    'options' => [
-                                        'placeholder' => \Yii::t('app', 'Emergency Contact Phone'),
-                                        'class' => 'form-control'
-                                    ]
-                                ]) ?>
-
-							</div>
-							<div class="col-xs-12 col-sm-4">
-								<?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => \Yii::t('app', 'Emergency Contact Address')]) ?>
-							</div>
-						</div>
-
-						<div class="row">
-    						<div class="col-xs-12 col-sm-5">
-
-								<?= Html::checkbox('other_driver', false, [
-                                    'label' => \Yii::t('app', 'Other Driver ?'),
-                                    'class' => 'checkbox-other-driver'
-                                ]); ?>
-
-                            	<?= $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
-
-    						</div>
-    						<div class="col-sm-offset-1 col-xs-12 col-sm-5">
-
-    							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
-    							    'label' => \Yii::t('app', 'Is Criteria Passed')
-    							]); ?>
-
-    						</div>
-						</div>
-                        <div class="form-group">
+                        <div class="x_content">
                             <div class="row">
-                                <div class="col-lg-6 mt-30">
+                                <div class="col-xs-12 col-sm-6">
+                                    <?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'First Name')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Last Name')]) ?>
+                                </div>
+                            </div>
 
-                                    <?php
-                                    $icon = '<i class="fa fa-save"></i> ';
-                                    echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view', 'id' => $model['person_id']], ['class' => 'btn btn-default']); ?>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Email')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+
+                                    <?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
+                                        'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                        'options' => [
+                                            'placeholder' => \Yii::t('app', 'Phone'),
+                                            'class' => 'form-control'
+                                        ]
+                                    ]) ?>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+
+                                    <?= $form->field($model, 'date_birth', [
+                                        'parts' => [
+                                            '{inputClass}' => 'col-lg-4'
+                                        ],
+                                    ])->widget(DateTimePicker::className(), [
+                                        'pluginOptions' => \Yii::$app->params['datepickerOptions'],
+                                        'options' => [
+                                            'placeholder' => \Yii::t('app', 'Tanggal Lahir')
+                                        ],
+                                    ]) ?>
 
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor KTP')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($model, 'no_sim')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor SIM')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+
+                                    <?= $form->field($model, 'district_id')->dropDownList(
+                                        ArrayHelper::map(
+                                            District::find()->orderBy('name')->asArray()->all(),
+                                            'id',
+                                            function($data) {
+
+                                                return $data['name'];
+                                            }
+                                        ),
+                                        [
+                                            'prompt' => '',
+                                            'style' => 'width: 100%'
+                                        ]) ?>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-2">
+
+                                    <?= $form->field($model, 'motor_brand')->dropDownList(
+                                            $motorBrand,
+                                            [
+                                                'prompt' => '',
+                                                'style' => 'width: 100%'
+                                            ]) ?>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-2">
+
+                                    <?= $form->field($model, 'motor_type')->dropDownList(
+                                            $motorType,
+                                            [
+                                                'prompt' => '',
+                                                'style' => 'width: 100%'
+                                            ]) ?>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Number Plate')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+
+                                    <?= $form->field($model, 'stnk_expired', [
+                                        'parts' => [
+                                            '{inputClass}' => 'col-lg-4'
+                                        ],
+                                    ])->widget(DateTimePicker::className(), [
+                                        'pluginOptions' => \Yii::$app->params['datepickerOptions'],
+                                        'options' => [
+                                            'placeholder' => \Yii::t('app', 'Stnk Expired')
+                                        ],
+                                    ]) ?>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Emergency Contact Name')]) ?>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+
+                                    <?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
+                                        'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
+                                        'options' => [
+                                            'placeholder' => \Yii::t('app', 'Emergency Contact Phone'),
+                                            'class' => 'form-control'
+                                        ]
+                                    ]) ?>
+
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => \Yii::t('app', 'Emergency Contact Address')]) ?>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-5">
+
+                                    <?= Html::checkbox('other_driver', false, [
+                                        'label' => \Yii::t('app', 'Other Driver ?'),
+                                        'class' => 'checkbox-other-driver'
+                                    ]); ?>
+
+                                    <?= $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+
+                                </div>
+                                <div class="col-sm-offset-1 col-xs-12 col-sm-5">
+
+                                    <?= $form->field($model, 'is_criteria_passed')->checkbox([false,
+                                        'label' => \Yii::t('app', 'Is Criteria Passed')
+                                    ]); ?>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-6 mt-30">
+
+                                        <?php
+                                        $icon = '<i class="fa fa-save"></i> ';
+                                        echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view', 'id' => $model['person_id']], ['class' => 'btn btn-default']); ?>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
                     <?php
                     ActiveForm::end(); ?>

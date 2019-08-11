@@ -129,12 +129,13 @@ echo $ajaxRequest->component(); ?>
             						</div>
             						<div class="col-xs-12 col-sm-10">
 
-										<?= $form->field($modelDriverAttachment, 'type')
-                                            ->dropDownList($attachmentType, [
-                                                'multiple' => 'multiple',
-                                                'prompt' => '',
-                                                'style' => 'width: 100%',
-                                            ]) ?>
+										<?= $form->field($modelDriverAttachment, 'type')->dropDownList(
+                                                $attachmentType, 
+                                                [
+                                                    'multiple' => 'multiple',
+                                                    'prompt' => '',
+                                                    'style' => 'width: 100%',
+                                                ]) ?>
 
             						</div>
             					</div>
@@ -182,7 +183,6 @@ echo $ajaxRequest->component(); ?>
 </div>
 
 <?php
-
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/magnific-popup.css', ['depends' => 'yii\web\YiiAsset']);
 
