@@ -13,6 +13,8 @@ use yii\widgets\MaskedInput;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $motorBrand array */
 /* @var $motorType array */
+/* @var $modelPerson core\models\Person */
+
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -39,9 +41,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model['person']['first_name'] . ' ' . $model['person']['last_name'];
+$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->person->first_name . ' ' . $model->person->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'] . ' ' . $model['person']['last_name'], 'url' => ['view', 'id' => $model['person']['id']]];
+$this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component() ?>
@@ -134,22 +136,18 @@ echo $ajaxRequest->component() ?>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-2">
 
-                                    <?= $form->field($model, 'motor_brand')->dropDownList(
-                                            $motorBrand,
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                    <?= $form->field($model, 'motor_brand')->dropDownList($motorBrand, [
+                                        'prompt' => '',
+                                        'style' => 'width: 100%'
+                                    ]) ?>
 
                                 </div>
                                 <div class="col-xs-12 col-sm-2">
 
-                                    <?= $form->field($model, 'motor_type')->dropDownList(
-                                            $motorType,
-                                            [
-                                                'prompt' => '',
-                                                'style' => 'width: 100%'
-                                            ]) ?>
+                                    <?= $form->field($model, 'motor_type')->dropDownList($motorType, [
+                                        'prompt' => '',
+                                        'style' => 'width: 100%'
+                                    ]) ?>
 
                                 </div>
                                 <div class="col-xs-12 col-sm-4">
@@ -194,12 +192,13 @@ echo $ajaxRequest->component() ?>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-5">
 
-                                    <?= Html::checkbox('other_driver', false, [
+                                    <?php
+                                    echo Html::checkbox('other_driver', false, [
                                         'label' => \Yii::t('app', 'Other Driver ?'),
                                         'class' => 'checkbox-other-driver'
-                                    ]); ?>
+                                    ]);
 
-                                    <?= $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+                                    echo $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
 
                                 </div>
                                 <div class="col-sm-offset-1 col-xs-12 col-sm-5">

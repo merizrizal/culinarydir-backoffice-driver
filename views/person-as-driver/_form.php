@@ -42,7 +42,7 @@ if ($status !== null) {
 
     $notif->theScript();
     echo $notif->renderDialog();
-} 
+}
 
 echo $ajaxRequest->component();
 
@@ -122,27 +122,27 @@ $this->registerJs($jscript); ?>
                     ]); ?>
 
                         <div id="wizard-create-data-driver">
-	                    	<h1><?= Yii::t('app', 'Identitas Driver') ?></h1>
+	                    	<h1><?= \Yii::t('app', 'Identitas Driver') ?></h1>
 							<div>
     							<div class="row">
     								<div class="col-xs-12 col-sm-6">
-    									<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'First Name')]) ?>
+    									<?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'First Name')]) ?>
     								</div>
     								<div class="col-xs-12 col-sm-6">
-    									<?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Last Name')]) ?>
+    									<?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Last Name')]) ?>
     								</div>
     							</div>
 
 								<div class="row">
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Email')]) ?>
+										<?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Email')]) ?>
 									</div>
 									<div class="col-xs-12 col-sm-4">
 
 										<?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
                                             'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                             'options' => [
-                                                'placeholder' => Yii::t('app', 'Phone'),
+                                                'placeholder' => \Yii::t('app', 'Phone'),
                                                 'class' => 'form-control'
                                             ]
                                         ]) ?>
@@ -155,9 +155,9 @@ $this->registerJs($jscript); ?>
                                                 '{inputClass}' => 'col-lg-4'
                                             ],
                                         ])->widget(DateTimePicker::className(), [
-                                            'pluginOptions' => Yii::$app->params['datepickerOptions'],
+                                            'pluginOptions' => \Yii::$app->params['datepickerOptions'],
                                             'options' => [
-                                                'placeholder' => Yii::t('app', 'Tanggal Lahir')
+                                                'placeholder' => \Yii::t('app', 'Tanggal Lahir')
                                             ],
                                         ]) ?>
 
@@ -166,10 +166,10 @@ $this->registerJs($jscript); ?>
 
 								<div class="row">
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Nomor KTP')]) ?>
+										<?= $form->field($model, 'no_ktp')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor KTP')]) ?>
 									</div>
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Nomor SIM')]) ?>
+										<?= $form->field($model, 'no_sim')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Nomor SIM')]) ?>
 									</div>
 									<div class="col-xs-12 col-sm-4">
 
@@ -193,26 +193,22 @@ $this->registerJs($jscript); ?>
 								<div class="row">
 									<div class="col-xs-12 col-sm-2">
 
-										<?= $form->field($model, 'motor_brand')->dropDownList(
-                                                $motorBrand,
-                                                [
-                                                    'prompt' => '',
-                                                    'style' => 'width: 100%'
-                                                ]) ?>
+										<?= $form->field($model, 'motor_brand')->dropDownList($motorBrand, [
+										    'prompt' => '',
+										    'style' => 'width: 100%'
+										]) ?>
 
 									</div>
 									<div class="col-xs-12 col-sm-2">
 
-										<?= $form->field($model, 'motor_type')->dropDownList(
-                                                $motorType,
-                                                [
-                                                    'prompt' => '',
-                                                    'style' => 'width: 100%'
-                                                ]) ?>
+										<?= $form->field($model, 'motor_type')->dropDownList($motorType, [
+										    'prompt' => '',
+										    'style' => 'width: 100%'
+										]) ?>
 
 									</div>
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Number Plate')]) ?>
+										<?= $form->field($model, 'number_plate')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Number Plate')]) ?>
 									</div>
 									<div class="col-xs-12 col-sm-4">
 
@@ -221,9 +217,9 @@ $this->registerJs($jscript); ?>
                                                 '{inputClass}' => 'col-lg-4'
                                             ],
                                         ])->widget(DateTimePicker::className(), [
-                                            'pluginOptions' => Yii::$app->params['datepickerOptions'],
+                                            'pluginOptions' => \Yii::$app->params['datepickerOptions'],
                                             'options' => [
-                                                'placeholder' => Yii::t('app', 'Stnk Expired')
+                                                'placeholder' => \Yii::t('app', 'Stnk Expired')
                                             ],
                                         ]) ?>
 
@@ -232,29 +228,30 @@ $this->registerJs($jscript); ?>
 
 								<div class="row">
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Emergency Contact Name')]) ?>
+										<?= $form->field($model, 'emergency_contact_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Emergency Contact Name')]) ?>
 									</div>
 									<div class="col-xs-12 col-sm-4">
 
 										<?= $form->field($model, 'emergency_contact_phone')->widget(MaskedInput::className(), [
                                             'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                             'options' => [
-                                                'placeholder' => Yii::t('app', 'Emergency Contact Phone'),
+                                                'placeholder' => \Yii::t('app', 'Emergency Contact Phone'),
                                                 'class' => 'form-control'
                                             ]
                                         ]) ?>
 
 									</div>
 									<div class="col-xs-12 col-sm-4">
-										<?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Emergency Contact Address')]) ?>
+										<?= $form->field($model, 'emergency_contact_address')->textarea(['rows' => 3, 'placeholder' => \Yii::t('app', 'Emergency Contact Address')]) ?>
 									</div>
 								</div>
 
         						<div class="row">
             						<div class="col-xs-12 col-sm-5">
 
-        								<?= Html::checkbox('other_driver', false, [
-                                            'label' => Yii::t('app', 'Other Driver ?'),
+        								<?php
+        								echo Html::checkbox('other_driver', false, [
+                                            'label' => \Yii::t('app', 'Other Driver ?'),
                                             'class' => 'checkbox-other-driver'
                                         ]);
 
@@ -264,33 +261,32 @@ $this->registerJs($jscript); ?>
             						<div class="col-sm-offset-1 col-xs-12 col-sm-5">
 
             							<?= $form->field($model, 'is_criteria_passed')->checkbox([false,
-            							    'label' => Yii::t('app', 'Is Criteria Passed')
+            							    'label' => \Yii::t('app', 'Is Criteria Passed')
             							]); ?>
 
             						</div>
         						</div>
 							</div>
 
-        					<h1><?= Yii::t('app', 'Driver Attachment') ?></h1>
+        					<h1><?= \Yii::t('app', 'Driver Attachment') ?></h1>
         					<div>
             					<div class="row mb-20">
             						<div class="col-lg-2">
-            							<label><?= Yii::t('app', 'Attachment Type') ?></label>
+            							<label><?= \Yii::t('app', 'Attachment Type') ?></label>
             						</div>
             						<div class="col-lg-8">
 
-										<?= $form->field($modelDriverAttachment, 'type')
-                                            ->dropDownList($attachmentType, [
-                                                'multiple' => 'multiple',
-                                                'prompt' => '',
-                                                'style' => 'width: 100%',
-                                            ]) ?>
+										<?= $form->field($modelDriverAttachment, 'type')->dropDownList($attachmentType, [
+                                            'multiple' => 'multiple',
+                                            'prompt' => '',
+                                            'style' => 'width: 100%',
+                                        ]) ?>
 
             						</div>
             					</div>
             					<div class="row">
             						<div class="col-lg-2">
-            							<?= Html::label(Yii::t('app', 'Photo')) ?>
+            							<?= Html::label(\Yii::t('app', 'Photo')) ?>
             						</div>
             						<div class="col-lg-8">
 
@@ -321,8 +317,8 @@ $this->registerJs($jscript); ?>
 </div>
 
 <?php
-$this->registerCssFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/demo/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
-$this->registerCssFile(Yii::$app->urlManager->baseUrl . '/media/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
+$this->registerCssFile(\Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/demo/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
+$this->registerCssFile(\Yii::$app->urlManager->baseUrl . '/media/css/jquery.steps.css', ['depends' => 'yii\web\YiiAsset']);
 $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
 
 $cssscript = '
@@ -333,29 +329,29 @@ $cssscript = '
 
 $this->registerCss($cssscript);
 
-$this->registerJsFile(Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/build/jquery.steps.js', ['depends' => 'yii\web\YiiAsset']);
+$this->registerJsFile(\Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-steps/build/jquery.steps.js', ['depends' => 'yii\web\YiiAsset']);
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
     $("#personasdriver-district_id").select2({
         theme: "krajee",
-        placeholder: "' . Yii::t('app', 'District') . '"
+        placeholder: "' . \Yii::t('app', 'District') . '"
     });
 
     $("#personasdriver-motor_brand").select2({
         theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Merek Motor') . '"
+        placeholder: "' . \Yii::t('app', 'Merek Motor') . '"
     });
 
     $("#personasdriver-motor_type").select2({
         theme: "krajee",
-        placeholder: "' . Yii::t('app', 'Tipe Motor') . '"
+        placeholder: "' . \Yii::t('app', 'Tipe Motor') . '"
     });
 
     $("#driverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Berkas') . '"
+        placeholder: "' . \Yii::t('app', 'Berkas') . '"
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {

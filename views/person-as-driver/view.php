@@ -30,7 +30,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model['person']['first_name'] . " " . $model['person']['last_name'];
+$this->title = $model->person->first_name . " " . $model->person->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 

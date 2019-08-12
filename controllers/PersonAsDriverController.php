@@ -27,7 +27,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+
                     ],
                 ],
             ]);
@@ -58,7 +58,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                 'driverAttachments'
             ])
             ->andWhere(['person_as_driver.person_id' => $id])
-            ->asArray()->one();
+            ->one();
 
         return $this->render('view', [
             'model' => $model,
@@ -349,7 +349,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         }
 
         $dataJson = Settings::find()
-            ->andWhere(['setting_name' => ['attachment_type']])
+            ->andWhere(['setting_name' => 'attachment_type'])
             ->asArray()->one();
 
         $attachmentType = json_decode($dataJson['setting_value'], true);

@@ -39,9 +39,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model['person']['first_name'] . ' ' . $model['person']['last_name'];
+$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model->person->first_name . ' ' . $model->person->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model['person']['first_name'] . ' ' . $model['person']['last_name'], 'url' => ['view', 'id' => $model['person']['id']]];
+$this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
@@ -55,7 +55,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'driver-attachment-form',
-                        'action' => ['update-driver-attachment', 'id' => $model['person_id']],
+                        'action' => ['update-driver-attachment', 'id' => $model->person_id],
                         'options' => [
 
                         ],
@@ -129,13 +129,11 @@ echo $ajaxRequest->component(); ?>
             						</div>
             						<div class="col-xs-12 col-sm-10">
 
-										<?= $form->field($modelDriverAttachment, 'type')->dropDownList(
-                                                $attachmentType, 
-                                                [
-                                                    'multiple' => 'multiple',
-                                                    'prompt' => '',
-                                                    'style' => 'width: 100%',
-                                                ]) ?>
+										<?= $form->field($modelDriverAttachment, 'type')->dropDownList($attachmentType, [
+                                            'multiple' => 'multiple',
+                                            'prompt' => '',
+                                            'style' => 'width: 100%',
+                                        ]) ?>
 
             						</div>
             					</div>
@@ -199,7 +197,7 @@ $jscript = '
     $("#driverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
-        placeholder: "' . Yii::t('app', 'Attachment Type') . '"
+        placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
     });
 
     $(".thumbnail").magnificPopup({
