@@ -1,4 +1,5 @@
 <?php
+
 use core\models\District;
 use kartik\datetime\DateTimePicker;
 use sycomponent\AjaxRequest;
@@ -10,11 +11,10 @@ use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\PersonAsDriver */
+/* @var $modelPerson core\models\Person */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $motorBrand array */
 /* @var $motorType array */
-/* @var $modelPerson core\models\Person */
-
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'),
 $this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
-echo $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="update-driver-info-update">
    <div class="row">
