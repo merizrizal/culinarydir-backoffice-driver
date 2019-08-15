@@ -105,9 +105,7 @@ echo $ajaxRequest->component(); ?>
 
                                                     		<div class="row mt-10">
                                                 				<div class="col-xs-12">
-
                                                             		<?= Html::checkbox('DriverAttachmentDelete[]', false, ['label' => 'Delete', 'value' => $driverAttachment['id']]) ?>
-
                                                             	</div>
                                                         	</div>
                                                         </div>
