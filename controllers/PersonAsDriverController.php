@@ -138,15 +138,15 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             }
         }
 
-        $dataJson = Settings::find()
+        $modelSettings = Settings::find()
             ->andWhere(['setting_name' => ['motor_brand', 'motor_type', 'attachment_type']])
             ->asArray()->all();
 
         $dataArray = [];
 
-        foreach ($dataJson as $valuesJson) {
+        foreach ($modelSettings as $dataSettings) {
 
-            $dataArray[$valuesJson['setting_name']] = $valuesJson['setting_value'];
+            $dataArray[$dataSettings['setting_name']] = $dataSettings['setting_value'];
         }
 
         $motorBrand = json_decode($dataArray['motor_brand'], true);
@@ -171,8 +171,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
      */
     public function actionUpdateDriverInfo($id, $save = null)
     {
-        $render = 'update_driver_info';
-
         $model = PersonAsDriver::find()
             ->joinWith(['person'])
             ->andWhere(['person_as_driver.person_id' => $id])
@@ -201,8 +199,6 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                         \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
 
                         $transaction->commit();
-
-                        $render = 'view';
                     } else {
 
                         \Yii::$app->session->setFlash('status', 'danger');
@@ -215,21 +211,21 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             }
         }
 
-        $dataJson = Settings::find()
+        $modelSettings = Settings::find()
             ->andWhere(['setting_name' => ['motor_brand', 'motor_type']])
             ->asArray()->all();
 
         $dataArray = [];
 
-        foreach ($dataJson as $valuesJson) {
+        foreach ($modelSettings as $dataSettings) {
 
-            $dataArray[$valuesJson['setting_name']] = $valuesJson['setting_value'];
+            $dataArray[$dataSettings['setting_name']] = $dataSettings['setting_value'];
         }
 
         $motorBrand = json_decode($dataArray['motor_brand'], true);
         $motorType = json_decode($dataArray['motor_type'], true);
 
-        return $this->render($render, [
+        return $this->render('update_driver_info', [
             'model' => $model,
             'modelPerson' => $modelPerson,
             'motorBrand' => $motorBrand,
@@ -354,13 +350,13 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
             $dataDriverAttachment = ArrayHelper::merge($dataDriverAttachment, $newDataDriverAttachment);
         }
 
-        $dataJson = Settings::find()
+        $modelSettings = Settings::find()
             ->andWhere(['setting_name' => 'attachment_type'])
             ->asArray()->one();
 
-        $attachmentType = json_decode($dataJson['setting_value'], true);
+        $attachmentType = json_decode($modelSettings['setting_value'], true);
 
-        return $this->render('update_attachment', [
+        return $this->render('update_driver_attachment', [
             'model' => $model,
             'modelDriverAttachment' => $modelDriverAttachment,
             'dataDriverAttachment' => $dataDriverAttachment,

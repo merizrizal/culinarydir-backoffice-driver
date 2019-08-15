@@ -249,13 +249,12 @@ $this->registerJs($jscript); ?>
         						<div class="row">
             						<div class="col-xs-12 col-sm-5">
 
-        								<?php
-        								echo Html::checkbox('other_driver', false, [
+        								<?= Html::checkbox('other_driver', false, [
                                             'label' => \Yii::t('app', 'Other Driver ?'),
                                             'class' => 'checkbox-other-driver'
-                                        ]);
+                                        ]); ?>
 
-                                    	echo $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
+                                    	<?= $form->field($model, 'other_driver')->textInput(['maxlength' => true, 'disabled' => 'disabled'])->label(false) ?>
 
             						</div>
             						<div class="col-sm-offset-1 col-xs-12 col-sm-5">
