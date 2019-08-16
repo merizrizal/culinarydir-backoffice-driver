@@ -81,7 +81,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         if (($post = \Yii::$app->request->post())) {
 
-            if ($model->load($post) && $modelPerson->load($post)) {
+            if ($model->load($post) && $modelPerson->load($post) && $modelDriverAttachment->load($post)) {
 
                 if (!empty($save)) {
 
