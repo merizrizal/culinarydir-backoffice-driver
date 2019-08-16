@@ -81,7 +81,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         if (($post = \Yii::$app->request->post())) {
 
-            if ($model->load($post) && $modelPerson->load($post) && $modelDriverAttachment->load($post)) {
+            if ($model->load($post) && $modelPerson->load($post)) {
 
                 if (!empty($save)) {
 
@@ -112,7 +112,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                                 }
                             } else {
 
-                                $modelDriverAttachment->addError('type', 'Jumlah Jenis Berkas dan jumlah Foto tidak sesuai.');
+                                $modelDriverAttachment->addError('type', \Yii::t('app', 'Number of files and number of photos does not match.'));
                             }
                         }
                     }
@@ -280,7 +280,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                         }
                     } else {
 
-                        $modelDriverAttachment->addError('type', 'Jumlah Jenis Berkas dan jumlah Foto tidak sesuai.');
+                        $modelDriverAttachment->addError('type', \Yii::t('app', 'Number of files and number of photos does not match.'));
                     }
                 }
 
