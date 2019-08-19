@@ -166,7 +166,6 @@ echo $ajaxRequest->component(); ?>
 
                                 </div>
                             </div>
-
                         </div>
 
                     <?php
@@ -220,7 +219,6 @@ $jscript = '
             driverAttachmentType.removeClass("has-error");
             $(".help-block").remove();
         }
-
     });
 ';
 
