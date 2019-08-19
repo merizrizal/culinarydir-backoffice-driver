@@ -210,6 +210,18 @@ $jscript = '
             tError: "The image could not be loaded."
         }
     });
+
+    $("form#driver-attachment-form").on("submit", function(event) {
+
+        var driverAttachmentType = $("#driverattachment-type").parent();
+
+        if (driverAttachmentType.hasClass("has-error")) {
+
+            driverAttachmentType.removeClass("has-error");
+            $(".help-block").remove();
+        }
+
+    });
 ';
 
 $this->registerJs(Yii::$app->params['checkbox-radio-script']() . $jscript); ?>

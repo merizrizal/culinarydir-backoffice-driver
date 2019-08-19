@@ -247,81 +247,86 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         if (!empty(($post = \Yii::$app->request->post()))) {
 
-            if (!empty($save)) {
+            if ($modelDriverAttachment->load($post)) {
 
-                $transaction = \Yii::$app->db->beginTransaction();
-                $flag = true;
+                if (!empty($save)) {
 
-                $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    $flag = true;
 
-                if (!empty($images) || !empty($post['DriverAttachment']['type'])) {
+                    $images = Tools::uploadFiles('/img/driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
 
-                    if (empty($post['DriverAttachment']['type'])) {
+                    if (!empty($images) || !empty($post['DriverAttachment']['type'])) {
 
-                        $post['DriverAttachment']['type'] = [];
+                        if (empty($post['DriverAttachment']['type'])) {
+
+                            $post['DriverAttachment']['type'] = [];
+                        }
+
+                        if (($flag = count($images) == count($post['DriverAttachment']['type']))) {
+
+                            foreach ($images as $i => $image) {
+
+                                $newModelDriverAttachment = new DriverAttachment();
+                                $newModelDriverAttachment->person_as_driver_id = $model->person_id;
+                                $newModelDriverAttachment->file_name = $image;
+                                $newModelDriverAttachment->type = $post['DriverAttachment']['type'][$i];
+
+                                if (!($flag = $newModelDriverAttachment->save())) {
+
+                                    break;
+                                } else {
+
+                                    array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                                }
+                            }
+                        } else {
+
+                            $modelDriverAttachment->addError('type', \Yii::t('app', 'Number of files and number of photos does not match.'));
+                        }
                     }
 
-                    if (($flag = count($images) == count($post['DriverAttachment']['type']))) {
+                    if ($flag) {
 
-                        foreach ($images as $i => $image) {
+                        if (!empty($post['DriverAttachmentDelete'])) {
 
-                            $newModelDriverAttachment = new DriverAttachment();
-                            $newModelDriverAttachment->person_as_driver_id = $model->person_id;
-                            $newModelDriverAttachment->file_name = $image;
-                            $newModelDriverAttachment->type = $post['DriverAttachment']['type'][$i];
+                            if (($flag = DriverAttachment::deleteAll(['id' => $post['DriverAttachmentDelete']]))) {
 
-                            if (!($flag = $newModelDriverAttachment->save())) {
-
-                                break;
-                            } else {
-
-                                array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                                $deletedDriverAttachmentId = $post['DriverAttachmentDelete'];
                             }
                         }
+                    }
+
+                    if ($flag) {
+
+                        foreach ($model->driverAttachments as $existModelDriverAttachment) {
+
+                            $existModelDriverAttachment->type = $post['type'][$existModelDriverAttachment->id];
+
+                            if (!($flag = $existModelDriverAttachment->save())) {
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($flag) {
+
+                        \Yii::$app->session->setFlash('status', 'success');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                        $transaction->commit();
+
+                        $modelDriverAttachment = new DriverAttachment();
                     } else {
 
-                        $modelDriverAttachment->addError('type', \Yii::t('app', 'Number of files and number of photos does not match.'));
+                        \Yii::$app->session->setFlash('status', 'danger');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                        $transaction->rollBack();
                     }
-                }
-
-                if ($flag) {
-
-                    if (!empty($post['DriverAttachmentDelete'])) {
-
-                        if (($flag = DriverAttachment::deleteAll(['id' => $post['DriverAttachmentDelete']]))) {
-
-                            $deletedDriverAttachmentId = $post['DriverAttachmentDelete'];
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    foreach ($model->driverAttachments as $existModelDriverAttachment) {
-
-                        $existModelDriverAttachment->type = $post['type'][$existModelDriverAttachment->id];
-
-                        if (!($flag = $existModelDriverAttachment->save())) {
-
-                            break;
-                        }
-                    }
-                }
-
-                if ($flag) {
-
-                    \Yii::$app->session->setFlash('status', 'success');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
-
-                    $transaction->commit();
-                } else {
-
-                    \Yii::$app->session->setFlash('status', 'danger');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
-
-                    $transaction->rollBack();
                 }
             }
         }
