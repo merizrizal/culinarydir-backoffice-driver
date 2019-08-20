@@ -217,7 +217,7 @@ $jscript = '
         if (driverAttachmentType.hasClass("has-error")) {
 
             driverAttachmentType.removeClass("has-error");
-            $(this).find(".help-block").remove();
+            $(this).find(".field-driverattachment-type").children(".help-block").remove();
             $(this).trigger("submit");
         }
     });
