@@ -79,7 +79,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
         $modelDriverAttachment = new DriverAttachment();
         $modelDriverAttachment->setScenario(DriverAttachment::SCENARIO_CREATE);
 
-        if (!empty($post = \Yii::$app->request->post())) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
             if ($model->load($post) && $modelPerson->load($post) && $modelDriverAttachment->load($post)) {
 
@@ -178,7 +178,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
 
         $modelPerson = $model->person;
 
-        if (!empty($post = \Yii::$app->request->post())) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
             if ($model->load($post) && $modelPerson->load($post)) {
 
