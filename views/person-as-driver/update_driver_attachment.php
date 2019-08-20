@@ -210,14 +210,15 @@ $jscript = '
         }
     });
 
-    $("form#driver-attachment-form").on("submit", function(event) {
+    $("form#driver-attachment-form").on("beforeSubmit", function(event) {
 
         var driverAttachmentType = $("#driverattachment-type").parent();
 
         if (driverAttachmentType.hasClass("has-error")) {
 
             driverAttachmentType.removeClass("has-error");
-            $(".help-block").remove();
+            $(this).find(".help-block").remove();
+            $(this).trigger("submit");
         }
     });
 ';
