@@ -9,7 +9,7 @@ use core\models\Settings;
 use core\models\search\RegistryDriverSearch;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
+use yii\helpers\Html;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -33,34 +33,6 @@ class RegistryDriverController extends BaseController
                     ],
                 ],
             ]);
-    }
-
-    /**
-     * Lists all RegistryDriver models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new RegistryDriverSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single RegistryDriver model.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
     }
 
     /**
@@ -116,6 +88,8 @@ class RegistryDriverController extends BaseController
                         \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Create data process is success. Data has been saved'));
 
                         $transaction->commit();
+
+                        $render = 'view';
 
                     } else {
 
@@ -190,19 +164,196 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
-    /**
-     * Finds the RegistryDriver model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return RegistryDriver the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
+    public function actionIndexPndg()
     {
-        if (($model = RegistryDriver::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        $actionColumn = [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '
+                <div class="btn-container hide">
+                    <div class="visible-lg visible-md">
+                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                            {view}
+                        </div>
+                    </div>
+                    <div class="visible-sm visible-xs">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                            {view}
+                        </div>
+                    </div>
+                </div>',
+            'buttons' => [
+                'view' => function ($url, $model, $key) {
+                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
+                        'id' => 'view',
+                        'class' => 'btn btn-primary',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'View',
+                    ]);
+                },
+            ]
+        ];
+
+        return $this->index('PNDG', \Yii::t('app', 'Pending Driver'), $actionColumn);
+    }
+
+    public function actionIndexIcorct()
+    {
+        $actionColumn = [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '
+                <div class="btn-container hide">
+                    <div class="visible-lg visible-md">
+                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                            {view}
+                        </div>
+                    </div>
+                    <div class="visible-sm visible-xs">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                            {view}
+                        </div>
+                    </div>
+                </div>',
+            'buttons' => [
+                'view' => function ($url, $model, $key) {
+                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-icorct', 'id' => $model->id], [
+                        'id' => 'view',
+                        'class' => 'btn btn-primary',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'View',
+                    ]);
+                },
+            ]
+        ];
+
+        return $this->index('ICORCT', \Yii::t('app', 'Incorect Driver'), $actionColumn);
+    }
+
+    public function actionIndexRjct()
+    {
+        $actionColumn = [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '
+                <div class="btn-container hide">
+                    <div class="visible-lg visible-md">
+                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                            {view}
+                        </div>
+                    </div>
+                    <div class="visible-sm visible-xs">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                            {view}
+                        </div>
+                    </div>
+                </div>',
+            'buttons' => [
+                'view' => function ($url, $model, $key) {
+                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-rjct', 'id' => $model->id], [
+                        'id' => 'view',
+                        'class' => 'btn btn-primary',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'title' => 'View',
+                    ]);
+                },
+            ]
+        ];
+
+        return $this->index('RJCT', \Yii::t('app', 'Reject Driver'), $actionColumn);
+    }
+
+    public function actionViewPndg($id)
+    {
+        $actionButton = [
+            'update-driver-info' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            },
+            'update-driver-attachment' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            }
+        ];
+
+        return $this->view($id, 'PNDG', $actionButton);
+    }
+
+    public function actionViewIcorct($id)
+    {
+        $actionButton = [
+            'update-driver-info' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            },
+            'update-driver-attachment' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            }
+        ];
+
+        return $this->view($id, 'ICORCT', $actionButton);
+    }
+
+    public function actionViewRjct($id)
+    {
+        $actionButton = [
+            'update-driver-info' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            },
+            'update-driver-attachment' => function ($model) {
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
+                    'class' => 'btn btn-primary',
+                    'data-toggle' => 'tooltip',
+                ]);
+            }
+        ];
+
+        return $this->view($id, 'RJCT', $actionButton);
+    }
+
+    /**
+     * Lists all RegistryDriver models.
+     * @return mixed
+     */
+    private function index($statusApproval, $title, $actionColumn)
+    {
+        $searchModel = new RegistryDriverSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'title' => $title,
+            'statusApproval' => $statusApproval,
+            'actionColumn' => $actionColumn,
+        ]);
+    }
+
+    private function view($id, $statusApproval, $actionButton)
+    {
+        $model = RegistryDriver::find()
+            ->joinWith([
+                'registryDriverAttachments'
+            ])
+            ->andWhere(['registry_driver.id' => $id])
+            ->one();
+
+        return $this->render('view', [
+            'model' => $model,
+            'statusApproval' => $statusApproval,
+            'actionButton' => $actionButton,
+        ]);
     }
 }

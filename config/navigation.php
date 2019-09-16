@@ -5,25 +5,25 @@ return [
             'createDriver' => [
                 'label' => 'Create Data',
                 'iconClass' => 'fa fa-edit',
-                'url' => ['driver/person-as-driver/create'],
+                'url' => ['driver/registry-driver/create'],
                 'isDirect' => false,
             ],
             'pndgDriver' => [
                 'label' => 'Pending Data',
                 'iconClass' => 'fa fa-hourglass-half',
-                'url' => [''],
+                'url' => ['driver/registry-driver/index-pndg'],
                 'isDirect' => false,
             ],
             'icorctDriver'=> [
                 'label' => 'Incorrect Data',
                 'iconClass' => 'fa fa-exclamation-circle',
-                'url' => [''],
+                'url' => ['driver/registry-driver/index-icorct'],
                 'isDirect' => false,
             ],
             'rjctDriver'=> [
                 'label' => 'Reject Data',
                 'iconClass' => 'fa fa-window-close',
-                'url' => [''],
+                'url' => ['driver/registry-driver/index-rjct'],
                 'isDirect' => false,
             ],
             'driver'=> [

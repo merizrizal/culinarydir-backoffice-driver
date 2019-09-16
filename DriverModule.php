@@ -13,7 +13,7 @@ class DriverModule extends \yii\base\Module
      * {@inheritdoc}
      */
     public $controllerNamespace = 'backoffice\modules\driver\controllers';
-    public $defaultRoute = 'person-as-driver/create';
+    public $defaultRoute = 'registry-driver/create';
     public $name = 'Driver';
 
     /**

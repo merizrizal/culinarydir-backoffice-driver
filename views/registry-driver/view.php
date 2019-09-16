@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use sycomponent\Tools;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryDriver */
@@ -31,7 +31,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model->id;
+$this->title = $model->first_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Registry Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
@@ -42,58 +42,163 @@ $this->params['breadcrumbs'][] = $this->title; ?>
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-
                 <div class="x_content">
 
-                    <?= Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']) ?>
+                   	<?php
+                    if (!empty($actionButton)) {
 
-                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                        foreach ($actionButton as $valActionButton) {
 
-                    <?= Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model->id], [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-not-ajax' => 1,
-                            'model-id' => $model->id,
-                            'model-name' => $model->name,
-                        ]) ?>
+                            echo $valActionButton($model);
+                        }
+                    } ?>
 
-                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
+                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
-                    <?= DetailView::widget([
-                        'model' => $model,
-                        'options' => [
-                            'class' => 'table'
-                        ],
-                        'attributes' => [
-                                        'id',
-            'first_name',
-            'last_name',
-            'email:email',
-            'phone',
-            'no_ktp',
-            'no_sim',
-            'date_birth',
-            'motor_brand',
-            'motor_type',
-            'emergency_contact_name',
-            'emergency_contact_phone',
-            'emergency_contact_address:ntext',
-            'number_plate',
-            'stnk_expired',
-            'other_driver',
-            'is_criteria_passed:boolean',
-            'created_at',
-            'user_created',
-            'updated_at',
-            'user_updated',
-            'district_id',
-                        ],
-                    ]) ?>
+					<div class="row">
+                        <div class="col-xs-12">
+                            <h4><strong><?= \Yii::t('app', 'Driver Name') ?></strong> : <?= $model['first_name'] . " " . $model['last_name']; ?></h4>
+                        </div>
+                    </div>
 
+					<hr>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4><strong><?= \Yii::t('app', 'Driver Information') ?></strong></h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'First Name')) ?><br>
+                            <?= $model['first_name'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Last Name')) ?><br>
+                            <?= $model['last_name'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Phone')) ?><br>
+                            <?= $model['phone'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Email')) ?><br>
+                            <?= $model['email'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'No Ktp')) ?><br>
+                            <?= $model['no_ktp'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'No Sim')) ?><br>
+                            <?= $model['no_sim'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Date Birth')) ?><br>
+                            <?= $model['date_birth'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'District')) ?><br>
+                            <?= $model['district']['name'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Motor Brand')) ?><br>
+                            <?= $model['motor_brand'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Motor Type')) ?><br>
+                            <?= $model['motor_type'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Number Plate')) ?><br>
+                            <?= $model['number_plate'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Stnk Expired')) ?><br>
+                            <?= $model['stnk_expired'] ?>
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Emergency Contact Name')) ?><br>
+                            <?= $model['emergency_contact_name'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Emergency Contact Phone')) ?><br>
+                            <?= $model['emergency_contact_phone'] ?>
+                        </div>
+                   		<div class="col-xs-6 col-sm-3">
+                            <?= Html::label(\Yii::t('app', 'Emergency Contact Address')) ?><br>
+                            <?= $model['emergency_contact_address'] ?>
+                        </div>
+                        <div class="col-xs-6 col-sm-3">
+
+                            <?= Html::label(\Yii::t('app', 'Other Driver ?')) ?><br>
+                            <?= !empty($model['other_driver']) ? $model['other_driver'] : 'Tidak Ada'; ?>
+
+                        </div>
+                    </div>
+
+                    <div class="row mb-20">
+                    	<div class="col-xs-8 col-sm-3">
+
+                            <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
+                            <?= $model['is_criteria_passed'] ? 'Lulus Pengecekan' : 'Belum lulus Pengecekan'; ?>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+					<div class="row">
+                        <div class="col-xs-12">
+                            <h4><strong><?= \Yii::t('app', 'Driver Attachment') ?></strong></h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <?php
+                        if (!empty($model['registryDriverAttachments'])):
+
+                            foreach ($model['registryDriverAttachments'] as $dataDriverAttachments): ?>
+
+                                <div class="col-xs-6 col-sm-3">
+                                    <div class="thumbnail">
+                                        <div class="image view view-first">
+
+                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+
+                                            <div class="mask">
+                                                <p>&nbsp;</p>
+                                                <div class="tools tools-bottom">
+                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+                            endforeach;
+                        endif; ?>
+
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -104,7 +209,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 $modalDialog = new ModalDialog([
     'clickedComponent' => 'a#delete',
     'modelAttributeId' => 'model-id',
-    'modelAttributeName' => 'model-name',
 ]);
 
 $modalDialog->theScript(false);

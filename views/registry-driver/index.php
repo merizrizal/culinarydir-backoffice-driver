@@ -42,7 +42,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
     $modalDialog = new ModalDialog([
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
-        'modelAttributeName' => 'model-name',
     ]); ?>
 
     <?= GridView::widget([
@@ -121,7 +120,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     </div>',
                 'buttons' => [
                     'view' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-search-plus"></i>', $url, [
+                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
                             'data-toggle' => 'tooltip',
@@ -147,7 +146,6 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             'data-not-ajax' => 1,
                             'title' => 'Delete',
                             'model-id' => $model->id,
-                            'model-name' => $model->name,
                         ]);
                     },
                 ]
