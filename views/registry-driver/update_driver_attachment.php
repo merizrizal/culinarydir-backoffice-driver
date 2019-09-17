@@ -13,12 +13,13 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $dataDriverAttachment array */
 /* @var $attachmentType array */
+/* @var $statusApproval string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'DriverAttachment',
+    'modelClass' => 'RegistryDriverAttachment',
 ]);
 
 $ajaxRequest->form();
@@ -39,9 +40,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model->person->first_name . ' ' . $model->person->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
+$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model->first_name . ' ' . $model->last_name;
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index-' . strtolower($statusApproval)]];
+$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
@@ -50,12 +51,12 @@ echo $ajaxRequest->component(); ?>
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-                <div class="driver-attachment-form">
+                <div class="registry-driver-attachment-form">
 
                     <?php
                     $form = ActiveForm::begin([
-                        'id' => 'driver-attachment-form',
-                        'action' => ['update-driver-attachment', 'id' => $model->person_id],
+                        'id' => 'registry-driver-attachment-form',
+                        'action' => ['update-driver-attachment', 'id' => $model->id, 'statusApproval' => strtolower($statusApproval)],
                         'options' => [
 
                         ],
@@ -81,12 +82,12 @@ echo $ajaxRequest->component(); ?>
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
 
-                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
 
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
                                                                 <div class="tools tools-bottom">
-                                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/driver_attachment/' . $driverAttachment['file_name'] ?>"><i class="fa fa-search"></i></a>
+                                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/registry_driver_attachment/' . $driverAttachment['file_name'] ?>"><i class="fa fa-search"></i></a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -162,7 +163,7 @@ echo $ajaxRequest->component(); ?>
 
                                     <?php
                                     echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view', 'id' => $model['person_id']], ['class' => 'btn btn-default']); ?>
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
 
                                 </div>
                             </div>
@@ -191,7 +192,7 @@ $jscript = '
         placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
     });
 
-    $("#driverattachment-type").select2({
+    $("#registrydriverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
         placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
@@ -210,9 +211,9 @@ $jscript = '
         }
     });
 
-    $("form#driver-attachment-form").on("beforeSubmit", function(event) {
+    $("form#registry-driver-attachment-form").on("beforeSubmit", function(event) {
 
-        var driverAttachmentType = $("#driverattachment-type").parent();
+        var driverAttachmentType = $("#registrydriverattachment-type").parent();
 
         if (driverAttachmentType.hasClass("has-error")) {
 

@@ -3,25 +3,25 @@ return [
     'params' => [
         'navigation' => [
             'createDriver' => [
-                'label' => 'Create Data',
+                'label' => 'Create Driver',
                 'iconClass' => 'fa fa-edit',
                 'url' => ['driver/registry-driver/create'],
                 'isDirect' => false,
             ],
             'pndgDriver' => [
-                'label' => 'Pending Data',
+                'label' => 'Pending Driver',
                 'iconClass' => 'fa fa-hourglass-half',
                 'url' => ['driver/registry-driver/index-pndg'],
                 'isDirect' => false,
             ],
             'icorctDriver'=> [
-                'label' => 'Incorrect Data',
+                'label' => 'Incorrect Driver',
                 'iconClass' => 'fa fa-exclamation-circle',
                 'url' => ['driver/registry-driver/index-icorct'],
                 'isDirect' => false,
             ],
             'rjctDriver'=> [
-                'label' => 'Reject Data',
+                'label' => 'Reject Driver',
                 'iconClass' => 'fa fa-window-close',
                 'url' => ['driver/registry-driver/index-rjct'],
                 'isDirect' => false,

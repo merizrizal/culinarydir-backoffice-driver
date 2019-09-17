@@ -9,7 +9,9 @@ use core\models\Settings;
 use core\models\search\RegistryDriverSearch;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -104,8 +106,8 @@ class RegistryDriverController extends BaseController
         }
 
         $modelSettings = Settings::find()
-        ->andWhere(['setting_name' => ['motor_brand', 'motor_type', 'attachment_type']])
-        ->asArray()->all();
+            ->andWhere(['setting_name' => ['motor_brand', 'motor_type', 'attachment_type']])
+            ->asArray()->all();
 
         $dataArray = [];
 
@@ -127,40 +129,193 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
-    /**
-     * Updates an existing RegistryDriver model.
-     * If update is successful, the browser will be redirected to the 'update' page.
-     * @param string $id
-     * @return mixed
-     */
-    public function actionUpdate($id, $save = null)
+    public function actionUpdateDriverInfo($id, $save = null, $statusApproval)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(\Yii::$app->request->post())) {
+        if (!empty(($post = \Yii::$app->request->post()))) {
 
-            if (empty($save)) {
+            if ($model->load($post)) {
 
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($model);
-            } else {
+                if (empty($save)) {
 
-                if ($model->save()) {
-
-                    \Yii::$app->session->setFlash('status', 'success');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
                 } else {
 
-                    \Yii::$app->session->setFlash('status', 'danger');
-                    \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
-                    \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+                    if ($model->save()) {
+
+                        \Yii::$app->session->setFlash('status', 'success');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                    } else {
+
+                        \Yii::$app->session->setFlash('status', 'danger');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                    }
                 }
             }
         }
 
-        return $this->render('update', [
+        $modelSettings = Settings::find()
+            ->andWhere(['setting_name' => ['motor_brand', 'motor_type']])
+            ->asArray()->all();
+
+        $dataArray = [];
+
+        foreach ($modelSettings as $dataSettings) {
+
+            $dataArray[$dataSettings['setting_name']] = $dataSettings['setting_value'];
+        }
+
+        $motorBrand = json_decode($dataArray['motor_brand'], true);
+        $motorType = json_decode($dataArray['motor_type'], true);
+
+        return $this->render('update_driver_info', [
             'model' => $model,
+            'motorBrand' => $motorBrand,
+            'motorType' => $motorType,
+            'statusApproval' => $statusApproval,
+        ]);
+    }
+
+    public function actionUpdateDriverAttachment($id, $save = null, $statusApproval)
+    {
+        $model = RegistryDriver::find()
+            ->joinWith(['registryDriverAttachments'])
+            ->andWhere(['registry_driver.id' => $id])
+            ->one();
+
+        $modelDriverAttachment = new RegistryDriverAttachment();
+        $dataDriverAttachment = [];
+        $newDataDriverAttachment = [];
+        $deletedDriverAttachmentId = [];
+
+        if (!empty(($post = \Yii::$app->request->post()))) {
+
+            if ($modelDriverAttachment->load($post)) {
+
+                if (!empty($save)) {
+
+                    $transaction = \Yii::$app->db->beginTransaction();
+                    $flag = true;
+
+                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'registry_driver_id', '', true);
+
+                    if (!empty($images) || !empty($post['RegistryDriverAttachment']['type'])) {
+
+                        if (empty($post['RegistryDriverAttachment']['type'])) {
+
+                            $post['RegistryDriverAttachment']['type'] = [];
+                        }
+
+                        if (($flag = count($images) == count($post['RegistryDriverAttachment']['type']))) {
+
+                            foreach ($images as $i => $image) {
+
+                                $newModelDriverAttachment = new RegistryDriverAttachment();
+                                $newModelDriverAttachment->registry_driver_id = $model->id;
+                                $newModelDriverAttachment->file_name = $image;
+                                $newModelDriverAttachment->type = $post['RegistryDriverAttachment']['type'][$i];
+
+                                if (!($flag = $newModelDriverAttachment->save())) {
+
+                                    break;
+                                } else {
+
+                                    array_push($newDataDriverAttachment, $newModelDriverAttachment->toArray());
+                                }
+                            }
+                        } else {
+
+                            $modelDriverAttachment->addError('type', \Yii::t('app', 'Number of files and number of photos does not match.'));
+                        }
+                    }
+
+                    if ($flag) {
+
+                        if (!empty($post['DriverAttachmentDelete'])) {
+
+                            if (($flag = RegistryDriverAttachment::deleteAll(['id' => $post['DriverAttachmentDelete']]))) {
+
+                                $deletedDriverAttachmentId = $post['DriverAttachmentDelete'];
+                            }
+                        }
+                    }
+
+                    if ($flag) {
+
+                        foreach ($model->registryDriverAttachments as $existModelDriverAttachment) {
+
+                            $existModelDriverAttachment->type = $post['type'][$existModelDriverAttachment->id];
+
+                            if (!($flag = $existModelDriverAttachment->save())) {
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($flag) {
+
+                        \Yii::$app->session->setFlash('status', 'success');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+                        $transaction->commit();
+
+                        $modelDriverAttachment = new RegistryDriverAttachment();
+                    } else {
+
+                        \Yii::$app->session->setFlash('status', 'danger');
+                        \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+                        \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+                        $transaction->rollBack();
+                    }
+                }
+            }
+        }
+
+        foreach ($model['registryDriverAttachments'] as $valueDriverAttachment) {
+
+            $deleted = false;
+
+            foreach ($deletedDriverAttachmentId as $DriverAttachmentId) {
+
+                if ($DriverAttachmentId == $valueDriverAttachment['id']) {
+
+                    $deleted = true;
+                    break;
+                }
+            }
+
+            if (!$deleted) {
+
+                array_push($dataDriverAttachment, $valueDriverAttachment);
+            }
+        }
+
+        if (!empty($newDataDriverAttachment)) {
+
+            $dataDriverAttachment = ArrayHelper::merge($dataDriverAttachment, $newDataDriverAttachment);
+        }
+
+        $modelSettings = Settings::find()
+        ->andWhere(['setting_name' => 'attachment_type'])
+        ->asArray()->one();
+
+        $attachmentType = json_decode($modelSettings['setting_value'], true);
+
+        return $this->render('update_driver_attachment', [
+            'model' => $model,
+            'modelDriverAttachment' => $modelDriverAttachment,
+            'dataDriverAttachment' => $dataDriverAttachment,
+            'attachmentType' => $attachmentType,
+            'statusApproval' => $statusApproval,
         ]);
     }
 
@@ -171,12 +326,12 @@ class RegistryDriverController extends BaseController
             'template' => '
                 <div class="btn-container hide">
                     <div class="visible-lg visible-md">
-                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                        <div class="btn-group btn-group-md" role="group" style="width: 40px">
                             {view}
                         </div>
                     </div>
                     <div class="visible-sm visible-xs">
-                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 52px">
                             {view}
                         </div>
                     </div>
@@ -204,12 +359,12 @@ class RegistryDriverController extends BaseController
             'template' => '
                 <div class="btn-container hide">
                     <div class="visible-lg visible-md">
-                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                        <div class="btn-group btn-group-md" role="group" style="width: 40px">
                             {view}
                         </div>
                     </div>
                     <div class="visible-sm visible-xs">
-                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 52px">
                             {view}
                         </div>
                     </div>
@@ -237,12 +392,12 @@ class RegistryDriverController extends BaseController
             'template' => '
                 <div class="btn-container hide">
                     <div class="visible-lg visible-md">
-                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
+                        <div class="btn-group btn-group-md" role="group" style="width: 40px">
                             {view}
                         </div>
                     </div>
                     <div class="visible-sm visible-xs">
-                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                        <div class="btn-group btn-group-lg" role="group" style="width: 52px">
                             {view}
                         </div>
                     </div>
@@ -256,7 +411,7 @@ class RegistryDriverController extends BaseController
                         'data-placement' => 'top',
                         'title' => 'View',
                     ]);
-                },
+                }
             ]
         ];
 
@@ -267,17 +422,17 @@ class RegistryDriverController extends BaseController
     {
         $actionButton = [
             'update-driver-info' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
+            return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
             },
             'update-driver-attachment' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
+            return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
-            }
+            },
         ];
 
         return $this->view($id, 'PNDG', $actionButton);
@@ -287,17 +442,23 @@ class RegistryDriverController extends BaseController
     {
         $actionButton = [
             'update-driver-info' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
+            return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
             },
             'update-driver-attachment' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
+            return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
-            }
+            },
+            'resubmit' => function ($model) {
+            return ' ' . Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
+                    'id' => 'resubmit',
+                    'class' => 'btn btn-success',
+                ]);
+            },
         ];
 
         return $this->view($id, 'ICORCT', $actionButton);
@@ -305,22 +466,18 @@ class RegistryDriverController extends BaseController
 
     public function actionViewRjct($id)
     {
-        $actionButton = [
-            'update-driver-info' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id']], [
-                    'class' => 'btn btn-primary',
-                    'data-toggle' => 'tooltip',
-                ]);
-            },
-            'update-driver-attachment' => function ($model) {
-                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id']], [
-                    'class' => 'btn btn-primary',
-                    'data-toggle' => 'tooltip',
-                ]);
-            }
-        ];
+        return $this->view($id, 'RJCT');
+    }
 
-        return $this->view($id, 'RJCT', $actionButton);
+    protected function findModel($id)
+    {
+        if (($model = RegistryDriver::findOne($id)) !== null) {
+
+            return $model;
+        } else {
+
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
 
     /**
@@ -341,7 +498,7 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
-    private function view($id, $statusApproval, $actionButton)
+    private function view($id, $statusApproval, $actionButton = null)
     {
         $model = RegistryDriver::find()
             ->joinWith([

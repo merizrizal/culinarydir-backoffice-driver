@@ -8,6 +8,8 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\RegistryDriver */
+/* @var $statusApproval string */
+/* @var $actionButton array */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -32,7 +34,7 @@ if ($status !== null) {
 }
 
 $this->title = $model->first_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Registry Driver'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Create Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component() ?>
@@ -53,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         }
                     } ?>
 
-                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
+                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']) ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 

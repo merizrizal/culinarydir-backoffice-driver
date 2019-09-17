@@ -8,6 +8,10 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel core\models\search\RegistryDriverSearch */
+/* @var $title string */
+/* @var $actionColumn array */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -31,7 +35,7 @@ if ($status !== null) {
 
 }
 
-$this->title = \Yii::t('app', 'Registry Driver');
+$this->title = $title;
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component(true) ?>
@@ -42,9 +46,21 @@ $this->params['breadcrumbs'][] = $this->title; ?>
     $modalDialog = new ModalDialog([
         'clickedComponent' => 'a#delete',
         'modelAttributeId' => 'model-id',
-    ]); ?>
+    ]);
 
-    <?= GridView::widget([
+    $column = [
+        ['class' => 'yii\grid\SerialColumn'],
+
+        'first_name',
+        'last_name',
+        'phone',
+    ];
+
+    if (!empty($actionColumn)) {
+        array_push($column, $actionColumn);
+    }
+
+    echo GridView::widget([
         'id' => 'grid-view-registry-driver',
         'dataProvider' => $dataProvider,
         'pjax' => false,
@@ -67,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         ],
         'toolbar' => [
             [
-                'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index'], [
+                'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index-' . strtolower($statusApproval)], [
                             'id' => 'refresh',
                             'class' => 'btn btn-success',
                             'data-placement' => 'top',
@@ -77,80 +93,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             ],
         ],
         'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'first_name',
-            'last_name',
-            'email:email',
-            'phone',
-            //'no_ktp',
-            //'no_sim',
-            //'date_birth',
-            //'motor_brand',
-            //'motor_type',
-            //'emergency_contact_name',
-            //'emergency_contact_phone',
-            //'emergency_contact_address:ntext',
-            //'number_plate',
-            //'stnk_expired',
-            //'other_driver',
-            //'is_criteria_passed:boolean',
-            //'created_at',
-            //'user_created',
-            //'updated_at',
-            //'user_updated',
-            //'district_id',
-
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '
-                    <div class="btn-container hide">
-                        <div class="visible-lg visible-md">
-                            <div class="btn-group btn-group-md" role="group" style="width: 120px">
-                                {view}{update}{delete}
-                            </div>
-                        </div>
-                        <div class="visible-sm visible-xs">
-                            <div class="btn-group btn-group-lg" role="group" style="width: 156px">
-                                {view}{update}{delete}
-                            </div>
-                        </div>
-                    </div>',
-                'buttons' => [
-                    'view' => function($url, $model, $key) {
-                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
-                            'id' => 'view',
-                            'class' => 'btn btn-primary',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'View',
-                        ]);
-                    },
-                    'update' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-pencil-alt"></i>', $url, [
-                            'id' => 'update',
-                            'class' => 'btn btn-success',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'title' => 'Edit',
-                        ]);
-                    },
-                    'delete' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-trash-alt"></i>', $url, [
-                            'id' => 'delete',
-                            'class' => 'btn btn-danger',
-                            'data-toggle' => 'tooltip',
-                            'data-placement' => 'top',
-                            'data-not-ajax' => 1,
-                            'title' => 'Delete',
-                            'model-id' => $model->id,
-                        ]);
-                    },
-                ]
-            ],
-        ],
+        'columns' => $column,
         'tableOptions' => [
             'class' => 'table table-striped table-hover'
         ],

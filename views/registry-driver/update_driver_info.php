@@ -15,12 +15,13 @@ use yii\widgets\MaskedInput;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $motorBrand array */
 /* @var $motorType array */
+/* @var $statusApproval string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'PersonAsDriver',
+    'modelClass' => 'RegistryDriver',
 ]);
 
 $ajaxRequest->form();
@@ -41,9 +42,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->person->first_name . ' ' . $model->person->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
+$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index-' . strtolower($statusApproval)]];
+$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
@@ -52,12 +53,12 @@ echo $ajaxRequest->component(); ?>
    <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-                <div class="person-as-driver-form">
+                <div class="registry-driver-form">
 
                     <?php
                     $form = ActiveForm::begin([
-                        'id' => 'person-as-driver-form',
-                        'action' => ['update-driver-info', 'id' => $model->person_id],
+                        'id' => 'registry-driver-form',
+                        'action' => ['update-driver-info', 'id' => $model->id, 'statusApproval' => strtolower($statusApproval)],
                         'options' => [
 
                         ],
@@ -69,20 +70,20 @@ echo $ajaxRequest->component(); ?>
                         <div class="x_content">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6">
-                                    <?= $form->field($modelPerson, 'first_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'First Name')]) ?>
+                                    <?= $form->field($model, 'first_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'First Name')]) ?>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
-                                    <?= $form->field($modelPerson, 'last_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Last Name')]) ?>
+                                    <?= $form->field($model, 'last_name')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Last Name')]) ?>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-xs-12 col-sm-4">
-                                    <?= $form->field($modelPerson, 'email')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Email')]) ?>
+                                    <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => \Yii::t('app', 'Email')]) ?>
                                 </div>
                                 <div class="col-xs-12 col-sm-4">
 
-                                    <?= $form->field($modelPerson, 'phone')->widget(MaskedInput::className(), [
+                                    <?= $form->field($model, 'phone')->widget(MaskedInput::className(), [
                                         'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                                         'options' => [
                                             'placeholder' => \Yii::t('app', 'Phone'),
@@ -213,9 +214,8 @@ echo $ajaxRequest->component(); ?>
                                     <div class="col-lg-6 mt-30">
 
                                         <?php
-                                        $icon = '<i class="fa fa-save"></i> ';
-                                        echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view', 'id' => $model['person_id']], ['class' => 'btn btn-default']); ?>
+                                        echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['view-' . strtolower($statusApproval), 'id' => $model['id']], ['class' => 'btn btn-default']); ?>
 
                                     </div>
                                 </div>
@@ -240,29 +240,29 @@ $this->registerJsFile(\Yii::$app->urlManager->baseUrl . '/media/plugins/jquery-s
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
-    $("#personasdriver-district_id").select2({
+    $("#registrydriver-district_id").select2({
         theme: "krajee",
         placeholder: "' . \Yii::t('app', 'District') . '"
     });
 
-    $("#personasdriver-motor_brand").select2({
+    $("#registrydriver-motor_brand").select2({
         theme: "krajee",
         placeholder: "' . \Yii::t('app', 'Merek Motor') . '"
     });
 
-    $("#personasdriver-motor_type").select2({
+    $("#registrydriver-motor_type").select2({
         theme: "krajee",
         placeholder: "' . \Yii::t('app', 'Tipe Motor') . '"
     });
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {
 
-        $("#personasdriver-other_driver").removeAttr("disabled");
+        $("#registrydriver-other_driver").removeAttr("disabled");
     });
 
     $(".checkbox-other-driver").on("ifUnchecked", function(e) {
 
-        $("#personasdriver-other_driver").attr("disabled", "disabled");
+        $("#registrydriver-other_driver").attr("disabled", "disabled");
     });
 ';
 

@@ -42,7 +42,7 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = \Yii::t('app', 'Registry Driver');
+$this->title = \Yii::t('app', 'Create Driver');
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component();
@@ -352,8 +352,10 @@ $jscript = '
     $("#registrydriverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
-        placeholder: "' . \Yii::t('app', 'Berkas') . '"
+        placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
     });
+
+    $("#registrydriverattachment-type").siblings().find("input").removeAttr("style");
 
     $(".checkbox-other-driver").on("ifChecked", function(e) {
 
