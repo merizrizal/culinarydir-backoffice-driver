@@ -35,7 +35,7 @@ if ($status !== null) {
 $this->title = \Yii::t('app', 'Person As Driver');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(true) ?>
+echo $ajaxRequest->component(false) ?>
 
 <div class="person-as-driver-index">
 

@@ -42,7 +42,7 @@ if ($status !== null) {
 
 $this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model->first_name . ' ' . $model->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view-' . strtolower($statusApproval), 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>

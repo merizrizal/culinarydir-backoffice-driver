@@ -1,7 +1,6 @@
 <?php
 
 use sycomponent\AjaxRequest;
-use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
 use yii\helpers\Html;
@@ -33,8 +32,8 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = $model->first_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Create Driver'), 'url' => ['index']];
+$this->title = $model->first_name . " " . $model->last_name;
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Data Driver'), 'url' => ['index-' . strtolower($statusApproval)]];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
 <?= $ajaxRequest->component() ?>
@@ -62,6 +61,9 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 					<div class="row">
                         <div class="col-xs-12">
                             <h4><strong><?= \Yii::t('app', 'Driver Name') ?></strong> : <?= $model['first_name'] . " " . $model['last_name']; ?></h4>
+                        </div>
+                        <div class="col-xs-12">
+                            <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : </h4>
                         </div>
                     </div>
 
@@ -183,12 +185,12 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                     <div class="thumbnail">
                                         <div class="image view view-first">
 
-                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
 
                                             <div class="mask">
                                                 <p>&nbsp;</p>
                                                 <div class="tools tools-bottom">
-                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
+                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/registry_driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -204,15 +206,4 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             </div>
         </div>
     </div>
-
 </div>
-
-<?php
-$modalDialog = new ModalDialog([
-    'clickedComponent' => 'a#delete',
-    'modelAttributeId' => 'model-id',
-]);
-
-$modalDialog->theScript(false);
-
-echo $modalDialog->renderDialog(); ?>

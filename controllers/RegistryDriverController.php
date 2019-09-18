@@ -7,6 +7,7 @@ use core\models\RegistryDriver;
 use core\models\RegistryDriverAttachment;
 use core\models\Settings;
 use core\models\search\RegistryDriverSearch;
+use sycomponent\AjaxRequest;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -44,8 +45,6 @@ class RegistryDriverController extends BaseController
      */
     public function actionCreate($save = null)
     {
-        $render = 'create';
-
         $model = new RegistryDriver();
         $modelRegistryDriverAttachment = new RegistryDriverAttachment();
         $modelRegistryDriverAttachment->setScenario(RegistryDriverAttachment::SCENARIO_CREATE);
@@ -61,7 +60,7 @@ class RegistryDriverController extends BaseController
 
                     if (($flag = $model->save())) {
 
-                        $images = Tools::uploadFiles('/img/driver_attachment/', $modelRegistryDriverAttachment, 'file_name', 'registry_driver_id', '', true);
+                        $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelRegistryDriverAttachment, 'file_name', 'registry_driver_id', '', true);
 
                         if (($flag = count($post['RegistryDriverAttachment']['type']) == count($images))) {
 
@@ -91,7 +90,7 @@ class RegistryDriverController extends BaseController
 
                         $transaction->commit();
 
-                        $render = 'view';
+                        return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['driver/registry-driver/view-pndg', 'id' => $model->id]));
 
                     } else {
 
@@ -120,7 +119,7 @@ class RegistryDriverController extends BaseController
         $motorType = json_decode($dataArray['motor_type'], true);
         $attachmentType = json_decode($dataArray['attachment_type'], true);
 
-        return $this->render($render, [
+        return $this->render('create', [
             'model' => $model,
             'modelRegistryDriverAttachment' => $modelRegistryDriverAttachment,
             'motorBrand' => $motorBrand,
@@ -498,7 +497,7 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
-    private function view($id, $statusApproval, $actionButton = null)
+    private function view($id, $statusApproval = null, $actionButton = null)
     {
         $model = RegistryDriver::find()
             ->joinWith([

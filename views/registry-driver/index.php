@@ -2,7 +2,6 @@
 
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
-use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use yii\helpers\Html;
 
@@ -38,16 +37,11 @@ if ($status !== null) {
 $this->title = $title;
 $this->params['breadcrumbs'][] = $this->title; ?>
 
-<?= $ajaxRequest->component(true) ?>
+<?= $ajaxRequest->component(false) ?>
 
 <div class="registry-driver-index">
 
     <?php
-    $modalDialog = new ModalDialog([
-        'clickedComponent' => 'a#delete',
-        'modelAttributeId' => 'model-id',
-    ]);
-
     $column = [
         ['class' => 'yii\grid\SerialColumn'],
 
@@ -110,12 +104,8 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 </div>
 
-<?= $modalDialog->renderDialog() ?>
-
 <?php
-$jscript = ''
-    . $modalDialog->getScript() . '
-
+$jscript = '
     $("div.container.body").off("click");
     $("div.container.body").on("click", function(event) {
 
