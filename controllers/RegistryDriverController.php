@@ -3,9 +3,12 @@
 namespace backoffice\modules\driver\controllers;
 
 use backoffice\controllers\BaseController;
+use core\models\ApplicationDriver;
+use core\models\LogStatusApprovalDriver;
 use core\models\RegistryDriver;
 use core\models\RegistryDriverAttachment;
 use core\models\Settings;
+use core\models\StatusApprovalDriver;
 use core\models\search\RegistryDriverSearch;
 use sycomponent\AjaxRequest;
 use sycomponent\Tools;
@@ -57,6 +60,26 @@ class RegistryDriverController extends BaseController
 
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = false;
+
+                    $modelApplicationDriver = new ApplicationDriver();
+                    $modelApplicationDriver->user_in_charge = \Yii::$app->user->identity->id;
+                    $modelApplicationDriver->counter = 1;
+
+                    if ($flag = $modelApplicationDriver->save()) {
+
+                        $modelLogStatusApprovalDriver = new LogStatusApprovalDriver();
+                        $modelLogStatusApprovalDriver->application_driver_id = $modelApplicationDriver->id;
+                        $modelLogStatusApprovalDriver->status_approval_driver_id = StatusApprovalDriver::find()->andWhere(['group' => '0'])->asArray()->one()['id'];
+                        $modelLogStatusApprovalDriver->is_actual = true;
+                        $modelLogStatusApprovalDriver->application_driver_counter = $modelApplicationDriver->counter;
+                    }
+
+                    if ($flag = $modelLogStatusApprovalDriver->save()) {
+
+                        $model->application_driver_id = $modelApplicationDriver->id;
+                        $model->user_in_charge = $modelApplicationDriver->user_in_charge;
+                        $model->application_driver_counter = $modelApplicationDriver->counter;
+                    }
 
                     if (($flag = $model->save())) {
 
@@ -487,6 +510,11 @@ class RegistryDriverController extends BaseController
     {
         $searchModel = new RegistryDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider->query
+            ->andWhere(['log_status_approval_driver.status_approval_driver_id' => $statusApproval])
+            ->andWhere(['log_status_approval_driver.is_actual' => 1])
+            ->andWhere('registry_driver.application_driver_counter = application_driver.counter')
+            ->distinct();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -497,11 +525,12 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
-    private function view($id, $statusApproval = null, $actionButton = null)
+    private function view($id, $statusApproval, $actionButton = null)
     {
         $model = RegistryDriver::find()
             ->joinWith([
-                'registryDriverAttachments'
+                'registryDriverAttachments',
+                'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver'
             ])
             ->andWhere(['registry_driver.id' => $id])
             ->one();

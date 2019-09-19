@@ -45,9 +45,10 @@ $this->params['breadcrumbs'][] = $this->title; ?>
     $column = [
         ['class' => 'yii\grid\SerialColumn'],
 
+        'created_at',
         'first_name',
-        'last_name',
         'phone',
+        'number_plate',
     ];
 
     if (!empty($actionColumn)) {

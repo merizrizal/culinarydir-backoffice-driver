@@ -60,10 +60,10 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 
 					<div class="row">
                         <div class="col-xs-12">
-                            <h4><strong><?= \Yii::t('app', 'Driver Name') ?></strong> : <?= $model['first_name'] . " " . $model['last_name']; ?></h4>
+                            <h4><strong><?= \Yii::t('app', 'Status') ?></strong> : <?= $model['applicationDriver']['logStatusApprovalDrivers'][0]['statusApprovalDriver']['name'] ?></h4>
                         </div>
                         <div class="col-xs-12">
-                            <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : </h4>
+                            <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
                         </div>
                     </div>
 
