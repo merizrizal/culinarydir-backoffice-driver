@@ -2,13 +2,19 @@
 
 namespace backoffice\modules\driver\controllers;
 
+use GuzzleHttp\Psr7\Response;
 use backoffice\controllers\BaseController;
+use core\models\ApplicationDriver;
+use core\models\LogStatusApprovalDriver;
 use core\models\RegistryDriver;
+use core\models\StatusApprovalDriver;
+use core\models\StatusApprovalDriverRequire;
 use core\models\search\RegistryDriverSearch;
+use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 use yii\widgets\ActiveForm;
+
 
 /**
  * StatusDriverController implements the CRUD actions for RegistryDriver model.
@@ -106,6 +112,239 @@ class StatusDriverController extends BaseController
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionUpdateStatusDriver($id, $rdid)
+    {
+        if (!empty(($post = \Yii::$app->request->post()))) {
+
+            $modelApplicationDriver = ApplicationDriver::find()
+                ->joinWith([
+                    'logStatusApprovalDrivers',
+                    'logStatusApprovalDrivers.logStatusApprovalDriverActions',
+                    'logStatusApprovalDrivers.logStatusApprovalDriverActions.logStatusApprovalDriver log_status_approval_driver_act',
+                ])
+                ->andWhere(['application_driver.id' => $id])
+                ->asArray()->one();
+
+            $modelStatusApprovalDriver = StatusApprovalDriver::find()
+                ->joinWith([
+                    'statusApprovalDriverRequires',
+                    'statusApprovalDriverRequireActions',
+                    'statusApprovalDriverRequireActions.statusApprovalDriverAction',
+                ])
+                ->andWhere(['status_approval_driver.id' => $post['status_approval_driver_id']])
+                ->asArray()->one();
+
+            $require = [];
+            $err1 = '';
+
+            foreach ($modelStatusApprovalDriver['statusApprovalDriverRequires'] as $key => $dataStatusApprovalDriverRequire) {
+
+                $require[$key] = false;
+
+                foreach ($modelApplicationDriver['logStatusApprovalDrivers'] as $key => $dataLogStatusApprovalDriver) {
+
+                    if ($dataStatusApprovalDriverRequire['require_status_approval_driver_id'] == $dataLogStatusApprovalDriver['status_approval_driver_id'] && $dataLogStatusApprovalDriver['is_actual']) {
+
+                        $require[$key] = true;
+                        break;
+                    }
+                }
+
+                if (!$require[$key])
+                    $err1 .= $dataStatusApprovalDriverRequire['require_status_approval_driver_id'] . ' ';
+            }
+
+            $result = true;
+
+            foreach ($require as $value) {
+
+                $result = $result && $value;
+            }
+
+            $require = [];
+            $err2 = '';
+
+            foreach ($modelStatusApprovalDriver['statusApprovalDriverRequireActions'] as $key => $dataStatusApprovalDriverRequireAction) {
+
+                $require[$key] = false;
+
+                foreach ($modelApplicationDriver['logStatusApprovalDrivers'] as $key => $dataLogStatusApprovalDriver) {
+
+                    foreach ($dataLogStatusApprovalDriver['logStatusApprovalDriverActions'] as $dataLogStatusApprovalDriverAction) {
+
+                        if ($dataStatusApprovalDriverRequireAction['status_approval_driver_action_id'] == $dataLogStatusApprovalDriverAction['status_approval_driver_action_id'] && $dataLogStatusApprovalDriverAction['logStatusApprovalDriver']['application_driver_counter'] == $modelApplicationDriver['counter']) {
+
+                            $require[$key] = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$require[$key])
+                    $err2 .= $dataStatusApprovalDriverRequireAction['statusApprovalDriverAction']['name'] . ", ";
+            }
+
+            foreach ($require as $value) {
+
+                $result = $result && $value;
+            }
+
+            if ($result) {
+
+                $transaction = \Yii::$app->db->beginTransaction();
+                $flag = false;
+
+                $modelLogStatusApprovalDriver = new LogStatusApprovalDriver();
+                $modelLogStatusApprovalDriver->application_driver_id = $modelApplicationDriver['id'];
+                $modelLogStatusApprovalDriver->status_approval_driver_id = $post['status_approval_driver_id'];
+                $modelLogStatusApprovalDriver->is_actual = true;
+                $modelLogStatusApprovalDriver->application_driver_counter = $modelApplicationDriver['counter'];
+
+                if (($flag = $modelLogStatusApprovalDriver->save())) {
+
+                    $statusActual = $post['status_approval_driver_actual-' . $post['status_approval_driver_id']];
+
+                    $modelStatusApprovalDriverActual = StatusApprovalDriver::find()
+                        ->andWhere(['id' => $statusActual])
+                        ->asArray()->one();
+
+                    if (($flag = !empty($modelStatusApprovalDriverActual))) {
+
+                        $result = true;
+
+                        if ($modelStatusApprovalDriverActual['branch'] > 1) {
+
+                            $checkLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+                                ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
+                                ->andWhere(['!=', 'status_approval_driver_id', $statusActual])
+                                ->andWhere(['application_driver_counter' => $modelApplicationDriver['counter']])
+                                ->asArray()->all();
+
+                            $modelStatusApprovalDriverRequire = StatusApprovalDriverRequire::find()
+                                ->andWhere(['require_status_approval_driver_id' => $statusActual])
+                                ->asArray()->one();
+
+                            $require = [];
+
+                            foreach ($modelStatusApprovalDriverRequire as $key => $dataStatusApprovalDriverRequire) {
+
+                                $require[$key] = false;
+
+                                foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
+
+                                    if ($dataStatusApprovalDriverRequire['status_approval_driver_id'] == $dataCheckLogStatusApprovalDriver['status_approval_driver_id']) {
+
+                                        $require[$key] = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            foreach ($result as $value) {
+
+                                $result = $result && $value;
+                            }
+
+                        }
+
+                        if (($flag = $result) && $modelStatusApprovalDriver['branch'] != 0) {
+
+                            $modelLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+                                ->andWhere(['status_approval_driver_id' => $statusActual])
+                                ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
+                                ->andWhere(['application_driver_counter' => $modelApplicationDriver['counter']])
+                                ->one();
+
+                            $modelLogStatusApprovalDriver->is_actual = false;
+
+                            $flag = $modelLogStatusApprovalDriver->save();
+                        }
+
+                        if ($modelStatusApprovalDriver['branch'] == 0) {
+
+                            if ($modelStatusApprovalDriver['status'] != 'Finished-Fail') {
+
+                                $requireStatusApprovalDriverId = [];
+
+                                foreach ($modelStatusApprovalDriver['statusApprovalDriverRequires'] as $dataStatusApprovalDriverRequire) {
+
+                                    $requireStatusApprovalDriverId[] = $dataStatusApprovalDriverRequire['require_status_approval_driver_id'];
+                                }
+
+                                $checkLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+                                    ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
+                                    ->andWhere(['status_approval_driver_id' => $requireStatusApprovalDriverId])
+                                    ->asArray()->one();
+
+                                $result = true;
+
+                                foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
+
+                                    $result = $result && $dataCheckLogStatusApprovalDriver['is_actual'];
+
+                                }
+
+                                if ($result) {
+
+                                    $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], ['AND', ['application_driver_id' => $modelApplicationDriver['id'], 'status_approval_driver_id' => $requireStatusApprovalDriverId]]) > 0;
+                                }
+                            } else {
+
+                                $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], 'is_actual = TRUE AND status_approval_driver_id != :said AND application_driver_id = :appdriverid', ['said' => $post['status_approval_driver_id'], 'appdriverid' => $modelApplicationDriver['id']]) > 0;
+                            }
+                        }
+                    }
+                }
+
+                if ($flag) {
+
+                    if (!empty($modelStatusApprovalDriver['execute_action'])) {
+
+                        $flag = $this->run($modelStatusApprovalDriver['execute_action'], ['appDriverId' => $modelApplicationDriver['id'], 'regDriverId' => $rdid]);
+                    }
+                }
+
+                if ($flag) {
+
+                    \Yii::$app->session->setFlash('status', 'success');
+                    \Yii::$app->session->setFlash('message1', 'Update Status Sukses');
+                    \Yii::$app->session->setFlash('message2', 'Proses update status sukses. Data telah berhasil disimpan.');
+
+                    $transaction->commit();
+                } else {
+
+                    \Yii::$app->session->setFlash('status', 'danger');
+                    \Yii::$app->session->setFlash('message1', 'Update Status Gagal');
+                    \Yii::$app->session->setFlash('message2', 'Proses update status gagal. Data gagal disimpan.');
+
+                    $transaction->rollBack();
+                }
+            } else {
+
+                $msg = '';
+
+                if (!empty($err1)) {
+
+                    $msg = 'Data ini belum melewati status: (<b>' . $err1 . '</b>)';
+
+                    if (!empty($err2))
+                        $msg .= ' dan ';
+                }
+
+                if (!empty($err2)) {
+
+                    $msg .= 'Data ini belum melewati action: (<b>' . trim($err2, ', ') . '</b>)';
+                }
+
+                \Yii::$app->session->setFlash('status', 'danger');
+                \Yii::$app->session->setFlash('message1', 'Update ' . $post['status_approval_driver_id'] . ' Gagal');
+                \Yii::$app->session->setFlash('message2', 'Proses update status gagal. ' . $msg);
+            }
+
+            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['/driver/status-driver/view-driver', 'id' => $rdid, 'appDriverId' => $modelApplicationDriver['id']]));
+        }
     }
 
     /**
