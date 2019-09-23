@@ -35,12 +35,12 @@ return [
                 'navigation' => [
                     'apprvPndgDriver' => [
                         'label' => 'Pending',
-                        'url' => ['driver/status-driver/pndg-data-driver'],
+                        'url' => ['driver/status-driver/pndg-driver'],
                         'isDirect' => false,
                     ],
                     'apprvIcorctDriver' => [
                         'label' => 'Incorrect',
-                        'url' => ['driver/status-driver/icorct-data-driver'],
+                        'url' => ['driver/status-driver/icorct-driver'],
                         'isDirect' => false,
                     ]
                 ]

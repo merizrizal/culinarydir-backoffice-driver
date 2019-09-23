@@ -34,24 +34,40 @@ class StatusDriverController extends BaseController
 
     public function actionPndgDriver()
     {
-        return $this->indexDataDriver('PNDG', \Yii::t('app', 'Pending'));
+        return $this->indexDriver('PNDG', \Yii::t('app', 'Pending'));
     }
 
     public function actionIcorctDriver()
     {
-        return $this->indexDataDriver('ICORCT', \Yii::t('app', 'Incorrect'));
+        return $this->indexDriver('ICORCT', \Yii::t('app', 'Incorrect'));
     }
 
-    public function actionViewDataDriver($id)
+    public function actionViewDriver($id, $appDriverId)
     {
         $model = RegistryDriver::find()
         ->joinWith([
             'applicationDriver',
-            'applicationDriver.logStatusApproval'
-        ]);
+            'userInCharge',
+            'applicationDriver.logStatusApprovalDrivers',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverRequires0',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverRequires0.statusApprovalDriver status_approval_driver_req',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverRequires0.statusApprovalDriver.logStatusApprovalDrivers log_status_approval_driver_req' => function ($query) use ($appDriverId) {
 
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+                $query->andOnCondition(['log_status_approval_driver_req.application_driver_id' => $appDriverId]);
+            },
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverActions',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverActions.logStatusApprovalDriverActions log_status_approval_driver_action_act',
+            'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver.statusApprovalDriverActions.logStatusApprovalDriverActions.logStatusApprovalDriver log_status_approval_driver_act' => function ($query) use ($appDriverId) {
+
+                $query->andOnCondition(['log_status_approval_driver_act.application_driver_id' => $appDriverId]);
+            },
+        ])
+        ->andWhere(['registry_driver.id' => $id])
+        ->asArray()->one();
+
+        return $this->render('view_driver', [
+            'model' => $model,
         ]);
     }
 
@@ -149,7 +165,7 @@ class StatusDriverController extends BaseController
         }
     }
 
-    private function indexDataDriver($statusApproval, $title)
+    private function indexDriver($statusApproval, $title)
     {
         $searchModel = new RegistryDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);

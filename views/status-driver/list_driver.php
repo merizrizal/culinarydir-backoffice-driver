@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     </div>',
                 'buttons' => [
                     'view' => function($url, $model, $key) {
-                        return Html::a('<i class="fa fa-search-plus"></i>', $url, [
+                        return Html::a('<i class="fa fa-search-plus"></i>', ['view-driver', 'id' => $model->id, 'appDriverId' => $model->application_driver_id], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
                             'data-toggle' => 'tooltip',
