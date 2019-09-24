@@ -12,7 +12,7 @@ $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
 ]);
 
-$ajaxRequest->view();
+$ajaxRequest->form();
 
 $status = \Yii::$app->session->getFlash('status');
 $message1 = \Yii::$app->session->getFlash('message1');
@@ -33,7 +33,7 @@ if ($status !== null) {
 $this->title = $model['first_name'] . ' ' . $model['last_name'];
 $this->params['breadcrumbs'][] = $this->title; ?>
 
-<?= $ajaxRequest->component() ?>
+<?= $ajaxRequest->component(false) ?>
 
 <div class="registry-driver-view">
     <div class="row">

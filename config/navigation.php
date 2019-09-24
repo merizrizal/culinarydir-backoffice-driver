@@ -13,17 +13,17 @@ return [
                 'iconClass' => 'fa fa-user-tie',
                 'navigation' => [
                     'pndgDriver' => [
-                        'label' => 'Pending Driver',
+                        'label' => 'Pending',
                         'url' => ['driver/registry-driver/index-pndg'],
                         'isDirect' => false,
                     ],
                     'icorctDriver'=> [
-                        'label' => 'Incorrect Driver',
+                        'label' => 'Incorrect',
                         'url' => ['driver/registry-driver/index-icorct'],
                         'isDirect' => false,
                     ],
                     'rjctDriver'=> [
-                        'label' => 'Reject Driver',
+                        'label' => 'Reject',
                         'url' => ['driver/registry-driver/index-rjct'],
                         'isDirect' => false,
                     ],

@@ -49,6 +49,27 @@ class StatusApprovalDriverActionController extends BaseController
         ]);
     }
 
+    public function actionFixIncorrect($id, $appDriverId, $logsaid, $actid)
+    {
+        $modelLogStatusApprovalDriverAction = new LogStatusApprovalDriverAction();
+        $modelLogStatusApprovalDriverAction->log_status_approval_driver_id = $logsaid;
+        $modelLogStatusApprovalDriverAction->status_approval_driver_action_id = $actid;
+
+        if ($modelLogStatusApprovalDriverAction->save()) {
+
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+        } else {
+
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+        }
+
+        return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['/driver/status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]));
+    }
+
     public function actionCheckSetDriverInfo($id, $appDriverId, $logsaid, $actid)
     {
         $model = RegistryDriver::find()
