@@ -5,6 +5,10 @@ use sycomponent\NotificationDialog;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model core\models\RegistryDriver */
+/* @var $id string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -29,10 +33,10 @@ if ($status !== null) {
 }
 
 $this->title = 'Check & Set ' . Yii::t('app', 'Driver Information') . ' : ' . $model['first_name'];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = $model['first_name'];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = $model['first_name'] . ' ' . $model['last_name']; ?>
 
-echo $ajaxRequest->component(); ?>
+<?= $ajaxRequest->component(); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -51,10 +55,21 @@ echo $ajaxRequest->component(); ?>
                         echo Html::hiddenInput('check_set_driver_info', true);
 
                         echo Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
-                        echo ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
+                        echo ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
                         echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
 
                         <div class="clearfix" style="margin-top: 15px"></div>
+
+						<div class="row">
+                            <div class="col-xs-12">
+                                <h4><strong><?= Yii::t('app', 'Status') ?></strong> : <?= $model['applicationDriver']['logStatusApprovalDrivers'][0]['statusApprovalDriver']['name'] ?></h4>
+                            </div>
+                            <div class="col-xs-12">
+                                <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
+                            </div>
+                        </div>
+
+                        <hr>
 
                         <div class="row">
                             <div class="col-xs-12">
@@ -151,7 +166,7 @@ echo $ajaxRequest->component(); ?>
                         </div>
                     </div>
 
-                        <hr>
+                    <hr>
 
                         <?php
                         echo Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);

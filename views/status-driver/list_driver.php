@@ -9,6 +9,7 @@ use yii\helpers\Html;
 /* @var $searchModel core\models\search\RegistryDriverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $title string */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -29,7 +30,6 @@ if ($status !== null) {
 
     $notif->theScript();
     echo $notif->renderDialog();
-
 }
 
 $this->title = $title;
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'first_name',
             'phone',
             'number_plate',
-            'userInCharge.full_name',
+            'user_in_charge',
 
             [
                 'class' => 'yii\grid\ActionColumn',

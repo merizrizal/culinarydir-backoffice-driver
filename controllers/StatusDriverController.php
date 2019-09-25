@@ -11,7 +11,6 @@ use core\models\StatusApprovalDriverRequire;
 use core\models\search\RegistryDriverSearch;
 use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
-use yii\web\NotFoundHttpException;
 
 
 /**
@@ -104,7 +103,7 @@ class StatusDriverController extends BaseController
 
                 $require[$key] = false;
 
-                foreach ($modelApplicationDriver['logStatusApprovalDrivers'] as $key => $dataLogStatusApprovalDriver) {
+                foreach ($modelApplicationDriver['logStatusApprovalDrivers'] as $dataLogStatusApprovalDriver) {
 
                     if ($dataStatusApprovalDriverRequire['require_status_approval_driver_id'] == $dataLogStatusApprovalDriver['status_approval_driver_id'] && $dataLogStatusApprovalDriver['is_actual']) {
 
@@ -185,17 +184,17 @@ class StatusDriverController extends BaseController
 
                             $modelStatusApprovalDriverRequire = StatusApprovalDriverRequire::find()
                                 ->andWhere(['require_status_approval_driver_id' => $statusActual])
-                                ->asArray()->one();
+                                ->asArray()->all();
 
                             $require = [];
 
-                            foreach ($modelStatusApprovalDriverRequire as $key => $dataStatusApprovalDriverRequire) {
+                            foreach ($modelStatusApprovalDriverRequire as $key => $$dataStatusApprovalDriverRequire) {
 
                                 $require[$key] = false;
 
                                 foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
 
-                                    if ($dataStatusApprovalDriverRequire['status_approval_driver_id'] == $dataCheckLogStatusApprovalDriver['status_approval_driver_id']) {
+                                    if ($$dataStatusApprovalDriverRequire['status_approval_driver_id'] == $dataCheckLogStatusApprovalDriver['status_approval_driver_id']) {
 
                                         $require[$key] = true;
                                         break;
@@ -236,7 +235,7 @@ class StatusDriverController extends BaseController
                                 $checkLogStatusApprovalDriver = LogStatusApprovalDriver::find()
                                     ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
                                     ->andWhere(['status_approval_driver_id' => $requireStatusApprovalDriverId])
-                                    ->asArray()->one();
+                                    ->asArray()->all();
 
                                 $result = true;
 
@@ -307,31 +306,15 @@ class StatusDriverController extends BaseController
         }
     }
 
-    /**
-     * Finds the RegistryDriver model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return RegistryDriver the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = RegistryDriver::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
     private function indexDriver($statusApproval, $title)
     {
         $searchModel = new RegistryDriverSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query
-        ->andWhere(['log_status_approval_driver.status_approval_driver_id' => $statusApproval])
-        ->andWhere(['log_status_approval_driver.is_actual' => 1])
-        ->andWhere('registry_driver.application_driver_counter = application_driver.counter')
-        ->distinct();
+            ->andWhere(['log_status_approval_driver.status_approval_driver_id' => $statusApproval])
+            ->andWhere(['log_status_approval_driver.is_actual' => true])
+            ->andWhere('registry_driver.application_driver_counter = application_driver.counter')
+            ->distinct();
 
         \Yii::$app->formatter->timeZone = 'Asia/Jakarta';
 
