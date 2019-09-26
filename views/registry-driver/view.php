@@ -1,6 +1,7 @@
 <?php
 
 use sycomponent\AjaxRequest;
+use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use sycomponent\Tools;
 use yii\helpers\Html;
@@ -34,12 +35,11 @@ if ($status !== null) {
 
 $this->title = $model->first_name . " " . $model->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Data Driver'), 'url' => ['index-' . strtolower($statusApproval)]];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-driver-view">
-
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
@@ -185,7 +185,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                                     <div class="thumbnail">
                                         <div class="image view view-first">
 
-                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']); ?>
 
                                             <div class="mask">
                                                 <p>&nbsp;</p>
@@ -202,8 +202,56 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                         endif; ?>
 
                     </div>
+
+					<hr>
+
+                    <div class="clearfix" style="margin-top: 15px"></div>
+
+                    <?php
+                    if (!empty($actionButton)) {
+
+                        foreach ($actionButton as $valActionButton) {
+
+                            echo $valActionButton($model);
+                        }
+                    } ?>
+
+                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']) ?>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php
+$modalDialog = new ModalDialog([
+    'clickedComponent' => 'a#delete',
+    'modelAttributeId' => 'model-id',
+    'modelAttributeName' => 'model-name',
+]);
+
+$modalDialog->theScript(false);
+
+echo $modalDialog->renderDialog();
+
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/magnific-popup.css', ['depends' => 'yii\web\YiiAsset']);
+
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/jquery.magnific-popup.js', ['depends' => 'yii\web\YiiAsset']);
+
+$jscript = '
+    $(".thumbnail").magnificPopup({
+        delegate: "a.show-image",
+        type: "image",
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0,1]
+        },
+        image: {
+            tError: "The image could not be loaded."
+        }
+    });
+';
+
+$this->registerJs($jscript); ?>

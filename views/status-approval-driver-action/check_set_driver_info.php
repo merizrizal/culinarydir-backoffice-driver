@@ -9,6 +9,9 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $model core\models\RegistryDriver */
 /* @var $id string */
+/* @var $appDriverId string */
+/* @var $actid string */
+/* @var $logsaid string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -34,9 +37,9 @@ if ($status !== null) {
 
 $this->title = 'Check & Set ' . Yii::t('app', 'Driver Information') . ' : ' . $model['first_name'];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = $model['first_name'] . ' ' . $model['last_name']; ?>
+$this->params['breadcrumbs'][] = $model['first_name'] . ' ' . $model['last_name'];
 
-<?= $ajaxRequest->component(); ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -80,93 +83,93 @@ $this->params['breadcrumbs'][] = $model['first_name'] . ' ' . $model['last_name'
                         <hr>
 
                         <div class="row mb-20">
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'First Name')) ?><br>
-                            <?= $model['first_name'] ?>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'First Name')) ?><br>
+                                <?= $model['first_name'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Last Name')) ?><br>
+                                <?= $model['last_name'] ?>
+                            </div>
+                       		<div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Phone')) ?><br>
+                                <?= $model['phone'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Email')) ?><br>
+                                <?= $model['email'] ?>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Last Name')) ?><br>
-                            <?= $model['last_name'] ?>
-                        </div>
-                   		<div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Phone')) ?><br>
-                            <?= $model['phone'] ?>
-                        </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Email')) ?><br>
-                            <?= $model['email'] ?>
-                        </div>
-                    </div>
 
-                    <div class="row mb-20">
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'No Ktp')) ?><br>
-                            <?= $model['no_ktp'] ?>
+                        <div class="row mb-20">
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'No Ktp')) ?><br>
+                                <?= $model['no_ktp'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'No Sim')) ?><br>
+                                <?= $model['no_sim'] ?>
+                            </div>
+                       		<div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Date Birth')) ?><br>
+                                <?= $model['date_birth'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'District')) ?><br>
+                                <?= $model['district']['name'] ?>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'No Sim')) ?><br>
-                            <?= $model['no_sim'] ?>
-                        </div>
-                   		<div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Date Birth')) ?><br>
-                            <?= $model['date_birth'] ?>
-                        </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'District')) ?><br>
-                            <?= $model['district']['name'] ?>
-                        </div>
-                    </div>
 
-                    <div class="row mb-20">
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Motor Brand')) ?><br>
-                            <?= $model['motor_brand'] ?>
+                        <div class="row mb-20">
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Motor Brand')) ?><br>
+                                <?= $model['motor_brand'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Motor Type')) ?><br>
+                                <?= $model['motor_type'] ?>
+                            </div>
+                       		<div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Number Plate')) ?><br>
+                                <?= $model['number_plate'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Stnk Expired')) ?><br>
+                                <?= $model['stnk_expired'] ?>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Motor Type')) ?><br>
-                            <?= $model['motor_type'] ?>
-                        </div>
-                   		<div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Number Plate')) ?><br>
-                            <?= $model['number_plate'] ?>
-                        </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Stnk Expired')) ?><br>
-                            <?= $model['stnk_expired'] ?>
-                        </div>
-                    </div>
 
-                    <div class="row mb-20">
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Emergency Contact Name')) ?><br>
-                            <?= $model['emergency_contact_name'] ?>
+                        <div class="row mb-20">
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Emergency Contact Name')) ?><br>
+                                <?= $model['emergency_contact_name'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Emergency Contact Phone')) ?><br>
+                                <?= $model['emergency_contact_phone'] ?>
+                            </div>
+                       		<div class="col-xs-6 col-sm-3">
+                                <?= Html::label(\Yii::t('app', 'Emergency Contact Address')) ?><br>
+                                <?= $model['emergency_contact_address'] ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+
+                                <?= Html::label(\Yii::t('app', 'Other Driver ?')) ?><br>
+                                <?= !empty($model['other_driver']) ? $model['other_driver'] : 'Tidak Ada'; ?>
+
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Emergency Contact Phone')) ?><br>
-                            <?= $model['emergency_contact_phone'] ?>
+
+                        <div class="row mb-20">
+                        	<div class="col-xs-8 col-sm-3">
+
+                                <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
+                                <?= $model['is_criteria_passed'] ? 'Lulus Pengecekan' : 'Belum lulus Pengecekan'; ?>
+
+                            </div>
                         </div>
-                   		<div class="col-xs-6 col-sm-3">
-                            <?= Html::label(\Yii::t('app', 'Emergency Contact Address')) ?><br>
-                            <?= $model['emergency_contact_address'] ?>
-                        </div>
-                        <div class="col-xs-6 col-sm-3">
 
-                            <?= Html::label(\Yii::t('app', 'Other Driver ?')) ?><br>
-                            <?= !empty($model['other_driver']) ? $model['other_driver'] : 'Tidak Ada'; ?>
-
-                        </div>
-                    </div>
-
-                    <div class="row mb-20">
-                    	<div class="col-xs-8 col-sm-3">
-
-                            <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
-                            <?= $model['is_criteria_passed'] ? 'Lulus Pengecekan' : 'Belum lulus Pengecekan'; ?>
-
-                        </div>
-                    </div>
-
-                    <hr>
+                   		<hr>
 
                         <?php
                         echo Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);

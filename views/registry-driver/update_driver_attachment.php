@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
 
-<div class="driver-attachment-update">
+<div class="registry-driver-attachment-update">
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
@@ -82,7 +82,7 @@ echo $ajaxRequest->component(); ?>
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
 
-                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']) ?>
 
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
@@ -103,7 +103,6 @@ echo $ajaxRequest->component(); ?>
 
                                                         		</div>
                                                         	</div>
-
                                                     		<div class="row mt-10">
                                                 				<div class="col-xs-12">
                                                             		<?= Html::checkbox('DriverAttachmentDelete[]', false, ['label' => 'Delete', 'value' => $driverAttachment['id']]) ?>

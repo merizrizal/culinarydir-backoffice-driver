@@ -34,9 +34,9 @@ if ($status !== null) {
 
 $this->title = $title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/pndg-driver']];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false) ?>
 
 <div class="registry-driver-index">
 
@@ -64,11 +64,11 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', [strtolower($statusApproval) . '-driver'], [
-                            'id' => 'refresh',
-                            'class' => 'btn btn-success',
-                            'data-placement' => 'top',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],
@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'first_name',
             'phone',
             'number_plate',
-            'user_in_charge',
+            'userInCharge.full_name',
 
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -99,6 +99,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                     </div>',
                 'buttons' => [
                     'view' => function($url, $model, $key) {
+
                         return Html::a('<i class="fa fa-search-plus"></i>', ['view-driver', 'id' => $model->id, 'appDriverId' => $model->application_driver_id], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
@@ -114,6 +115,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
+
             return ['id' => $model['id'], 'class' => 'row-grid-view-registry-driver', 'style' => 'cursor: pointer;'];
         },
         'pager' => [
@@ -129,6 +131,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 <?php
 $jscript = '
     $("div.container.body").off("click");
+
     $("div.container.body").on("click", function(event) {
 
         if ($(event.target).parent(".row-grid-view-registry-driver").length > 0) {

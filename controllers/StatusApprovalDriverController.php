@@ -2,7 +2,6 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use backoffice\controllers\BaseController;
 use core\models\ApplicationDriver;
 use core\models\DriverAttachment;
 use core\models\LogStatusApprovalDriver;
@@ -14,7 +13,7 @@ use yii\filters\VerbFilter;
 /**
  * StatusApprovalDriverController implements the CRUD actions for RegistryDriver model.
  */
-class StatusApprovalDriverController extends BaseController
+class StatusApprovalDriverController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc

@@ -2,6 +2,7 @@
 
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
+use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
 use yii\helpers\Html;
 
@@ -23,6 +24,7 @@ $message1 = \Yii::$app->session->getFlash('message1');
 $message2 = \Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -31,27 +33,33 @@ if ($status !== null) {
 
     $notif->theScript();
     echo $notif->renderDialog();
-
 }
 
 $this->title = $title;
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = \Yii::t('app', 'Data Driver');
 
-<?= $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="registry-driver-index">
 
-    <?php
+  	<?php
+    $modalDialog = new ModalDialog([
+        'clickedComponent' => 'a#delete',
+        'modelAttributeId' => 'model-id',
+        'modelAttributeName' => 'model-name',
+    ]);
+
     $column = [
         ['class' => 'yii\grid\SerialColumn'],
 
-        'created_at',
+        'created_at:date',
         'first_name',
         'phone',
         'number_plate',
     ];
 
     if (!empty($actionColumn)) {
+
         array_push($column, $actionColumn);
     }
 
@@ -79,11 +87,11 @@ $this->params['breadcrumbs'][] = $this->title; ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index-' . strtolower($statusApproval)], [
-                            'id' => 'refresh',
-                            'class' => 'btn btn-success',
-                            'data-placement' => 'top',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
             ],
         ],
@@ -93,6 +101,7 @@ $this->params['breadcrumbs'][] = $this->title; ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
+
             return ['id' => $model['id'], 'class' => 'row-grid-view-registry-driver', 'style' => 'cursor: pointer;'];
         },
         'pager' => [
@@ -106,8 +115,13 @@ $this->params['breadcrumbs'][] = $this->title; ?>
 </div>
 
 <?php
-$jscript = '
+echo $modalDialog->renderDialog();
+
+$jscript = ''
+    . $modalDialog->getScript() . '
+
     $("div.container.body").off("click");
+
     $("div.container.body").on("click", function(event) {
 
         if ($(event.target).parent(".row-grid-view-registry-driver").length > 0) {

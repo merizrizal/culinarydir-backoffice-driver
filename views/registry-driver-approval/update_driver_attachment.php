@@ -13,12 +13,17 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $dataDriverAttachment array */
 /* @var $attachmentType array */
+/* @var $statusApproval string */
+/* @var $id string */
+/* @var $appDriverId string */
+/* @var $actid string */
+/* @var $logsaid string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
 
 $ajaxRequest = new AjaxRequest([
-    'modelClass' => 'DriverAttachment',
+    'modelClass' => 'RegistryDriverAttachment',
 ]);
 
 $ajaxRequest->form();
@@ -39,23 +44,23 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Update ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model->person->first_name . ' ' . $model->person->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->person->first_name . ' ' . $model->person->last_name, 'url' => ['view', 'id' => $model->person->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
+$this->params['breadcrumbs'][] = 'Update ' . \Yii::t('app', 'Driver Attachment');
 
 echo $ajaxRequest->component(); ?>
 
-<div class="driver-attachment-update">
+<div class="registry-driver-attachment-update">
     <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">
-                <div class="driver-attachment-form">
+                <div class="registry-driver-attachment-form">
 
                     <?php
                     $form = ActiveForm::begin([
-                        'id' => 'driver-attachment-form',
-                        'action' => ['update-driver-attachment', 'id' => $model->person_id],
+                        'id' => 'registry-driver-attachment-form',
+                        'action' => ['update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid],
                         'options' => [
 
                         ],
@@ -81,7 +86,7 @@ echo $ajaxRequest->component(); ?>
                                                     <div class="thumbnail">
                                                         <div class="image view view-first">
 
-                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']) ?>
+                                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $driverAttachment['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']); ?>
 
                                                             <div class="mask">
                                                                 <p>&nbsp;</p>
@@ -104,9 +109,7 @@ echo $ajaxRequest->component(); ?>
                                                         	</div>
                                                     		<div class="row mt-10">
                                                 				<div class="col-xs-12">
-
                                                             		<?= Html::checkbox('DriverAttachmentDelete[]', false, ['label' => 'Delete', 'value' => $driverAttachment['id']]) ?>
-
                                                             	</div>
                                                         	</div>
                                                         </div>
@@ -136,6 +139,7 @@ echo $ajaxRequest->component(); ?>
 
             						</div>
             					</div>
+
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-2">
                                         <?= Html::label(\Yii::t('app', 'Driver Attachment')) ?>
@@ -156,12 +160,13 @@ echo $ajaxRequest->component(); ?>
                                     </div>
                                 </div>
                             </div>
+
 							<div class="row">
                                 <div class="col-xs-12">
 
                                     <?php
                                     echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['view', 'id' => $model['person_id']], ['class' => 'btn btn-default']); ?>
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-default']); ?>
 
                                 </div>
                             </div>
@@ -190,7 +195,7 @@ $jscript = '
         placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
     });
 
-    $("#driverattachment-type").select2({
+    $("#registrydriverattachment-type").select2({
         theme: "krajee",
         dropdownCssClass: "select2-grid-system",
         placeholder: "' . \Yii::t('app', 'Attachment Type') . '"
@@ -209,9 +214,9 @@ $jscript = '
         }
     });
 
-    $("form#driver-attachment-form").on("beforeSubmit", function(event) {
+    $("form#registry-driver-attachment-form").on("beforeSubmit", function(event) {
 
-        var driverAttachmentType = $("#driverattachment-type").parent();
+        var driverAttachmentType = $("#registrydriverattachment-type").parent();
 
         if (driverAttachmentType.hasClass("has-error")) {
 

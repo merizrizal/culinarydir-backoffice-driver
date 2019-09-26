@@ -34,7 +34,7 @@ $this->title = $model->person->first_name . " " . $model->person->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Person As Driver'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component() ?>
+echo $ajaxRequest->component(); ?>
 
 <div class="person-as-driver-view">
     <div class="row">
@@ -137,19 +137,15 @@ echo $ajaxRequest->component() ?>
                             <?= $model['emergency_contact_address'] ?>
                         </div>
                         <div class="col-xs-6 col-sm-3">
-
                             <?= Html::label(\Yii::t('app', 'Other Driver ?')) ?><br>
                             <?= !empty($model['other_driver']) ? $model['other_driver'] : 'Tidak Ada'; ?>
-
                         </div>
                     </div>
 
                     <div class="row mb-20">
                     	<div class="col-xs-8 col-sm-3">
-
                             <?= Html::label(\Yii::t('app', 'Is Criteria Passed')) ?><br>
                             <?= $model['is_criteria_passed'] ? 'Lulus Pengecekan' : 'Belum lulus Pengecekan'; ?>
-
                         </div>
                     </div>
 
@@ -174,12 +170,12 @@ echo $ajaxRequest->component() ?>
                                     <div class="thumbnail">
                                         <div class="image view view-first">
 
-                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']);  ?>
+                                            <?= Html::img(\Yii::getAlias('@uploadsUrl') . Tools::thumb('/img/registry_driver_attachment/', $dataDriverAttachments['file_name'], 200, 150), ['style' => 'width: 100%; display: block;']) ?>
 
                                             <div class="mask">
                                                 <p>&nbsp;</p>
                                                 <div class="tools tools-bottom">
-                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
+                                                    <a class="show-image direct" href="<?= \Yii::getAlias('@uploadsUrl') . '/img/registry_driver_attachment/' . $dataDriverAttachments['file_name'] ?>"><i class="fa fa-search"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -191,6 +187,17 @@ echo $ajaxRequest->component() ?>
                         endif; ?>
 
                     </div>
+
+                    <hr>
+
+                    <div class="clearfix" style="margin-top: 15px"></div>
+
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
+
+                    <?= Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['person_id']], ['class' => 'btn btn-primary']) ?>
+
+                    <?= Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']) ?>
+
                 </div>
             </div>
         </div>

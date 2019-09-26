@@ -44,7 +44,7 @@ if ($status !== null) {
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
 $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
 $this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
-$this->params['breadcrumbs'][] = 'Update' . \Yii::t('app', 'Driver Information');
+$this->params['breadcrumbs'][] = 'Update ' . \Yii::t('app', 'Driver Information');
 
 echo $ajaxRequest->component(); ?>
 
@@ -57,7 +57,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-driver-form',
-                        'action' => ['update-driver-info', 'id' => $model->id, 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid],
+                        'action' => ['update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid],
                         'options' => [
 
                         ],
@@ -218,7 +218,7 @@ echo $ajaxRequest->component(); ?>
 
                                         <?php
                                         echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]); ?>
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-default']); ?>
 
                                     </div>
                                 </div>

@@ -2,14 +2,16 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use backoffice\controllers\BaseController;
 use core\models\ApplicationDriver;
 use core\models\LogStatusApprovalDriver;
+use core\models\LogStatusApprovalDriverAction;
 use core\models\RegistryDriver;
 use core\models\RegistryDriverAttachment;
 use core\models\Settings;
 use core\models\StatusApprovalDriver;
+use core\models\StatusApprovalDriverAction;
 use core\models\search\RegistryDriverSearch;
+use Yii;
 use sycomponent\AjaxRequest;
 use sycomponent\Tools;
 use yii\filters\VerbFilter;
@@ -22,7 +24,7 @@ use yii\widgets\ActiveForm;
 /**
  * RegistryDriverController implements the CRUD actions for RegistryDriver model.
  */
-class RegistryDriverController extends BaseController
+class RegistryDriverController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
@@ -56,7 +58,11 @@ class RegistryDriverController extends BaseController
 
             if ($model->load($post) && $modelRegistryDriverAttachment->load($post)) {
 
-                if (!empty($save)) {
+                if (empty($save)) {
+
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
+                } else {
 
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = false;
@@ -65,7 +71,7 @@ class RegistryDriverController extends BaseController
                     $modelApplicationDriver->user_in_charge = \Yii::$app->user->identity->id;
                     $modelApplicationDriver->counter = 1;
 
-                    if ($flag = $modelApplicationDriver->save()) {
+                    if (($flag = $modelApplicationDriver->save())) {
 
                         $modelLogStatusApprovalDriver = new LogStatusApprovalDriver();
                         $modelLogStatusApprovalDriver->application_driver_id = $modelApplicationDriver->id;
@@ -74,7 +80,7 @@ class RegistryDriverController extends BaseController
                         $modelLogStatusApprovalDriver->application_driver_counter = $modelApplicationDriver->counter;
                     }
 
-                    if ($flag = $modelLogStatusApprovalDriver->save()) {
+                    if (($flag = $modelLogStatusApprovalDriver->save())) {
 
                         $model->application_driver_id = $modelApplicationDriver->id;
                         $model->user_in_charge = $modelApplicationDriver->user_in_charge;
@@ -114,7 +120,6 @@ class RegistryDriverController extends BaseController
                         $transaction->commit();
 
                         return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['driver/registry-driver/view-pndg', 'id' => $model->id]));
-
                     } else {
 
                         \Yii::$app->session->setFlash('status', 'danger');
@@ -170,13 +175,11 @@ class RegistryDriverController extends BaseController
                         \Yii::$app->session->setFlash('status', 'success');
                         \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
                         \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
-
                     } else {
 
                         \Yii::$app->session->setFlash('status', 'danger');
                         \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
                         \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
-
                     }
                 }
             }
@@ -327,8 +330,8 @@ class RegistryDriverController extends BaseController
         }
 
         $modelSettings = Settings::find()
-        ->andWhere(['setting_name' => 'attachment_type'])
-        ->asArray()->one();
+            ->andWhere(['setting_name' => 'attachment_type'])
+            ->asArray()->one();
 
         $attachmentType = json_decode($modelSettings['setting_value'], true);
 
@@ -341,6 +344,107 @@ class RegistryDriverController extends BaseController
         ]);
     }
 
+    public function actionResubmit($id, $appDriverId, $appDriverCounter, $statusApproval)
+    {
+        $modelStatusApprovalDriverAction = StatusApprovalDriverAction::find()
+            ->andWhere(['url' => 'status-approval-driver-action/fix-incorrect'])
+            ->asArray()->one();
+
+        $modelLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+            ->andWhere(['application_driver_id' => $appDriverId])
+            ->andWhere(['status_approval_driver_id' => $statusApproval])
+            ->andWhere(['is_actual' => true])
+            ->andWhere(['application_driver_counter' => $appDriverCounter])
+            ->one();
+
+        $transaction = \Yii::$app->db->beginTransaction();
+        $flag = true;
+
+        $modelLogStatusApprovalDriver->is_actual = false;
+
+        if (($flag = $modelLogStatusApprovalDriver->save())) {
+
+            $modelLogStatusApprovalActionDriver = new LogStatusApprovalDriverAction();
+            $modelLogStatusApprovalActionDriver->log_status_approval_driver_id = $modelLogStatusApprovalDriver['id'];
+            $modelLogStatusApprovalActionDriver->status_approval_driver_action_id = $modelStatusApprovalDriverAction['id'];
+
+            if (($flag = $modelLogStatusApprovalActionDriver->save())) {
+
+                $modelLogStatusApprovalDriver = new LogStatusApprovalDriver();
+                $modelLogStatusApprovalDriver->application_driver_id = $appDriverId;
+                $modelLogStatusApprovalDriver->status_approval_driver_id = 'RSBMT';
+                $modelLogStatusApprovalDriver->is_actual = true;
+                $modelLogStatusApprovalDriver->application_driver_counter = $appDriverCounter;
+            }
+
+            if (($flag = $modelLogStatusApprovalDriver->save())) {
+
+                $flag = $this->run('/driver/status-approval-driver/resubmit', ['appDriverId' => $appDriverId, 'regDriverId' => $id]);
+            }
+        }
+
+        if ($flag) {
+
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is success. Data has been saved'));
+
+            $transaction->commit();
+
+            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl([$this->module->id . '/registry-driver/index-icorct']));
+        } else {
+
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Update Data Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Update data process is fail. Data fail to save'));
+
+            $transaction->rollBack();
+
+            return AjaxRequest::redirect($this, Yii::$app->urlManager->createUrl([$this->module->id . '/registry-driver/view-icorct', 'id' => $id]));
+        }
+    }
+
+    /**
+     * Deletes an existing Registry Driver model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id, $statusApproval)
+    {
+        if (($model = $this->findModel($id)) !== false) {
+
+            $flag = false;
+            $error = '';
+
+            try {
+                $flag = $model->delete();
+            } catch (\yii\db\Exception $exc) {
+                $error = \Yii::$app->params['errMysql'][$exc->errorInfo[1]];
+            }
+        }
+
+        if ($flag) {
+
+            \Yii::$app->session->setFlash('status', 'success');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Success'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is success. Data has been deleted'));
+        } else {
+
+            \Yii::$app->session->setFlash('status', 'danger');
+            \Yii::$app->session->setFlash('message1', \Yii::t('app', 'Delete Is Fail'));
+            \Yii::$app->session->setFlash('message2', \Yii::t('app', 'Delete process is fail. Data fail to delete' . $error));
+        }
+
+        $return = [];
+
+        $return['url'] = Yii::$app->urlManager->createUrl([$this->module->id . '/registry-driver/index-' . $statusApproval]);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $return;
+    }
+
     public function actionIndexPndg()
     {
         $actionColumn = [
@@ -348,24 +452,38 @@ class RegistryDriverController extends BaseController
             'template' => '
                 <div class="btn-container hide">
                     <div class="visible-lg visible-md">
-                        <div class="btn-group btn-group-md" role="group" style="width: 40px">
-                            {view}
+                        <div class="btn-group btn-group-md" role="group" style="width: 78px">
+                            {view}{delete}
                         </div>
                     </div>
                     <div class="visible-sm visible-xs">
-                        <div class="btn-group btn-group-lg" role="group" style="width: 52px">
-                            {view}
+                        <div class="btn-group btn-group-lg" role="group" style="width: 104px">
+                            {view}{delete}
                         </div>
                     </div>
                 </div>',
             'buttons' => [
                 'view' => function ($url, $model, $key) {
+
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-pndg', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',
                         'title' => 'View',
+                    ]);
+                },
+                'delete' => function ($url, $model, $key) {
+
+                    return Html::a('<i class="fa fa-trash-alt"></i>', ['delete', 'id' => $model->id, 'statusApproval' => 'pndg'], [
+                        'id' => 'delete',
+                        'class' => 'btn btn-danger',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'top',
+                        'data-not-ajax' => 1,
+                        'title' => 'Delete',
+                        'model-id' => $model->id,
+                        'model-name' => $model->first_name,
                     ]);
                 },
             ]
@@ -393,7 +511,8 @@ class RegistryDriverController extends BaseController
                 </div>',
             'buttons' => [
                 'view' => function ($url, $model, $key) {
-                    return Html::a('<i class="fa fa-search-plus"></i>', ['view-icorct', 'id' => $model->id], [
+
+                    return Html::a('<i class="fa fa-check"></i>', ['view-icorct', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
                         'data-toggle' => 'tooltip',
@@ -404,7 +523,7 @@ class RegistryDriverController extends BaseController
             ]
         ];
 
-        return $this->index('ICORCT', \Yii::t('app', 'Incorect Driver'), $actionColumn);
+        return $this->index('ICORCT', \Yii::t('app', 'Incorrect Driver'), $actionColumn);
     }
 
     public function actionIndexRjct()
@@ -426,6 +545,7 @@ class RegistryDriverController extends BaseController
                 </div>',
             'buttons' => [
                 'view' => function ($url, $model, $key) {
+
                     return Html::a('<i class="fa fa-search-plus"></i>', ['view-rjct', 'id' => $model->id], [
                         'id' => 'view',
                         'class' => 'btn btn-primary',
@@ -444,15 +564,28 @@ class RegistryDriverController extends BaseController
     {
         $actionButton = [
             'update-driver-info' => function ($model) {
-            return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
+
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
             },
             'update-driver-attachment' => function ($model) {
-            return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
+
+                return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
+                ]);
+            },
+            'delete' => function ($model) {
+
+                return ' ' . Html::a('<i class="fa fa-trash-alt"></i> Delete', ['delete', 'id' => $model['id'], 'statusApproval' => 'pndg'], [
+                    'id' => 'delete',
+                    'class' => 'btn btn-danger',
+                    'style' => 'color:white',
+                    'data-not-ajax' => 1,
+                    'model-id' => $model->id,
+                    'model-name' => $model->first_name,
                 ]);
             },
         ];
@@ -464,19 +597,22 @@ class RegistryDriverController extends BaseController
     {
         $actionButton = [
             'update-driver-info' => function ($model) {
-            return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
+
+                return Html::a('<i class="fa fa-pencil-alt"></i> Edit Informasi Driver', ['update-driver-info', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
             },
             'update-driver-attachment' => function ($model) {
-            return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
+
+                return ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit Berkas Driver', ['update-driver-attachment', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
                     'class' => 'btn btn-primary',
                     'data-toggle' => 'tooltip',
                 ]);
             },
             'resubmit' => function ($model) {
-            return ' ' . Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'statusApproval' => 'icorct'], [
+
+                return ' ' . Html::a('<i class="fa fa-check"></i> Resubmit', ['resubmit', 'id' => $model['id'], 'appDriverId' => $model['applicationDriver']['id'], 'appDriverCounter' => $model['applicationDriver']['counter'], 'statusApproval' => 'ICORCT'], [
                     'id' => 'resubmit',
                     'class' => 'btn btn-success',
                 ]);

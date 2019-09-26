@@ -2,17 +2,15 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use backoffice\controllers\BaseController;
 use core\models\LogStatusApprovalDriverAction;
 use core\models\RegistryDriver;
 use sycomponent\AjaxRequest;
-use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 
 /**
  * StatusApprovalDriverActionController implements the CRUD actions for RegistryDriver model.
  */
-class StatusApprovalDriverActionController extends BaseController
+class StatusApprovalDriverActionController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc

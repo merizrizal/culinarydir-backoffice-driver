@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
 
-<div class="update-driver-info-update">
+<div class="registry-driver-update">
    <div class="row">
         <div class="col-sm-12">
             <div class="x_panel">

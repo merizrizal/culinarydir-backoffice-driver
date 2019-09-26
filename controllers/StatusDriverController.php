@@ -2,7 +2,6 @@
 
 namespace backoffice\modules\driver\controllers;
 
-use backoffice\controllers\BaseController;
 use core\models\ApplicationDriver;
 use core\models\LogStatusApprovalDriver;
 use core\models\RegistryDriver;
@@ -12,11 +11,10 @@ use core\models\search\RegistryDriverSearch;
 use sycomponent\AjaxRequest;
 use yii\filters\VerbFilter;
 
-
 /**
  * StatusDriverController implements the CRUD actions for RegistryDriver model.
  */
-class StatusDriverController extends BaseController
+class StatusDriverController extends \backoffice\controllers\BaseController
 {
     /**
      * @inheritdoc
@@ -50,6 +48,7 @@ class StatusDriverController extends BaseController
         $model = RegistryDriver::find()
             ->joinWith([
                 'applicationDriver',
+                'district',
                 'userInCharge',
                 'applicationDriver.logStatusApprovalDrivers',
                 'applicationDriver.logStatusApprovalDrivers.statusApprovalDriver',
@@ -242,7 +241,6 @@ class StatusDriverController extends BaseController
                                 foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
 
                                     $result = $result && $dataCheckLogStatusApprovalDriver['is_actual'];
-
                                 }
 
                                 if ($result) {

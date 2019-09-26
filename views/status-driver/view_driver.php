@@ -32,9 +32,10 @@ if ($status !== null) {
 }
 
 $this->title = $model['first_name'] . ' ' . $model['last_name'];
-$this->params['breadcrumbs'][] = $this->title; ?>
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/pndg-driver']];
+$this->params['breadcrumbs'][] = $this->title;
 
-<?= $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="registry-driver-view">
     <div class="row">
@@ -65,9 +66,13 @@ $this->params['breadcrumbs'][] = $this->title; ?>
                             <?= Html::label(Yii::t('app', 'No KTP')) ?><br>
                             <?= $model['no_ktp'] ?>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-3">
                             <?= Html::label(Yii::t('app', 'No SIM')) ?><br>
                             <?= $model['no_sim'] ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= Html::label(Yii::t('app', 'District')) ?><br>
+                            <?= $model['district']['name'] ?>
                         </div>
                     </div>
 
@@ -206,6 +211,19 @@ $this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/Magnifi
 $this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/Magnific-Popup/dist/jquery.magnific-popup.js', ['depends' => 'yii\web\YiiAsset']);
 
 $jscript = '
+    $(".thumbnail").magnificPopup({
+        delegate: "a.show-image",
+        type: "image",
+        gallery: {
+            enabled: true,
+            navigateByImgClick: true,
+            preload: [0,1]
+        },
+        image: {
+            tError: "The image could not be loaded."
+        }
+    });
+
     $(\'[data-toggle="tooltip"]\').tooltip();
 
     $(".submit-approval-driver").on("click", function() {

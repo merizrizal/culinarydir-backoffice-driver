@@ -29,13 +29,12 @@ if ($status !== null) {
 
     $notif->theScript();
     echo $notif->renderDialog();
-
 }
 
 $this->title = \Yii::t('app', 'Person As Driver');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="person-as-driver-index">
 
@@ -63,12 +62,29 @@ echo $ajaxRequest->component(false) ?>
         'toolbar' => [
             [
                 'content' => Html::a('<i class="fa fa-sync-alt"></i>', ['index'], [
-                            'id' => 'refresh',
-                            'class' => 'btn btn-success',
-                            'data-placement' => 'top',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Refresh'
+                    'id' => 'refresh',
+                    'class' => 'btn btn-success',
+                    'data-placement' => 'top',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Refresh'
                 ])
+            ],
+            '{export}',
+            '{toggleData}',
+        ],
+        'exportConfig' => [
+            GridView::EXCEL => ['label' => 'Save as EXCEL'],
+        ],
+        'export' => [
+            'showConfirmAlert' => false,
+            'header' => ''
+        ],
+        'toggleDataOptions' => [
+            'all' => [
+                'label' => 'Tampilkan Semua',
+            ],
+            'page' => [
+                'label' => 'Tampilkan Per Halaman',
             ],
         ],
         'filterModel' => $searchModel,
@@ -79,6 +95,7 @@ echo $ajaxRequest->component(false) ?>
             'no_ktp',
             'no_sim',
             'person.phone',
+
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '
@@ -96,6 +113,7 @@ echo $ajaxRequest->component(false) ?>
                     </div>',
                 'buttons' => [
                     'view' => function($url, $model, $key) {
+
                         return Html::a('<i class="fa fa-search-plus"></i>', $url, [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
@@ -111,6 +129,7 @@ echo $ajaxRequest->component(false) ?>
             'class' => 'table table-striped table-hover'
         ],
         'rowOptions' => function ($model, $key, $index, $grid) {
+
             return ['id' => $model['person_id'], 'class' => 'row-grid-view-person-as-driver', 'style' => 'cursor: pointer;'];
         },
         'pager' => [
@@ -126,6 +145,7 @@ echo $ajaxRequest->component(false) ?>
 <?php
 $jscript = '
     $("div.container.body").off("click");
+
     $("div.container.body").on("click", function(event) {
 
         if ($(event.target).parent(".row-grid-view-person-as-driver").length > 0) {
