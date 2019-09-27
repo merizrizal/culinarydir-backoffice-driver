@@ -62,7 +62,7 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
             ->andWhere(['registry_driver.id' => $id])
             ->asArray()->one();
 
-        if ((\Yii::$app->request->post()) && !empty(\Yii::$app->request->post('check_set_driver_info'))) {
+        if (!empty(\Yii::$app->request->post('check_set_driver_info'))) {
 
             $modelLogStatusApprovalDriverAction = new LogStatusApprovalDriverAction();
             $modelLogStatusApprovalDriverAction->log_status_approval_driver_id = $logsaid;
@@ -104,7 +104,7 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
             ->andWhere(['registry_driver.id' => $id])
             ->asArray()->one();
 
-        if ((\Yii::$app->request->post()) && !empty(\Yii::$app->request->post('check_set_driver_attachment'))) {
+        if (!empty(\Yii::$app->request->post('check_set_driver_attachment'))) {
 
             $modelLogStatusApprovalDriverAction = new LogStatusApprovalDriverAction();
             $modelLogStatusApprovalDriverAction->log_status_approval_driver_id = $logsaid;

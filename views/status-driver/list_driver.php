@@ -22,6 +22,7 @@ $message1 = \Yii::$app->session->getFlash('message1');
 $message2 = \Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
+
     $notif = new NotificationDialog([
         'status' => $status,
         'message1' => $message1,
@@ -33,10 +34,10 @@ if ($status !== null) {
 }
 
 $this->title = $title;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/pndg-driver']];
+$this->params['breadcrumbs'][] = \Yii::t('app', 'Approval Driver');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(false) ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="registry-driver-index">
 
@@ -81,6 +82,16 @@ echo $ajaxRequest->component(false) ?>
             'phone',
             'number_plate',
             'userInCharge.full_name',
+
+            [
+                'attribute' => 'is_criteria_passed',
+                'format' => 'raw',
+                'filter' =>  [true => 'True', false => 'False'],
+                'value' => function ($model, $index, $widget) {
+
+                    return Html::checkbox('is_criteria_passed[]', $model->is_criteria_passed, ['value' => $index, 'disabled' => 'disabled']);
+                },
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
@@ -129,7 +140,15 @@ echo $ajaxRequest->component(false) ?>
 </div>
 
 <?php
-$jscript = '
+$this->registerCssFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/skins/all.css', ['depends' => 'yii\web\YiiAsset']);
+
+$this->registerJsFile($this->params['assetCommon']->baseUrl . '/plugins/icheck/icheck.min.js', ['depends' => 'yii\web\YiiAsset']);
+
+$jscript = ''
+    . \Yii::$app->params['checkbox-radio-script']() . '
+
+    $(".iCheck-helper").parent().removeClass("disabled");
+
     $("div.container.body").off("click");
 
     $("div.container.body").on("click", function(event) {

@@ -42,53 +42,65 @@ echo $ajaxRequest->component(false); ?>
         <div class="col-sm-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
+                	<div class="row">
+                        <div class="col-xs-12">
+                		    <h4><strong><?= \Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
+            		    </div>
+        		    </div>
+        		    <div class="row">
+                        <div class="col-xs-12">
+                    		<h4><strong><?= \Yii::t('app', 'Is Criteria Passed') ?></strong> : <?= $model['is_criteria_passed'] ? 'YA' : 'TIDAK'; ?></h4>
+                    	</div>
+                    </div>
                 </div>
 
                 <div class="x_content">
+
+                	<div class="clearfix" style="margin-top: 15px"></div>
+
                     <div class="row mb-20">
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'First Name')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'First Name')) ?><br>
                             <?= $model['first_name'] ?>
                         </div>
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'Last Name')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'Last Name')) ?><br>
                             <?= $model['last_name'] ?>
                         </div>
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'Phone')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'Phone')) ?><br>
                             <?= $model['phone'] ?>
                         </div>
                     </div>
 
                     <div class="row mb-20">
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'No KTP')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'No KTP')) ?><br>
                             <?= $model['no_ktp'] ?>
                         </div>
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'No SIM')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'No SIM')) ?><br>
                             <?= $model['no_sim'] ?>
                         </div>
                         <div class="col-md-3">
-                            <?= Html::label(Yii::t('app', 'District')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'District')) ?><br>
                             <?= $model['district']['name'] ?>
                         </div>
                     </div>
 
                     <div class="row mb-20">
                         <div class="col-lg-3 col-xs-6">
-                            <?= Html::label(Yii::t('app', 'Motor Type')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'Motor Type')) ?><br>
                             <?= $model['motor_type'] ?>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
-                            <?= Html::label(Yii::t('app', 'Motor Brand')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'Motor Brand')) ?><br>
                             <?= $model['motor_brand'] ?>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
-                            <?= Html::label(Yii::t('app', 'Number Plate')) ?><br>
+                            <?= Html::label(\Yii::t('app', 'Number Plate')) ?><br>
                             <?= $model['number_plate'] ?>
                         </div>
                     </div>
@@ -101,7 +113,7 @@ echo $ajaxRequest->component(false); ?>
         <div class="col-sm-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h4><?= Yii::t('app', 'Driver Status') ?></h4>
+                    <h4><?= \Yii::t('app', 'Driver Status') ?></h4>
                 </div>
 
                 <div class="x_content">

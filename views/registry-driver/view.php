@@ -52,9 +52,9 @@ echo $ajaxRequest->component(); ?>
 
                             echo $valActionButton($model);
                         }
-                    } ?>
+                    }
 
-                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']) ?>
+                   	echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                     <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -214,9 +214,9 @@ echo $ajaxRequest->component(); ?>
 
                             echo $valActionButton($model);
                         }
-                    } ?>
+                    }
 
-                   	<?= Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']) ?>
+                   	echo Html::a('<i class="fa fa-times"></i> Cancel', ['index-' . strtolower($statusApproval)], ['class' => 'btn btn-default']); ?>
 
                 </div>
             </div>

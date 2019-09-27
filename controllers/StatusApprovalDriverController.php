@@ -39,7 +39,7 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
         if (($flag = LogStatusApprovalDriver::updateAll(['is_actual' => 0], ['application_driver_id' => $appDriverId]) > 0)) {
 
             $modelApplicationDriver = ApplicationDriver::findOne($appDriverId);
-            $modelApplicationDriver->counter = $modelApplicationDriver->counter + 1;
+            $modelApplicationDriver->counter += $modelApplicationDriver->counter;
 
             if (($flag = $modelApplicationDriver->save())) {
 
@@ -51,7 +51,7 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
 
                 if (($flag = $modelLogStatusApprovalDriver->save())) {
 
-                    $modelRegistryDriver =  RegistryDriver::findOne(['id' => $regDriverId]);
+                    $modelRegistryDriver = RegistryDriver::findOne(['id' => $regDriverId]);
                     $modelRegistryDriver->application_driver_counter = $modelApplicationDriver->counter;
 
                     $flag = $modelRegistryDriver->save();
@@ -67,37 +67,40 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
         $flag = false;
 
         $modelRegistryDriver = RegistryDriver::find()
-            ->andWhere(['id' => $regDriverId])
-            ->one();
+            ->joinWith([
+                'registryDriverAttachments'
+            ])
+            ->andWhere(['registry_driver.id' => $regDriverId])
+            ->asArray()->one();
 
         $modelPerson = new Person();
-        $modelPerson->first_name = $modelRegistryDriver->first_name;
-        $modelPerson->last_name = $modelRegistryDriver->last_name;
-        $modelPerson->email = $modelRegistryDriver->email;
-        $modelPerson->phone = $modelRegistryDriver->phone;
+        $modelPerson->first_name = $modelRegistryDriver['first_name'];
+        $modelPerson->last_name = $modelRegistryDriver['last_name'];
+        $modelPerson->email = $modelRegistryDriver['email'];
+        $modelPerson->phone = $modelRegistryDriver['phone'];
 
         if (($flag = $modelPerson->save())) {
 
             $modelPersonAsDriver = new PersonAsDriver();
             $modelPersonAsDriver->person_id = $modelPerson->id;
-            $modelPersonAsDriver->district_id = $modelRegistryDriver->district_id;
-            $modelPersonAsDriver->no_ktp = $modelRegistryDriver->no_ktp;
-            $modelPersonAsDriver->no_sim = $modelRegistryDriver->no_sim;
-            $modelPersonAsDriver->date_birth = $modelRegistryDriver->date_birth;
-            $modelPersonAsDriver->motor_brand = $modelRegistryDriver->motor_brand;
-            $modelPersonAsDriver->motor_type = $modelRegistryDriver->motor_type;
-            $modelPersonAsDriver->emergency_contact_name = $modelRegistryDriver->emergency_contact_name;
-            $modelPersonAsDriver->emergency_contact_phone = $modelRegistryDriver->emergency_contact_phone;
-            $modelPersonAsDriver->emergency_contact_address = $modelRegistryDriver->emergency_contact_address;
-            $modelPersonAsDriver->number_plate = $modelRegistryDriver->number_plate;
-            $modelPersonAsDriver->stnk_expired = $modelRegistryDriver->stnk_expired;
-            $modelPersonAsDriver->other_driver = $modelRegistryDriver->other_driver;
-            $modelPersonAsDriver->is_criteria_passed = $modelRegistryDriver->is_criteria_passed;
+            $modelPersonAsDriver->district_id = $modelRegistryDriver['district_id'];
+            $modelPersonAsDriver->no_ktp = $modelRegistryDriver['no_ktp'];
+            $modelPersonAsDriver->no_sim = $modelRegistryDriver['no_sim'];
+            $modelPersonAsDriver->date_birth = $modelRegistryDriver['date_birth'];
+            $modelPersonAsDriver->motor_brand = $modelRegistryDriver['motor_brand'];
+            $modelPersonAsDriver->motor_type = $modelRegistryDriver['motor_type'];
+            $modelPersonAsDriver->emergency_contact_name = $modelRegistryDriver['emergency_contact_name'];
+            $modelPersonAsDriver->emergency_contact_phone = $modelRegistryDriver['emergency_contact_phone'];
+            $modelPersonAsDriver->emergency_contact_address = $modelRegistryDriver['emergency_contact_address'];
+            $modelPersonAsDriver->number_plate = $modelRegistryDriver['number_plate'];
+            $modelPersonAsDriver->stnk_expired = $modelRegistryDriver['stnk_expired'];
+            $modelPersonAsDriver->other_driver = $modelRegistryDriver['other_driver'];
+            $modelPersonAsDriver->is_criteria_passed = $modelRegistryDriver['is_criteria_passed'];
         }
 
         if (($flag = $modelPersonAsDriver->save())) {
 
-            foreach ($modelRegistryDriver->registryDriverAttachments as $dataRegistryDriverAttachment) {
+            foreach ($modelRegistryDriver['registryDriverAttachments'] as $dataRegistryDriverAttachment) {
 
                 $modelDriverAttachment = new DriverAttachment();
                 $modelDriverAttachment->person_as_driver_id = $modelPersonAsDriver->person_id;

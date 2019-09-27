@@ -42,9 +42,10 @@ if ($status !== null) {
 }
 
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
-$this->params['breadcrumbs'][] = 'Update ' . \Yii::t('app', 'Driver Information');
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/index-pndg']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = ['label' => 'Check & Set ' . \Yii::t('app', 'Driver Information'), 'url' => ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
+$this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
 

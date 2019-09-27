@@ -19,9 +19,9 @@ $ajaxRequest = new AjaxRequest([
 
 $ajaxRequest->form();
 
-$status = Yii::$app->session->getFlash('status');
-$message1 = Yii::$app->session->getFlash('message1');
-$message2 = Yii::$app->session->getFlash('message2');
+$status = \Yii::$app->session->getFlash('status');
+$message1 = \Yii::$app->session->getFlash('message1');
+$message2 = \Yii::$app->session->getFlash('message2');
 
 if ($status !== null) {
 
@@ -35,9 +35,10 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Check & Set ' . Yii::t('app', 'Driver Information') . ' : ' . $model['first_name'];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = $model['first_name'] . ' ' . $model['last_name'];
+$this->title = 'Check & Set ' . \Yii::t('app', 'Driver Information') . ' : ' . $model['first_name'];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/pndg-driver']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Information');
 
 echo $ajaxRequest->component(); ?>
 
@@ -65,10 +66,10 @@ echo $ajaxRequest->component(); ?>
 
 						<div class="row">
                             <div class="col-xs-12">
-                                <h4><strong><?= Yii::t('app', 'Status') ?></strong> : <?= $model['applicationDriver']['logStatusApprovalDrivers'][0]['statusApprovalDriver']['name'] ?></h4>
+                                <h4><strong><?= \Yii::t('app', 'Status') ?></strong> : <?= $model['applicationDriver']['logStatusApprovalDrivers'][0]['statusApprovalDriver']['name'] ?></h4>
                             </div>
                             <div class="col-xs-12">
-                                <h4><strong><?= Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
+                                <h4><strong><?= \Yii::t('app', 'User In Charge') ?></strong> : <?= $model['userInCharge']['full_name'] ?></h4>
                             </div>
                         </div>
 
@@ -76,7 +77,7 @@ echo $ajaxRequest->component(); ?>
 
                         <div class="row">
                             <div class="col-xs-12">
-                                <h4><strong><?= Yii::t('app', 'Driver Information') ?></strong></h4>
+                                <h4><strong><?= \Yii::t('app', 'Driver Information') ?></strong></h4>
                             </div>
                         </div>
 
