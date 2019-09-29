@@ -68,8 +68,16 @@ class StatusDriverController extends \backoffice\controllers\BaseController
             ->andWhere(['registry_driver.id' => $id])
             ->asArray()->one();
 
+        $modelLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+            ->andWhere(['application_driver_id' => $appDriverId])
+            ->andWhere(['is_actual' => true])
+            ->asArray()->one();
+        
+        $statusApprovalDriver = $modelLogStatusApprovalDriver['status_approval_driver_id'];
+
         return $this->render('view_driver', [
             'model' => $model,
+            'statusApprovalDriver' => $statusApprovalDriver,
         ]);
     }
 

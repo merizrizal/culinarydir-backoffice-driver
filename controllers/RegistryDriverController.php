@@ -452,7 +452,7 @@ class RegistryDriverController extends \backoffice\controllers\BaseController
             'template' => '
                 <div class="btn-container hide">
                     <div class="visible-lg visible-md">
-                        <div class="btn-group btn-group-md" role="group" style="width: 78px">
+                        <div class="btn-group btn-group-md" role="group" style="width: 80px">
                             {view}{delete}
                         </div>
                     </div>

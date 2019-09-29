@@ -40,7 +40,11 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 
 $this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
 $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Information');
 
-echo $ajaxRequest->component(); ?>
+echo $ajaxRequest->component(); 
+
+$btnOk = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
+$btnUpdate = Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
+$btnCancel = ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -58,9 +62,7 @@ echo $ajaxRequest->component(); ?>
 
                         echo Html::hiddenInput('check_set_driver_info', true);
 
-                        echo Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
-                        echo ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
-                        echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
+                        echo $btnOk, $btnUpdate, $btnCancel; ?>
 
                         <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -173,9 +175,7 @@ echo $ajaxRequest->component(); ?>
                    		<hr>
 
                         <?php
-                        echo Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
-                        echo ' ' . Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
-                        echo ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']);
+                        echo $btnOk, $btnUpdate, $btnCancel;
 
                     ActiveForm::end(); ?>
 

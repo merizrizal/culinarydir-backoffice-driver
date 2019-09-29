@@ -128,7 +128,7 @@ echo $ajaxRequest->component(); ?>
 							<div class="form-group">
 								<div class="row mb-20">
             						<div class="col-xs-12 col-sm-2">
-            							<label><?= Yii::t('app', 'Attachment Type') ?></label>
+            							<label><?= \Yii::t('app', 'Attachment Type') ?></label>
             						</div>
             						<div class="col-xs-12 col-sm-10">
 

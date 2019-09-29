@@ -68,7 +68,7 @@ echo $ajaxRequest->component(); ?>
                     ]); ?>
 
                      	<div class="x_title">
-                            <h4><?= Yii::t('app', 'Driver Information') ?></h4>
+                            <h4><?= \Yii::t('app', 'Driver Information') ?></h4>
                         </div>
 
                         <div class="x_content">

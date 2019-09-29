@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $model core\models\RegistryDriver */
+/* @var $statusApprovalDriver string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -32,7 +33,7 @@ if ($status !== null) {
 }
 
 $this->title = $model['first_name'] . ' ' . $model['last_name'];
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/pndg-driver']];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/' . strtolower($statusApprovalDriver) . '-driver']];
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component(false); ?>
