@@ -36,15 +36,15 @@ if ($status !== null) {
 }
 
 $this->title = 'Check & Set ' . \Yii::t('app', 'Driver Information') . ' : ' . $model['first_name'];
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/pndg-driver']];
-$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/' . strtolower($statusApproval) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Information');
 
-echo $ajaxRequest->component(); 
+echo $ajaxRequest->component();
 
-$btnOk = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
-$btnUpdate = Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
-$btnCancel = ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
+$btnAction = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
+    Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']) .
+    ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -62,7 +62,7 @@ $btnCancel = ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver
 
                         echo Html::hiddenInput('check_set_driver_info', true);
 
-                        echo $btnOk, $btnUpdate, $btnCancel; ?>
+                        echo $btnAction ?>
 
                         <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -175,7 +175,7 @@ $btnCancel = ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver
                    		<hr>
 
                         <?php
-                        echo $btnOk, $btnUpdate, $btnCancel;
+                        echo $btnAction;
 
                     ActiveForm::end(); ?>
 

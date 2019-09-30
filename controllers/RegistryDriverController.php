@@ -89,7 +89,7 @@ class RegistryDriverController extends \backoffice\controllers\BaseController
 
                     if (($flag = $model->save())) {
 
-                        $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelRegistryDriverAttachment, 'file_name', 'registry_driver_id', '', true);
+                        $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelRegistryDriverAttachment, 'file_name', 'registry_driver_id', $modelRegistryDriverAttachment->id, true);
 
                         if (($flag = count($post['RegistryDriverAttachment']['type']) == count($images))) {
 
@@ -228,7 +228,7 @@ class RegistryDriverController extends \backoffice\controllers\BaseController
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = true;
 
-                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'registry_driver_id', '', true);
+                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'registry_driver_id', $model->id, true);
 
                     if (!empty($images) || !empty($post['RegistryDriverAttachment']['type'])) {
 

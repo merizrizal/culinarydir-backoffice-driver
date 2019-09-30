@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $model core\models\RegistryDriver */
-/* @var $statusApprovalDriver string */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -33,7 +33,7 @@ if ($status !== null) {
 }
 
 $this->title = $model['first_name'] . ' ' . $model['last_name'];
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/' . strtolower($statusApprovalDriver) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/' . strtolower($statusApproval) . '-driver']];
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component(false); ?>
@@ -122,7 +122,7 @@ echo $ajaxRequest->component(false); ?>
 					<?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-driver-form',
-                        'action' => ['update-status-driver', 'id' => $model['applicationDriver']['id'], 'rdid' => $model['id']],
+                        'action' => ['update-status-driver', 'id' => $model['applicationDriver']['id'], 'rdid' => $model['id'], 'statusApproval' => $statusApproval],
                     ]);
 
                         foreach ($model['applicationDriver']['logStatusApprovalDrivers'] as $dataLogStatusApprovalDriver):
@@ -144,7 +144,7 @@ echo $ajaxRequest->component(false); ?>
                                         foreach ($dataLogStatusApprovalDriver['statusApprovalDriver']['statusApprovalDriverActions'] as $dataStatusApprovalDriverAction) {
 
                                             $btn = ' btn-default';
-                                            $url = [$dataStatusApprovalDriverAction['url'], 'id' => $model['id'], 'appDriverId' => $model['applicationDriver']['id'], 'actid' => $dataStatusApprovalDriverAction['id'], 'logsaid' => $dataLogStatusApprovalDriver['id']];
+                                            $url = [$dataStatusApprovalDriverAction['url'], 'id' => $model['id'], 'appDriverId' => $model['applicationDriver']['id'], 'actid' => $dataStatusApprovalDriverAction['id'], 'logsaid' => $dataLogStatusApprovalDriver['id'], 'statusApproval' => strtolower($statusApproval)];
 
                                             if (!empty($dataStatusApprovalDriverAction['logStatusApprovalDriverActions'])) {
 

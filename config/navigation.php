@@ -33,24 +33,35 @@ return [
                 'label' => 'Approval Driver',
                 'iconClass' => 'fa fa-check',
                 'navigation' => [
-                    'apprvPndgDriver' => [
+                    'approvalPndgDriver' => [
                         'label' => 'Pending',
                         'url' => ['driver/status-driver/pndg-driver'],
                         'isDirect' => false,
                     ],
-                    'apprvIcorctDriver' => [
+                    'approvalIcorctDriver' => [
                         'label' => 'Incorrect',
                         'url' => ['driver/status-driver/icorct-driver'],
+                        'isDirect' => false,
+                    ],
+                    'approvalApprvDriver' => [
+                        'label' => 'Approve',
+                        'url' => ['driver/status-driver/apprv-driver'],
                         'isDirect' => false,
                     ]
                 ]
             ],
-            'driver'=> [
+            'driver' => [
                 'label' => 'Driver',
                 'iconClass' => 'fa fa-users',
                 'url' => ['driver/person-as-driver/index'],
                 'isDirect' => false,
             ],
+            'userAsDriver' => [
+                'label' => 'User As Driver',
+                'iconClass' => 'fa fa-user',
+                'url' => ['driver/user-as-driver/index'],
+                'isDirect' => false,
+            ]
         ]
     ]
 ];

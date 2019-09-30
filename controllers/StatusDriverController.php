@@ -43,7 +43,12 @@ class StatusDriverController extends \backoffice\controllers\BaseController
         return $this->indexDriver('ICORCT', \Yii::t('app', 'Incorrect'));
     }
 
-    public function actionViewDriver($id, $appDriverId)
+    public function actionApprvDriver()
+    {
+        return $this->indexDriver('APPRV', \Yii::t('app', 'Approve'));
+    }
+
+    public function actionViewDriver($id, $appDriverId, $statusApproval)
     {
         $model = RegistryDriver::find()
             ->joinWith([
@@ -68,20 +73,13 @@ class StatusDriverController extends \backoffice\controllers\BaseController
             ->andWhere(['registry_driver.id' => $id])
             ->asArray()->one();
 
-        $modelLogStatusApprovalDriver = LogStatusApprovalDriver::find()
-            ->andWhere(['application_driver_id' => $appDriverId])
-            ->andWhere(['is_actual' => true])
-            ->asArray()->one();
-        
-        $statusApprovalDriver = $modelLogStatusApprovalDriver['status_approval_driver_id'];
-
         return $this->render('view_driver', [
             'model' => $model,
-            'statusApprovalDriver' => $statusApprovalDriver,
+            'statusApproval' => $statusApproval,
         ]);
     }
 
-    public function actionUpdateStatusDriver($id, $rdid)
+    public function actionUpdateStatusDriver($id, $rdid, $statusApproval)
     {
         if (!empty(($post = \Yii::$app->request->post()))) {
 
@@ -199,13 +197,13 @@ class StatusDriverController extends \backoffice\controllers\BaseController
 
                             $require = [];
 
-                            foreach ($modelStatusApprovalDriverRequire as $key => $$dataStatusApprovalDriverRequire) {
+                            foreach ($modelStatusApprovalDriverRequire as $key => $dataStatusApprovalDriverRequire) {
 
                                 $require[$key] = false;
 
                                 foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
 
-                                    if ($$dataStatusApprovalDriverRequire['status_approval_driver_id'] == $dataCheckLogStatusApprovalDriver['status_approval_driver_id']) {
+                                    if ($dataStatusApprovalDriverRequire['status_approval_driver_id'] == $dataCheckLogStatusApprovalDriver['status_approval_driver_id']) {
 
                                         $require[$key] = true;
                                         break;
@@ -310,7 +308,7 @@ class StatusDriverController extends \backoffice\controllers\BaseController
                 \Yii::$app->session->setFlash('message2', 'Proses update status gagal. ' . $msg);
             }
 
-            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['/driver/status-driver/view-driver', 'id' => $rdid, 'appDriverId' => $modelApplicationDriver['id']]));
+            return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['/driver/status-driver/view-driver', 'id' => $rdid, 'appDriverId' => $modelApplicationDriver['id'], 'statusApproval' => $statusApproval]));
         }
     }
 

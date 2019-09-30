@@ -37,11 +37,11 @@ if ($status !== null) {
 }
 
 $this->title = 'Check & Set ' . \Yii::t('app', 'Driver Attachment') . ' : ' . $model['first_name'];
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/index-pndg']];
-$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/' . strtolower($statusApproval) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Attachment');
 
-echo $ajaxRequest->component(); 
+echo $ajaxRequest->component();
 
 $btnOk = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
 $btnUpdate = Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
@@ -118,7 +118,7 @@ $btnCancel = '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-drive
 
                         <hr>
 
-                        <?php 
+                        <?php
                         echo $btnOk, $btnUpdate, $btnCancel;
 
                     ActiveForm::end(); ?>

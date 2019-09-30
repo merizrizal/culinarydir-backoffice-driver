@@ -67,9 +67,7 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
         $flag = false;
 
         $modelRegistryDriver = RegistryDriver::find()
-            ->joinWith([
-                'registryDriverAttachments'
-            ])
+            ->joinWith(['registryDriverAttachments'])
             ->andWhere(['registry_driver.id' => $regDriverId])
             ->asArray()->one();
 

@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Html;
 use kartik\grid\GridView;
 use sycomponent\AjaxRequest;
 use sycomponent\ModalDialog;
 use sycomponent\NotificationDialog;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $searchModel core\models\search\UserAsDriverSearch */
@@ -35,7 +35,7 @@ if ($status !== null) {
 $this->title = \Yii::t('app', 'Driver');
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(true); ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="user-as-driver-index">
 

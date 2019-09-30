@@ -109,9 +109,9 @@ echo $ajaxRequest->component(false); ?>
                         </div>
                     </div>',
                 'buttons' => [
-                    'view' => function($url, $model, $key) {
+                    'view' => function($url, $model, $key) use ($statusApproval) {
 
-                        return Html::a('<i class="fa fa-search-plus"></i>', ['view-driver', 'id' => $model->id, 'appDriverId' => $model->application_driver_id], [
+                        return Html::a('<i class="fa fa-search-plus"></i>', ['view-driver', 'id' => $model->id, 'appDriverId' => $model->application_driver_id, 'statusApproval' => $statusApproval], [
                             'id' => 'view',
                             'class' => 'btn btn-primary',
                             'data-toggle' => 'tooltip',
