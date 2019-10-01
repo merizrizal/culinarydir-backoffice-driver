@@ -96,7 +96,7 @@ class UserAsDriverController extends \backoffice\controllers\BaseController
 
                     $modelUser->user_level_id = $userLevel['id'];
                     $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
-                    $modelUser->setPassword($post['User']['password']);
+                    $modelUser->password = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
 
                     if (($flag = $modelUser->save())) {
 

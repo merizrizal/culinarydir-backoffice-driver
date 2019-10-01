@@ -163,8 +163,8 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
                     $flag = false;
 
                     $userLevel = UserLevel::find()
-                        ->andWhere(['nama_level' => 'Driver'])
-                        ->asArray()->one();
+                    ->andWhere(['nama_level' => 'Driver'])
+                    ->asArray()->one();
 
                     $modelUser->user_level_id = $userLevel['id'];
                     $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
@@ -197,7 +197,6 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
 
                         $transaction->commit();
 
-                        $render = 'view';
                     } else {
 
                         $model->setIsNewRecord(true);
@@ -211,5 +210,11 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
                 }
             }
         }
+
+        return $this->render('add_user', [
+            'model' => $model,
+            'modelUser' => $modelUser,
+            'modelPerson' => $modelPerson
+        ]);
     }
 }
