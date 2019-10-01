@@ -30,7 +30,7 @@ class RegistryDriverApprovalController extends \backoffice\controllers\BaseContr
             ]);
     }
 
-    public function actionUpdateDriverInfo($id, $save = null, $appDriverId, $actid, $logsaid)
+    public function actionUpdateDriverInfo($id, $save = null, $appDriverId, $actid, $logsaid, $statusApproval)
     {
         $model = RegistryDriver::findOne($id);
 
@@ -83,10 +83,11 @@ class RegistryDriverApprovalController extends \backoffice\controllers\BaseContr
             'motorBrand' => $motorBrand,
             'motorType' => $motorType,
             'attachmentType' => $attachmentType,
+            'statusApproval' => $statusApproval,
         ]);
     }
 
-    public function actionUpdateDriverAttachment($id, $save = null, $appDriverId, $actid, $logsaid)
+    public function actionUpdateDriverAttachment($id, $save = null, $appDriverId, $actid, $logsaid, $statusApproval)
     {
         $model = RegistryDriver::find()
             ->joinWith(['registryDriverAttachments'])
@@ -107,7 +108,7 @@ class RegistryDriverApprovalController extends \backoffice\controllers\BaseContr
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = true;
 
-                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'registry_driver_id', '', true);
+                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'registry_driver_id', $model->id, true);
 
                     if (!empty($images) || !empty($post['RegistryDriverAttachment']['type'])) {
 
@@ -223,6 +224,7 @@ class RegistryDriverApprovalController extends \backoffice\controllers\BaseContr
             'modelDriverAttachment' => $modelDriverAttachment,
             'dataDriverAttachment' => $dataDriverAttachment,
             'attachmentType' => $attachmentType,
+            'statusApproval' => $statusApproval,
         ]);
     }
 }

@@ -67,7 +67,10 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
         $flag = false;
 
         $modelRegistryDriver = RegistryDriver::find()
-            ->joinWith(['registryDriverAttachments'])
+            ->joinWith([
+                'applicationDriver',
+                'registryDriverAttachments'
+            ])
             ->andWhere(['registry_driver.id' => $regDriverId])
             ->asArray()->one();
 
@@ -94,6 +97,7 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
             $modelPersonAsDriver->stnk_expired = $modelRegistryDriver['stnk_expired'];
             $modelPersonAsDriver->other_driver = $modelRegistryDriver['other_driver'];
             $modelPersonAsDriver->is_criteria_passed = $modelRegistryDriver['is_criteria_passed'];
+            $modelPersonAsDriver->application_driver_id = $modelRegistryDriver['applicationDriver']['id'];
         }
 
         if (($flag = $modelPersonAsDriver->save())) {

@@ -13,6 +13,7 @@ use yii\widgets\ActiveForm;
 /* @var $actid string */
 /* @var $logsaid string */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -43,9 +44,12 @@ $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Attachm
 
 echo $ajaxRequest->component();
 
-$btnOk = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']);
-$btnUpdate = Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']);
-$btnCancel = '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
+$btnAction =
+        Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
+
+        Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval], ['class' => 'btn btn-primary']) .
+
+        '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -63,7 +67,7 @@ $btnCancel = '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-drive
 
                         echo Html::hiddenInput('check_set_driver_attachment', true);
 
-                        echo $btnOk, $btnUpdate, $btnCancel; ?>
+                        echo $btnAction; ?>
 
                         <div class="clearfix" style="margin-top: 15px"></div>
 
@@ -119,7 +123,7 @@ $btnCancel = '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-drive
                         <hr>
 
                         <?php
-                        echo $btnOk, $btnUpdate, $btnCancel;
+                        echo $btnAction;
 
                     ActiveForm::end(); ?>
 

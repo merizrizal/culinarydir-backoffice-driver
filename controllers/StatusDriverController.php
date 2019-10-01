@@ -226,38 +226,38 @@ class StatusDriverController extends \backoffice\controllers\BaseController
                                 ->one();
 
                             $modelLogStatusApprovalDriver->is_actual = false;
+                        }
 
-                            if (($flag = $modelLogStatusApprovalDriver->save()) && $modelStatusApprovalDriver['branch'] == 0) {
+                        if (($flag = $modelLogStatusApprovalDriver->save()) && $modelStatusApprovalDriver['branch'] == 0) {
 
-                                if ($modelStatusApprovalDriver['status'] != 'Finished-Fail') {
+                            if ($modelStatusApprovalDriver['status'] != 'Finished-Fail') {
 
-                                    $requireStatusApprovalDriverId = [];
+                                $requireStatusApprovalDriverId = [];
 
-                                    foreach ($modelStatusApprovalDriver['statusApprovalDriverRequires'] as $dataStatusApprovalDriverRequire) {
+                                foreach ($modelStatusApprovalDriver['statusApprovalDriverRequires'] as $dataStatusApprovalDriverRequire) {
 
-                                        $requireStatusApprovalDriverId[] = $dataStatusApprovalDriverRequire['require_status_approval_driver_id'];
-                                    }
-
-                                    $checkLogStatusApprovalDriver = LogStatusApprovalDriver::find()
-                                        ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
-                                        ->andWhere(['status_approval_driver_id' => $requireStatusApprovalDriverId])
-                                        ->asArray()->all();
-
-                                    $result = true;
-
-                                    foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
-
-                                        $result = $result && $dataCheckLogStatusApprovalDriver['is_actual'];
-                                    }
-
-                                    if ($result) {
-
-                                        $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], ['AND', ['application_driver_id' => $modelApplicationDriver['id'], 'status_approval_driver_id' => $requireStatusApprovalDriverId]]) > 0;
-                                    }
-                                } else {
-
-                                    $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], 'is_actual = TRUE AND status_approval_driver_id != :said AND application_driver_id = :appdriverid', ['said' => $post['status_approval_driver_id'], 'appdriverid' => $modelApplicationDriver['id']]) > 0;
+                                    $requireStatusApprovalDriverId[] = $dataStatusApprovalDriverRequire['require_status_approval_driver_id'];
                                 }
+
+                                $checkLogStatusApprovalDriver = LogStatusApprovalDriver::find()
+                                    ->andWhere(['application_driver_id' => $modelApplicationDriver['id']])
+                                    ->andWhere(['status_approval_driver_id' => $requireStatusApprovalDriverId])
+                                    ->asArray()->all();
+
+                                $result = true;
+
+                                foreach ($checkLogStatusApprovalDriver as $dataCheckLogStatusApprovalDriver) {
+
+                                    $result = $result && $dataCheckLogStatusApprovalDriver['is_actual'];
+                                }
+
+                                if ($result) {
+
+                                    $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], ['AND', ['application_driver_id' => $modelApplicationDriver['id'], 'status_approval_driver_id' => $requireStatusApprovalDriverId]]) > 0;
+                                }
+                            } else {
+
+                                $flag = LogStatusApprovalDriver::updateAll(['is_actual' => false], 'is_actual = TRUE AND status_approval_driver_id != :said AND application_driver_id = :appdriverid', ['said' => $post['status_approval_driver_id'], 'appdriverid' => $modelApplicationDriver['id']]) > 0;
                             }
                         }
                     }

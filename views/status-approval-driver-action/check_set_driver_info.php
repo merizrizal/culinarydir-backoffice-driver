@@ -12,6 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $appDriverId string */
 /* @var $actid string */
 /* @var $logsaid string */
+/* @var $statusApproval string */
 
 $ajaxRequest = new AjaxRequest([
     'modelClass' => 'RegistryDriver',
@@ -42,9 +43,12 @@ $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Informa
 
 echo $ajaxRequest->component();
 
-$btnAction = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
-    Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-primary']) .
-    ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId], ['class' => 'btn btn-default']); ?>
+$btnAction =
+    Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
+
+    Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval], ['class' => 'btn btn-primary']) .
+
+    ' ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
 
 <div class="registry-driver-form">
     <div class="row">
@@ -62,7 +66,7 @@ $btnAction = Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', 
 
                         echo Html::hiddenInput('check_set_driver_info', true);
 
-                        echo $btnAction ?>
+                        echo $btnAction; ?>
 
                         <div class="clearfix" style="margin-top: 15px"></div>
 

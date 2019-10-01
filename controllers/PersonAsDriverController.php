@@ -148,7 +148,7 @@ class PersonAsDriverController extends \backoffice\controllers\BaseController
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = true;
 
-                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', '', true);
+                    $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelDriverAttachment, 'file_name', 'person_as_driver_id', $model->person_id, true);
 
                     if (!empty($images) || !empty($post['DriverAttachment']['type'])) {
 

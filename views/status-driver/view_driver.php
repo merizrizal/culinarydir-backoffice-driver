@@ -122,7 +122,7 @@ echo $ajaxRequest->component(false); ?>
 					<?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-driver-form',
-                        'action' => ['update-status-driver', 'id' => $model['applicationDriver']['id'], 'rdid' => $model['id'], 'statusApproval' => $statusApproval],
+                        'action' => ['update-status-driver', 'id' => $model['applicationDriver']['id'], 'rdid' => $model['id'], 'statusApproval' => 'status_approval'],
                     ]);
 
                         foreach ($model['applicationDriver']['logStatusApprovalDrivers'] as $dataLogStatusApprovalDriver):
@@ -240,6 +240,16 @@ $jscript = '
     $(\'[data-toggle="tooltip"]\').tooltip();
 
     $(".submit-approval-driver").on("click", function() {
+
+        var dataStatusApprv = $(this).data("status-approval-driver-id");
+
+        if (dataStatusApprv == "RSBMT" || dataStatusApprv == "RJCT") {
+
+            dataStatusApprv = "PNDG";
+        }
+
+        var statusApprv = $("#registry-driver-form").attr("action").replace("status_approval", dataStatusApprv);
+        $("#registry-driver-form").attr("action", statusApprv);
 
         $(".status-approval-driver-id").val($(this).data("status-approval-driver-id"));
         $("#registry-driver-form").trigger("submit");

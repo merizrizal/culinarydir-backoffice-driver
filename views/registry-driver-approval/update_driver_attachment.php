@@ -45,9 +45,9 @@ if ($status !== null) {
 }
 
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/index-pndg']];
-$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = ['label' => 'Check & Set ' . \Yii::t('app', 'Driver Attachment'), 'url' => ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/' . strtolower($statusApproval) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
+$this->params['breadcrumbs'][] = ['label' => 'Check & Set ' . \Yii::t('app', 'Driver Attachment'), 'url' => ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
@@ -61,7 +61,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-driver-attachment-form',
-                        'action' => ['update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid],
+                        'action' => ['update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval],
                         'options' => [
 
                         ],
@@ -167,7 +167,7 @@ echo $ajaxRequest->component(); ?>
 
                                     <?php
                                     echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-default']); ?>
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
 
                                 </div>
                             </div>

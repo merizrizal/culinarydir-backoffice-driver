@@ -15,6 +15,11 @@ use yii\widgets\MaskedInput;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $motorBrand array */
 /* @var $motorType array */
+/* @var $statusApproval string */
+/* @var $id string */
+/* @var $appDriverId string */
+/* @var $actid string */
+/* @var $logsaid string */
 
 kartik\select2\Select2Asset::register($this);
 kartik\select2\ThemeKrajeeAsset::register($this);
@@ -42,9 +47,9 @@ if ($status !== null) {
 }
 
 $this->title = 'Update ' . \Yii::t('app', 'Person As Driver') . ' : ' . $model->first_name . ' ' . $model->last_name;
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/index-pndg']];
-$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId]];
-$this->params['breadcrumbs'][] = ['label' => 'Check & Set ' . \Yii::t('app', 'Driver Information'), 'url' => ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid]];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' => ['status-driver/' . strtolower($statusApproval) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => $model['first_name'] . ' ' . $model['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
+$this->params['breadcrumbs'][] = ['label' => 'Check & Set ' . \Yii::t('app', 'Driver Information'), 'url' => ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = 'Update';
 
 echo $ajaxRequest->component(); ?>
@@ -58,7 +63,7 @@ echo $ajaxRequest->component(); ?>
                     <?php
                     $form = ActiveForm::begin([
                         'id' => 'registry-driver-form',
-                        'action' => ['update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid],
+                        'action' => ['update-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval],
                         'options' => [
 
                         ],
@@ -219,7 +224,7 @@ echo $ajaxRequest->component(); ?>
 
                                         <?php
                                         echo Html::submitButton('<i class="fa fa-save"></i> Update', ['class' => 'btn btn-primary']);
-                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid], ['class' => 'btn btn-default']); ?>
+                                        echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-approval-driver-action/check-set-driver-info', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
 
                                     </div>
                                 </div>
