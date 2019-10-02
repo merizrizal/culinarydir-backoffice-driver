@@ -98,19 +98,20 @@ echo $ajaxRequest->component(); ?>
                     	    'parts' => [
                     	        '{inputClass}' => 'col-lg-4'
                     	    ]
-                    	])->textInput() ?>
+                    	])->textInput(['readonly' => true]) ?>
 
                     	<?= $form->field($modelPerson, 'last_name', [
                     	    'parts' => [
                     	        '{inputClass}' => 'col-lg-4'
                     	    ]
-                    	])->textInput() ?>
+                    	])->textInput(['readonly' => true]) ?>
 
                     	<?= $form->field($modelPerson, 'phone', [
                     	    'parts' => [
                     	        '{inputClass}' => 'col-lg-4'
                     	    ]
                     	])->widget(MaskedInput::className(), [
+                            'options' => ['readonly' => true],
                             'mask' => ['999-999-9999', '9999-999-9999', '9999-9999-9999', '9999-99999-9999'],
                         ]) ?>
 
@@ -120,7 +121,7 @@ echo $ajaxRequest->component(); ?>
                             ]
                         ])->dropDownList(
                             ArrayHelper::map(
-                                City::find()->orderBy('name')->asArray()->all(),
+                                City::find()->orderBy('name')->andWhere(['name' => 'Bandung'])->asArray()->all(),
                                 'id',
                                 function($data) {
 
@@ -128,29 +129,28 @@ echo $ajaxRequest->component(); ?>
                                 }
                             ),
                             [
-                                'prompt' => '',
                                 'style' => 'width: 100%'
                             ]) ?>
 
-						<?= $form->field($modelUser, 'email', [
+						<?= $form->field($modelPerson, 'email', [
 						    'enableAjaxValidation' => true,
 						    'parts' => [
 						        '{inputClass}' => 'col-lg-4'
 						    ]
-						])->textInput(['maxlength' => true]) ?>
+						])->textInput(['maxlength' => true, 'readonly'=> true]) ?>
 
                         <?= $form->field($modelUser, 'username', [
                             'enableAjaxValidation' => true,
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ]
-                        ])->textInput(['maxlength' => true, 'disabled' => !$model->isNewRecord]) ?>
+                        ])->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
-                        <?= $model->isNewRecord ? $form->field($modelUser, 'password', [
+                        <?= $form->field($modelUser, 'password', [
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ]
-                        ])->passwordInput(['maxlength' => true]) : '' ?>
+                        ])->passwordInput(['maxlength' => true, 'readonly' => true]) ?>
 
                         <?= $form->field($modelUser, 'image')->widget(FileInput::classname(), [
                             'options' => [
@@ -165,7 +165,7 @@ echo $ajaxRequest->component(); ?>
                             ]
                         ]); ?>
 
-                        <?= $form->field($modelUser, 'not_active')->checkbox(['value' => true], false) ?>
+                        <?= $form->field($modelUser, 'not_active')->checkbox(['value' => true, 'checked' => true], false) ?>
 
 						<?= $form->field($model, 'total_cash', [
 						    'parts' => [
@@ -209,7 +209,6 @@ $jscript = '
     $("#person-city_id").select2({
         theme: "krajee",
         placeholder: "",
-        allowClear: true,
         minimumResultsForSearch: -1
     });
 ';

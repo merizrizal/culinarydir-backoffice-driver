@@ -143,11 +143,18 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
         ]);
     }
 
-    public function actionAddUser($id, $appDriverId, $logsaid, $actid, $save = null)
+    public function actionAddUser($id, $appDriverId, $logsaid, $actid, $save = null, $statusApproval)
     {
         $model = new UserAsDriver();
         $modelUser = new User();
-        $modelPerson = new Person();
+        $modelPerson = Person::find()
+            ->joinWith(['personAsDriver.applicationDriver'])
+            ->andWhere(['application_driver.id' => $appDriverId])
+            ->one();
+        
+        $usernameByEmail = explode("@", $modelPerson['email']);
+        $modelUser->username = $usernameByEmail[0];
+        $modelUser->password = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
 
         if (!empty(($post = \Yii::$app->request->post()))) {
 
@@ -163,16 +170,12 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
                     $flag = false;
 
                     $userLevel = UserLevel::find()
-                    ->andWhere(['nama_level' => 'Driver'])
-                    ->asArray()->one();
+                        ->andWhere(['nama_level' => 'Driver'])
+                        ->asArray()->one();
 
                     $modelUser->user_level_id = $userLevel['id'];
-                    $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
-                    $modelUser->setPassword($post['User']['password']);
-
+                    
                     if (($flag = $modelUser->save())) {
-
-                        $modelPerson->email = $post['User']['email'];
 
                         if (($flag = $modelPerson->save())) {
 
@@ -197,6 +200,7 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
 
                         $transaction->commit();
 
+                        return AjaxRequest::redirect($this, \Yii::$app->urlManager->createUrl(['/driver/status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]));
                     } else {
 
                         $model->setIsNewRecord(true);
@@ -214,7 +218,12 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
         return $this->render('add_user', [
             'model' => $model,
             'modelUser' => $modelUser,
-            'modelPerson' => $modelPerson
+            'modelPerson' => $modelPerson,
+            'id' => $id,
+            'appDriverId' => $appDriverId,
+            'actid' => $actid,
+            'logsaid' => $logsaid,
+            'statusApproval' => $statusApproval,
         ]);
     }
 }
