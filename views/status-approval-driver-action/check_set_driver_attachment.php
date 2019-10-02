@@ -45,11 +45,26 @@ $this->params['breadcrumbs'][] = 'Check & Set ' . \Yii::t('app', 'Driver Attachm
 echo $ajaxRequest->component();
 
 $btnAction =
-        Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
+    Html::submitButton('<i class="fa fa-check-circle"></i> OK & Save', ['class' => 'btn btn-success']) .
 
-        Html::a('<i class="fa fa-pencil-alt"></i> Edit', ['registry-driver-approval/update-driver-attachment', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval], ['class' => 'btn btn-primary']) .
+    Html::a('<i class="fa fa-pencil-alt"></i> Edit', [
+        'registry-driver-approval/update-driver-attachment',
+        'id' => $id, 'appDriverId' => $appDriverId,
+        'actid' => $actid,
+        'logsaid' => $logsaid,
+        'statusApproval' => $statusApproval
+    ], [
+        'class' => 'btn btn-primary'
+    ]) . '  ' .
 
-        '  ' . Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
+    Html::a('<i class="fa fa-times"></i> Cancel', [
+        'status-driver/view-driver',
+        'id' => $id,
+        'appDriverId' => $appDriverId,
+        'statusApproval' => $statusApproval
+    ], [
+        'class' => 'btn btn-default'
+    ]); ?>
 
 <div class="registry-driver-form">
     <div class="row">
