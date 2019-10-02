@@ -267,7 +267,21 @@ class StatusDriverController extends \backoffice\controllers\BaseController
 
                     if (!empty($modelStatusApprovalDriver['execute_action'])) {
 
+                        if ($modelStatusApprovalDriver['id'] == 'RSBMT') {
+
+                            $statusApproval = 'PNDG';
+                        } else if ($modelStatusApprovalDriver['id'] == 'APPRV') {
+
+                            $statusApproval = 'APPRV';
+                        }
+
                         $flag = $this->run($modelStatusApprovalDriver['execute_action'], ['appDriverId' => $modelApplicationDriver['id'], 'regDriverId' => $rdid]);
+                    } else {
+
+                        if ($modelStatusApprovalDriver['id'] == 'ICORCT') {
+
+                            $statusApproval = 'ICORCT';
+                        }
                     }
                 }
 
