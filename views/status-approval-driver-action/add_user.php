@@ -55,7 +55,7 @@ echo $ajaxRequest->component(); ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'user-as-driver-form',
-                    'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->user_id],
+                    'action' => ['add-user', 'id' => $id, 'appDriverId' => $appDriverId, 'actid' => $actid, 'logsaid' => $logsaid, 'statusApproval' => $statusApproval],
                     'options' => [
 
                     ],
@@ -76,7 +76,9 @@ echo $ajaxRequest->component(); ?>
                                 </div>
                             </div>',
                     ]
-                ]); ?>
+                ]);
+
+                    echo Html::hiddenInput('add_user', true); ?>
 
                     <div class="x_title">
                         <div class="form-group">
@@ -144,7 +146,7 @@ echo $ajaxRequest->component(); ?>
                             'parts' => [
                                 '{inputClass}' => 'col-lg-4'
                             ]
-                        ])->textInput(['maxlength' => true, 'readonly' => true]) ?>
+                        ])->textInput(['maxlength' => true]) ?>
 
                         <?= $form->field($modelUser, 'password', [
                             'parts' => [

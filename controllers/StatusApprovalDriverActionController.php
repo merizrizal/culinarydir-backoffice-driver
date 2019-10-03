@@ -6,10 +6,14 @@ use core\models\LogStatusApprovalDriverAction;
 use core\models\Person;
 use core\models\RegistryDriver;
 use core\models\User;
+use core\models\UserAkses;
+use core\models\UserAksesAppModule;
 use core\models\UserAsDriver;
 use core\models\UserLevel;
 use core\models\UserPerson;
+use core\models\UserRole;
 use sycomponent\AjaxRequest;
+use sycomponent\Tools;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
@@ -151,7 +155,7 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
             ->joinWith(['personAsDriver.applicationDriver'])
             ->andWhere(['application_driver.id' => $appDriverId])
             ->one();
-        
+
         $usernameByEmail = explode("@", $modelPerson['email']);
         $modelUser->username = $usernameByEmail[0];
         $modelUser->password = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
@@ -169,25 +173,85 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
                     $transaction = \Yii::$app->db->beginTransaction();
                     $flag = false;
 
-                    $userLevel = UserLevel::find()
-                        ->andWhere(['nama_level' => 'Driver'])
-                        ->asArray()->one();
+                    $modelLogStatusApprovalDriverAction = new LogStatusApprovalDriverAction();
+                    $modelLogStatusApprovalDriverAction->log_status_approval_driver_id = $logsaid;
+                    $modelLogStatusApprovalDriverAction->status_approval_driver_action_id = $actid;
 
-                    $modelUser->user_level_id = $userLevel['id'];
-                    
-                    if (($flag = $modelUser->save())) {
+                    if (($flag = $modelLogStatusApprovalDriverAction->save())) {
 
-                        if (($flag = $modelPerson->save())) {
+                        $modelUser->email = $post['Person']['email'];
+                        $modelUser->full_name = $post['Person']['first_name'] . ' ' . $post['Person']['last_name'];
+                        $modelUser->setPassword($modelUser->password);
+                        $modelUser->image = Tools::uploadFile('/img/user/', $modelUser, 'image', 'username', $modelUser->username);
 
-                            $model->user_id = $modelUser->id;
+                        if (($flag = $modelUser->save())) {
 
-                            if (($flag = $model->save())) {
+                            $userLevel = UserLevel::find()
+                                ->andWhere(['nama_level' => 'Driver'])
+                                ->asArray()->one();
 
-                                $modelUserPerson = new UserPerson();
-                                $modelUserPerson->user_id = $modelUser->id;
-                                $modelUserPerson->person_id = $modelPerson->id;
+                            $modelUserRole = new UserRole();
+                            $modelUserRole->user_id = $modelUser->id;
+                            $modelUserRole->user_level_id = $userLevel['id'];
+                            $modelUserRole->unique_id = $modelUser->id . '-' . $userLevel['id'];
+                            $modelUserRole->is_active = true;
 
-                                $flag = $modelUserPerson->save();
+                            if ($flag = $modelUserRole->save()) {
+
+                                $modelUserAkses = UserAkses::find()
+                                    ->andWhere(['user_level_id' => $modelUserRole->user_level_id])
+                                    ->asArray()->all();
+
+                                foreach ($modelUserAkses as $dataUserAkses) {
+
+                                    $modelUserAksesAppModule = new UserAksesAppModule();
+                                    $modelUserAksesAppModule->unique_id = $modelUser->id . '-' . $dataUserAkses['user_app_module_id'];
+                                    $modelUserAksesAppModule->user_id = $modelUser->id;
+                                    $modelUserAksesAppModule->user_app_module_id = $dataUserAkses['user_app_module_id'];
+                                    $modelUserAksesAppModule->is_active = $dataUserAkses['is_active'];
+                                    $modelUserAksesAppModule->used_by_user_role = [$modelUserRole->unique_id];
+
+                                    if (!($flag = $modelUserAksesAppModule->save())) {
+
+                                        break;
+                                    }
+                                }
+
+                                $modelPerson->city_id = $post['Person']['city_id'];
+
+                                if (($flag = $modelPerson->save())) {
+
+                                    $model->user_id = $modelUser->id;
+                                    $model->person_as_driver_id = $modelPerson['personAsDriver']['person_id'];
+
+                                    if (($flag = $model->save())) {
+
+                                        $modelUserPerson = new UserPerson();
+                                        $modelUserPerson->user_id = $modelUser->id;
+                                        $modelUserPerson->person_id = $modelPerson->id;
+
+                                        if (($flag = $modelUserPerson->save())) {
+
+                                            $randomString = \Yii::$app->security->generateRandomString();
+                                            $randomStringHalf = substr($randomString, 16);
+                                            $modelUser->not_active = true;
+                                            $modelUser->account_activation_token = substr($randomString, 0, 15) . $modelUser->id . $randomStringHalf . '_' . time();
+
+                                            if (($flag = $modelUser->save())) {
+
+                                                \Yii::$app->mailer->compose(['html' => 'account_activation'], [
+                                                    'email' => $post['Person']['email'],
+                                                    'full_name' => $post['Person']['first_name'] . ' ' . $post['Person']['last_name'],
+                                                    'userToken' => $modelUser->account_activation_token
+                                                ])
+                                                ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' Support'])
+                                                ->setTo($post['Person']['email'])
+                                                ->setSubject(\Yii::$app->name . ' Account Activation')
+                                                ->send();
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
