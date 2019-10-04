@@ -41,8 +41,9 @@ if ($status !== null) {
     echo $notif->renderDialog();
 }
 
-$this->title = 'Create ' . \Yii::t('app', 'User As Driver');
-$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Driver'), 'url' => ['index']];
+$this->title = \Yii::t('app', 'Add User') . ' : ' . $modelPerson['first_name'];
+$this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 'url' =>  ['status-driver/' . strtolower($statusApproval) . '-driver']];
+$this->params['breadcrumbs'][] = ['label' => $modelPerson['first_name'] . ' ' . $modelPerson['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = $this->title;
 
 echo $ajaxRequest->component(); ?>
@@ -139,7 +140,7 @@ echo $ajaxRequest->component(); ?>
 						    'parts' => [
 						        '{inputClass}' => 'col-lg-4'
 						    ]
-						])->textInput(['maxlength' => true, 'readonly'=> true]) ?>
+						])->textInput(['maxlength' => true]) ?>
 
                         <?= $form->field($modelUser, 'username', [
                             'enableAjaxValidation' => true,
@@ -186,7 +187,7 @@ echo $ajaxRequest->component(); ?>
                                     <?php
                                     $icon = '<i class="fa fa-save"></i> ';
                                     echo Html::submitButton($model->isNewRecord ? $icon . 'Save' : $icon . 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
-                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['index'], ['class' => 'btn btn-default']); ?>
+                                    echo Html::a('<i class="fa fa-times"></i> Cancel', ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval], ['class' => 'btn btn-default']); ?>
 
                                 </div>
                             </div>

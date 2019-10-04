@@ -226,9 +226,11 @@ class StatusDriverController extends \backoffice\controllers\BaseController
                                 ->one();
 
                             $modelLogStatusApprovalDriver->is_actual = false;
+
+                            $flag = $modelLogStatusApprovalDriver->save();
                         }
 
-                        if (($flag = $modelLogStatusApprovalDriver->save()) && $modelStatusApprovalDriver['branch'] == 0) {
+                        if ($modelStatusApprovalDriver['branch'] == 0) {
 
                             if ($modelStatusApprovalDriver['status'] != 'Finished-Fail') {
 

@@ -78,16 +78,20 @@ class RegistryDriverController extends \backoffice\controllers\BaseController
                         $modelLogStatusApprovalDriver->status_approval_driver_id = StatusApprovalDriver::find()->andWhere(['group' => '0'])->asArray()->one()['id'];
                         $modelLogStatusApprovalDriver->is_actual = true;
                         $modelLogStatusApprovalDriver->application_driver_counter = $modelApplicationDriver->counter;
+
+                        $flag = $modelLogStatusApprovalDriver->save();
                     }
 
-                    if (($flag = $modelLogStatusApprovalDriver->save())) {
+                    if ($flag) {
 
                         $model->application_driver_id = $modelApplicationDriver->id;
                         $model->user_in_charge = $modelApplicationDriver->user_in_charge;
                         $model->application_driver_counter = $modelApplicationDriver->counter;
+
+                        $flag = $model->save();
                     }
 
-                    if (($flag = $model->save())) {
+                    if ($flag) {
 
                         $images = Tools::uploadFiles('/img/registry_driver_attachment/', $modelRegistryDriverAttachment, 'file_name', 'registry_driver_id', $model->id, true);
 
@@ -375,9 +379,11 @@ class RegistryDriverController extends \backoffice\controllers\BaseController
                 $modelLogStatusApprovalDriver->status_approval_driver_id = 'RSBMT';
                 $modelLogStatusApprovalDriver->is_actual = true;
                 $modelLogStatusApprovalDriver->application_driver_counter = $appDriverCounter;
+
+                $flag = $modelLogStatusApprovalDriver->save();
             }
 
-            if (($flag = $modelLogStatusApprovalDriver->save())) {
+            if ($flag) {
 
                 $flag = $this->run('/driver/status-approval-driver/resubmit', ['appDriverId' => $appDriverId, 'regDriverId' => $id]);
             }

@@ -98,9 +98,11 @@ class StatusApprovalDriverController extends \backoffice\controllers\BaseControl
             $modelPersonAsDriver->other_driver = $modelRegistryDriver['other_driver'];
             $modelPersonAsDriver->is_criteria_passed = $modelRegistryDriver['is_criteria_passed'];
             $modelPersonAsDriver->application_driver_id = $modelRegistryDriver['applicationDriver']['id'];
+
+            $flag = $modelPersonAsDriver->save();
         }
 
-        if (($flag = $modelPersonAsDriver->save())) {
+        if ($flag) {
 
             foreach ($modelRegistryDriver['registryDriverAttachments'] as $dataRegistryDriverAttachment) {
 
