@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = ['label' => \Yii::t('app', 'Approval Driver'), 
 $this->params['breadcrumbs'][] = ['label' => $modelPerson['first_name'] . ' ' . $modelPerson['last_name'], 'url' => ['status-driver/view-driver', 'id' => $id, 'appDriverId' => $appDriverId, 'statusApproval' => $statusApproval]];
 $this->params['breadcrumbs'][] = $this->title;
 
-echo $ajaxRequest->component(); ?>
+echo $ajaxRequest->component(false); ?>
 
 <div class="row">
     <div class="col-sm-12">

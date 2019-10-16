@@ -1,14 +1,14 @@
 <?php
 
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use yii\widgets\MaskedInput;
+use core\models\City;
 use kartik\file\FileInput;
 use kartik\number\NumberControl;
 use sycomponent\AjaxRequest;
 use sycomponent\NotificationDialog;
-use core\models\City;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $model core\models\UserAsDriver */
@@ -51,7 +51,7 @@ kartik\select2\ThemeKrajeeAsset::register($this); ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'user-as-driver-form',
-                    'action' => $model->isNewRecord ? ['create'] : ['update', 'id' => $model->user_id],
+                    'action' => ['update', 'id' => $model->user_id],
                     'options' => [
 
                     ],
@@ -73,20 +73,6 @@ kartik\select2\ThemeKrajeeAsset::register($this); ?>
                             </div>',
                     ]
                 ]); ?>
-
-                    <div class="x_title">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-lg-6">
-
-                                    <?php
-                                    if (!$model->isNewRecord)
-                                        echo Html::a('<i class="fa fa-upload"></i> Create', ['create'], ['class' => 'btn btn-success']); ?>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="x_content">
 

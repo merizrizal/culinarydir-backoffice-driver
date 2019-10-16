@@ -306,42 +306,4 @@ class StatusApprovalDriverActionController extends \backoffice\controllers\BaseC
             'statusApproval' => $statusApproval,
         ]);
     }
-
-    public function actionActivateAccount($token)
-    {
-        $modelUser = User::find()
-        ->andWhere(['account_activation_token' => $token])
-        ->andWhere(['not_active' => true])
-        ->one();
-
-        if (!empty($modelUser)) {
-
-            $modelUser->not_active = false;
-
-            if ($modelUser->save()) {
-
-                return $this->render('message', [
-                    'fullname' => $modelUser['full_name'],
-                    'title' => \Yii::t('app', 'Your Account Has Been Activated'),
-                    'messages' => \Yii::t('app', 'Please login with your Email / Username by clicking the button below.'),
-                    'links' => ['name' => \Yii::t('app', 'Login to {app}', ['app' => \Yii::$app->name]), 'url' => ['site/login']],
-                ]);
-            } else {
-
-                \Yii::$app->session->setFlash('message', [
-                    'type' => 'danger',
-                    'delay' => 1000,
-                    'icon' => 'aicon aicon-icon-info',
-                    'message' => 'Gagal Aktivasi Akun Anda',
-                    'title' => 'Gagal Aktivasi',
-                ]);
-
-                return $this->redirect(['register']);
-            }
-        } else {
-
-            return $this->redirect(['login']);
-        }
-    }
-
 }
